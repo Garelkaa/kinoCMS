@@ -1,0 +1,104 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
+    <link rel="stylesheet" href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css">
+    <link rel="stylesheet" href="{% static "dist/css/adminlte.min.css" %}">
+    {% block css %} {% endblock css %}
+    <title>{{ title }}</title>
+</head>
+<body>
+    <nav class="main-header navbar navbar-expand navbar-white navbar-light">
+        <!-- Right navbar links -->
+        <ul class="navbar-nav ml-auto">
+            <!-- Navbar Search -->
+            <li class="nav-item" style="padding-bottom: 20px;">
+                <a class="nav-link" href="#" role="button">
+                    <i class="bi bi-person-fill" style="padding-bottom: 15px; color: #000;">Администратор</i>
+
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" data-widget="fullscreen" href="{% url 'adminlte:logout' %}" role="button" style="color: #000;">
+                    <i class="bi bi-power"></i>
+                </a>
+            </li>
+        </ul>
+    </nav>
+    <aside class="main-sidebar sidebar-dark-primary elevation-4" style="width: 200px; height: 200%;">
+        <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
+            <li class="nav-item">
+                <a href="{% url "adminlte:stats" %}" class="nav-link">
+                    <i class="bi bi-book"></i>
+                    <p class="text-center" style="color:#fff;">
+                        Статистика
+                    </p>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="{% url "adminlte:banner" %}" class="nav-link">
+                <p class="text-center" style="color:#fff;">
+                    Баннеры
+                </p>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="{% url "adminlte:film" %}" class="nav-link">
+                    <p class="text-center" style="color:#fff;">
+                        Фильмы
+                    </p>
+                </a>
+            </li>
+
+            <li class="nav-item">
+                <a href="{% url "adminlte:cinema" %}" class="nav-link">
+                    <p class="text-center" style="color:#fff;">
+                        Кинотеатры
+                    </p>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="{% url "adminlte:news" %}" class="nav-link">
+                    <p class="text-center" style="color:#fff;">
+                        Новости
+                    </p>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="{% url "adminlte:sells" %}" class="nav-link">
+                    <p class="text-center" style="color:#fff;">
+                        Акции
+                    </p>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="{% url "adminlte:pages" %}" class="nav-link">
+                    <p class="text-center" style="color:#fff;">
+                        Страницы
+                    </p>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="{% url "adminlte:users" %}" class="nav-link">
+                    <p class="text-center" style="color:#fff;">
+                        Пользователи
+                    </p>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="{% url "adminlte:spam" %}" class="nav-link">
+                    <p class="text-center" style="color:#fff;">
+                        Рассылка
+                    </p>
+                </a>
+            </li>
+        </ul>
+        </div></div></div><div class="os-scrollbar os-scrollbar-horizontal os-scrollbar-unusable os-scrollbar-auto-hidden"><div class="os-scrollbar-track"><div class="os-scrollbar-handle" style="width: 100%; transform: translate(0px, 0px);"></div></div></div><div class="os-scrollbar os-scrollbar-vertical os-scrollbar-auto-hidden"><div class="os-scrollbar-track"><div class="os-scrollbar-handle" style="height: 18.911%; transform: translate(0px, 0px);"></div></div></div><div class="os-scrollbar-corner"></div></div>
+    </aside>
+    {% block content %}{% endblock content %}
+</body>
+</html>

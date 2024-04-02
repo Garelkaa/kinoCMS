@@ -1,0 +1,99 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block css %}
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.2/font/bootstrap-icons.min.css">
+<style>
+    .border-outline {
+        border: 2px solid black;
+        padding: 10px;
+        margin-bottom: 20px;
+    }
+</style>
+{% endblock css %}
+
+{% block content %}
+<div class="container border-outline">
+    <div class="row">
+        <div class="col-md-6">
+            <div class="border-outline">
+                <h2 class="text-center">Рассылка</h2>
+                <form id="emailForm" method="post">
+                    {% csrf_token %}
+                    <div class="mb-3">
+                        <label for="recipient">Кому слать:</label><br>
+                        <input type="radio" id="allUsers" name="recipientType" value="allUsers">
+                        <label for="allUsers">Все пользователи</label><br>
+                        <input type="radio" id="selective" name="recipientType" value="selective">
+                        <label for="selective">Выборочно</label>
+                        <button type="button" id="selectUsersButton" style="display: none;" class="btn btn-secondary">Выбрать пользователей</button>
+                    </div>
+                    <div class="mb-3">
+                        <label for="emailFile">Загрузить письмо:</label>
+                        <input type="file" id="emailFile" name="emailFile">
+                        <p>Шаблон используемый в рассылке: <span id="selectedFileName"></span></p>
+                        <input type="hidden" id="selectedFileInput" name="file_name" value="">
+
+                    </div>
+                    <div class="mb-3">
+                        <p>Кол-во писем: 123</p>
+                        <p>Рассылка выполнена: 44%</p>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Отправить</button>
+                </form>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="border-outline">
+                <h2 class="text-center">Загруженные письма</h2>
+                <ul>
+                    {% for file in files %}
+                        <input type="radio" name="selectedFile" value="{{ file.file_name }}">
+                        <label>{{ file.file_name }}</label>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.querySelectorAll('input[name="recipientType"]').forEach(function(radio) {
+        radio.addEventListener('change', function () {
+            if (this.value === 'selective') {
+                document.getElementById('selectUsersButton').style.display = 'inline-block';
+            } else {
+                document.getElementById('selectUsersButton').style.display = 'none';
+            }
+        });
+    });
+
+    document.querySelectorAll('input[name="selectedFile"]').forEach(function(radio) {
+        radio.addEventListener('change', function () {
+            let selectedFileName = this.value;
+            document.getElementById('selectedFileName').innerText = selectedFileName;
+            document.getElementById('selectedFileInput').value = selectedFileName; // Устанавливаем значение скрытого поля
+        });
+    });
+
+    document.getElementById('emailFile').addEventListener('change', function () {
+        let fileInput = this;
+        let file = fileInput.files[0];
+        let formData = new FormData();
+        formData.append('emailFile', file);
+
+        let xhr = new XMLHttpRequest();
+        xhr.open('POST', '{% url 'adminlte:save_email_file' %}', true); // URL, на который будет отправлен запрос
+        xhr.onload = function () {
+            if (xhr.status === 200) {
+                // Действия при успешном сохранении файла
+                console.log('Файл успешно сохранен в базу данных.');
+            } else {
+                // Действия при ошибке
+                console.error('Произошла ошибка при сохранении файла.');
+            }
+        };
+        xhr.send(formData);
+    });
+</script>
+{% endblock content %}

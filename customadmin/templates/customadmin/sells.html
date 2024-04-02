@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block css %}
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.2/font/bootstrap-icons.min.css">
+{% endblock %}
+
+{% block content %}
+<div class="container justify-content-center" style="margin-top: 100px;">
+    <div class="row justify-content-center">
+        <table class="table table-bordered border-primary">
+            <thead>
+                <tr>
+                    <th scope="col">Название</th>
+                    <th scope="col">Дата создания</th>
+                    <th scope="col">Статус</th>
+                    <th scope="col">Действия</th> 
+                </tr>
+            </thead>
+            {% for sell in sells %}
+                <tr>
+                    <td>{{ sell.title }}</td>
+                    <td>{{ sell.created }}</td>
+                    <td>{% if sell.active %}ВКЛ{% else %}Выкл{% endif %}</td>
+                    <td>
+                        <a href="{{ sell.id }}"><i class="bi bi-pencil"></i></a>
+                        <a href="#"><i class="bi bi-trash"></i></a>
+                    </td>
+                </tr>
+            {% endfor %}
+        </table> 
+        <a href='{% url "adminlte:add_sells" %}'><button class="btn btn-success">Создать Акцию</button></a>
+    </div>
+</div>
+{% endblock content %}

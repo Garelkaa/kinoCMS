@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block css %}
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.2/font/bootstrap-icons.min.css">
+{% endblock %}
+
+{% block content %}
+<div class="container justify-content-center" style="margin-top: 100px;">
+    <div class="row justify-content-center">
+        <table class="table table-bordered border-primary">
+            <thead>
+                <tr>
+                    <th scope="col">Название</th>
+                    <th scope="col">Дата создания</th>
+                    <th scope="col">Статус</th>
+                    <th scope="col">Действия</th> 
+                </tr>
+            </thead>
+            <tr>
+                <td>Главная страница</td>
+                <td>12.07.2016</td>
+                <td>ВКЛ</td>
+                <td>
+                    <a href="{% url 'adminlte:main_page' %}"><i class="bi bi-pencil"></i></a>
+                    <a href="#"><i class="bi bi-trash"></i></a>
+                </td>
+            </tr>
+            {% for page in pages %}
+                <tr>
+                    <td>{{ page.title }}</td>
+                    <td>{{ page.created }}</td>
+                    <td>{{ page.active }}</td>
+                    <td>
+                        <a href="{{ page.id }}"><i class="bi bi-pencil"></i></a>
+                        <a href="#"><i class="bi bi-trash"></i></a>
+                    </td>
+                </tr>
+            {% endfor %}
+            
+            <tr>
+                <td>Контакты</td>
+                <td>12.07.2016</td>
+                <td>ВЫКЛ</td>
+                <td>
+                    <a href="{% url 'adminlte:contacts' %}"><i class="bi bi-pencil"></i></a>
+                    <a href="#"><i class="bi bi-trash"></i></a>
+                </td>
+            </tr>
+        </table> 
+        <a href="{% url 'adminlte:new_page' %}"><button class="btn btn-success">Создать Новую</button>
+    </div>
+</div>
+{% endblock content %}
