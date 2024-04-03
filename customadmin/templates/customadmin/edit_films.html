@@ -57,19 +57,22 @@
         </div>
         <div id="image-container">
             {{ gallery_formset.management_form }}
-            <div id="gallery-formset">
+            <div id="gallery-formset" class="row">
                 {% for form in gallery_formset.forms %}
-                    <div class="form-group">
-                        <img src="{% if form.instance.image %}{{ form.instance.image.url }}{% endif %}" alt="" style="max-width: 300px; max-height: 100vh">
-                        {{ form.image }}
-                        {{ form.id }}
-                        {{ form.DELETE }}
+                    <div class="col-md-4">
+                        <div class="card mb-4">
+                            <img src="{% if form.instance.image %}{{ form.instance.image.url }}{% endif %}" class="card-img-top" alt="" style="width: 365px; height: 400px;">
+                            <div class="card-body">
+                                {{ form.image }}
+                                {{ form.id }}
+                                {{ form.DELETE }}
+                            </div>
+                        </div>
                     </div>
                 {% endfor %}
-                <button type="button" class="btn btn-primary btn-sm" id="add-image">Add Image</button>
             </div>
+            <button type="button" class="btn btn-primary btn-sm mt-3" id="add-image">Add Image</button>
         </div>
-
 
         <button type="submit" class="btn btn-success mt-5">Зберегти</button>
     </form>
@@ -121,9 +124,13 @@ document.addEventListener("DOMContentLoaded", function() {
     function addImageField() {
         const formset = document.createElement('div');
         formset.innerHTML = `
-            <div class="form-group">
-                <img id="image-preview-${formCount}" src="" alt="Image Preview" style="max-width: 200px;">
-                <input type="file" onchange="previewImage(this, ${formCount})" name="form-${formCount}-image" class="form-control-file">
+            <div class="card" style="width: 18rem;">
+                <img src="{% static 'image/photo.jpg' %}" class="card-img-top preview" alt="Preview" style="width: 288px; height: 288px;">
+                <div class="card-body">
+                    <input type="file" name="form-${formCount}-image" class="form-control-file">
+                    <button type="button" class="btn btn-danger btn-sm mt-2 delete-image-btn">Удалить</button>
+
+                </div>
             </div>
         `;
     
@@ -133,6 +140,43 @@ document.addEventListener("DOMContentLoaded", function() {
         formCount++;
         formTotalForms.value = formCount;
     }
+
+    imageContainer.addEventListener("change", function(event) {
+        const input = event.target;
+        if (input && input.type === "file") {
+            previewImage(input, input.closest('.card').querySelector('.preview'));
+        }
+    });
+
+    // Function to preview image
+    function previewImage(input, preview) {
+        if (input.files && input.files[0]) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                preview.src = e.target.result;
+                preview.style.display = "block";
+            };
+            reader.readAsDataURL(input.files[0]);
+        } else {
+            preview.src = "#";
+            preview.style.display = "none";
+        }
+    }
+
+    imageContainer.addEventListener("click", function(event) {
+        if (event.target && event.target.classList.contains("delete-image-btn")) {
+            const card = event.target.closest(".card");
+            card.remove(); // Удаляем карточку из DOM
+            formCount--; // Уменьшаем счетчик форм
+            formTotalForms.value = formCount; // Обновляем значение счетчика форм
+
+            // Обновляем значения атрибута "name" у всех полей форм в формсете
+            imageContainer.querySelectorAll('.card').forEach((card, index) => {
+                const fileInput = card.querySelector('input[type="file"]');
+                fileInput.name = `form-${index}-image`;
+            });
+        }
+    });
 
 
     // Initialize preview for existing images

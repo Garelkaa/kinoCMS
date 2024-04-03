@@ -16,24 +16,15 @@
         <div class="form-group">
             <label for="id_title">Назва:</label>
             <input type="text" class="form-control" id="id_title" name="title" placeholder="Введіть назву {{ name }}" >
-            {% if form.errors.title %}
-                <p class="text-danger">Надо заполнить это поле</p>
-            {% endif %}
         </div>
         <div class="form-group">
             <label for="id_description">Опис:</label>
             <textarea class="form-control" id="id_description" name="description" placeholder="Введіть опис {{ name }}"></textarea>
-            {% if form.errors.description %}
-                <p class="text-danger">Надо заполнить это поле</p>
-            {% endif %}
         </div>
         <div class="form-group">
             <label for="id_main_image">Головне зображення:</label>
             <input type="file" class="form-control-file" id="id_main_image" name="main_image" placeholder="Завантажте головне зображення">
             <img id="main-image-preview" src="#" alt="Preview" style="display: none; max-width: 100px; max-height: 100px;">
-            {% if form.errors.main_image %}
-                <p class="text-danger">Надо заполнить это поле</p>
-            {% endif %}
         </div>
 
         <label for="mainImage">Галерея картинок</label>
@@ -52,44 +43,26 @@
                     <label class="form-check-label">{{ type.choice_label }}</label>
                 </div>
             {% endfor %}
-            {% if form.errors.type %}
-                <p class="text-danger">Надо заполнить это поле</p>
-            {% endif %}
         </div>
         <div class="form-group">
             <label for="id_url_trailer">Посилання на відео:</label>
             <input type="text" class="form-control" id="id_url_trailer" name="url_trailer" placeholder="Введіть посилання на відео з YouTube">
-            {% if form.errors.url_trailer %}
-                <p class="text-danger">Надо заполнить это поле</p>
-            {% endif %}
         </div>
         <div class="form-group">
             <label for="id_seo_url">SEO URL:</label>
             <input type="text" class="form-control" id="id_seo_url" name="seo_url" placeholder="Введіть SEO URL" >
-            {% if form.errors.seo_url %}
-                <p class="text-danger">Надо заполнить это поле</p>
-            {% endif %}
         </div>
         <div class="form-group">
             <label for="id_seo_title">SEO Title:</label>
             <input type="text" class="form-control" id="id_seo_title" name="seo_title" placeholder="Введіть SEO Title" >
-            {% if form.errors.seo_title %}
-                <p class="text-danger">Надо заполнить это поле</p>
-            {% endif %}
         </div>
         <div class="form-group">
             <label for="id_seo_keywords">SEO Keywords:</label>
             <input type="text" class="form-control" id="id_seo_keywords" name="seo_keywords" placeholder="Введіть SEO Keywords" >
-            {% if form.errors.seo_keywords %}
-                <p class="text-danger">Надо заполнить это поле</p>
-            {% endif %}
         </div>
         <div class="form-group">
             <label for="id_description_seo">SEO Description:</label>
             <textarea class="form-control" id="id_description_seo" name="description_seo" placeholder="Введіть SEO Description"></textarea>
-            {% if form.errors.description_seo %}
-                <p class="text-danger">Надо заполнить это поле</p>
-            {% endif %}
         </div>
         <button type="submit" class="btn btn-success mt-5">Зберегти</button>
     </form>
@@ -148,24 +121,19 @@ document.addEventListener("DOMContentLoaded", function() {
         }
     }
     imageContainer.addEventListener("click", function(event) {
-        if (event.target && event.target.classList.contains("delete-image-btn")) {
-            const card = event.target.closest(".card");
-            card.remove(); // Удаляем карточку из DOM
-            formCount--; // Уменьшаем счетчик форм
-            formTotalForms.value = formCount; // Обновляем значение счетчика форм
+    if (event.target && event.target.classList.contains("delete-image-btn")) {
+        const card = event.target.closest(".card");
+        card.remove(); // Удаляем карточку из DOM
+        formCount--; // Уменьшаем счетчик форм
+        formTotalForms.value = formCount; // Обновляем значение счетчика форм
 
-            // Обновляем значения атрибута "name" у всех полей форм в формсете
-            imageContainer.querySelectorAll('.card').forEach((card, index) => {
-                const fileInput = card.querySelector('input[type="file"]');
-                fileInput.name = `form-${index}-image`;
-            });
-        }
-    });
-    const mainImageInput = document.getElementById("id_main_image");
-    const mainImagePreview = document.getElementById("main-image-preview");
-    mainImageInput.addEventListener("change", function(event) {
-        previewImage(mainImageInput, mainImagePreview);
-    });
+        // Обновляем значения атрибута "name" у всех полей форм в формсете
+        imageContainer.querySelectorAll('.card').forEach((card, index) => {
+            const fileInput = card.querySelector('input[type="file"]');
+            fileInput.name = `form-${index}-image`;
+        });
+    }
+});
 });
 </script>
 {% endblock content %}

@@ -12,9 +12,13 @@
         {% for cinema in cinema %}
         <div class="col-md-3">
             <div class="card">
-                <img src="{{ cinema.main_image.url }}" class="card-img-top" alt="{{ cinema.title }}">
+                <img src="{{ cinema.main_image.url }}" class="card-img-top" alt="{{ cinema.title }}" style="width: 270px; height: 300px">
                 <div class="card-body">
                     <a href="{{ cinema.id }}"><p>{{ cinema.title }}</p></a>
+                    <form action="{% url 'adminlte:delete_cinema' cinema.id %}" method="post">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-danger">Удалить</button>
+                    </form>
                 </div>
             </div>
         </div>

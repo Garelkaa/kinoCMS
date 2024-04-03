@@ -43,9 +43,7 @@ def banner(request):
 @login_required
 @user_passes_test(is_admin)
 def films(request):
-    film = Movie.objects.prefetch_related(
-        Prefetch('gallery__galleryimage_set', queryset=GalleryImage.objects.all())
-    ).all()
+    film = Movie.objects.all()
 
     context = {
         'title': 'Список фильмов',
@@ -73,10 +71,7 @@ def page_film(request):
                     gallery_image.gallery = gallery_instance
                     gallery_image.save()
 
-            return redirect('success_url')
-        else:
-            print(films_form.errors)
-            print(gallery_formset.errors)
+            return redirect('adminlte:film')
     else:
         films_form = FilmsForm()
         gallery_formset = GalleryImageFormSet(queryset=Gallery.objects.none())
@@ -91,25 +86,24 @@ def page_film(request):
 def edit_film(request, film_id):
     film_instance = get_object_or_404(Movie, pk=film_id)
     if request.method == 'POST':
-        films_form = FilmsForm(request.POST, request.FILES, instance=film_instance, initial={'type': film_instance.type})
-        gallery_formset = GalleryImageFormSet(request.POST, request.FILES, queryset=GalleryImage.objects.filter(gallery=film_instance.gallery))
+        films_form = FilmsForm(request.POST, request.FILES, instance=film_instance, initial={'type': film_instance.type}
+                               )
+        gallery_formset = GalleryImageFormSet(request.POST, request.FILES, queryset=GalleryImage.objects.filter(
+            gallery=film_instance.gallery))
 
         if films_form.is_valid() and gallery_formset.is_valid():
             cinema_instance = films_form.save()
 
-            # Save the formset
             gallery_instances = gallery_formset.save(commit=False)
 
-            # Delete images marked for deletion
             for form in gallery_formset.deleted_forms:
                 form.instance.delete()
 
-            # Save changes to the database
             for gallery_instance in gallery_instances:
                 gallery_instance.gallery = cinema_instance.gallery
                 gallery_instance.save()
 
-            return redirect('success_url')
+            return redirect('adminlte:film')
         else:
             print(films_form.errors)
             print(gallery_formset.errors)
@@ -118,19 +112,18 @@ def edit_film(request, film_id):
         gallery_formset = GalleryImageFormSet(queryset=GalleryImage.objects.filter(gallery=film_instance.gallery))
 
     return render(request, 'customadmin/edit_films.html', {'title': 'Редактирование кинотеатра',
-                                                             'film_instance': film_instance, 'form': films_form, 'gallery_formset': gallery_formset})
+                                                             'film_instance': film_instance,
+                                                             'form': films_form, 'gallery_formset': gallery_formset})
 
 
 @login_required
 @user_passes_test(is_admin)
 def cinemas(request):
-    cinemas = Cinema.objects.prefetch_related(
-        Prefetch('gallery__galleryimage_set', queryset=GalleryImage.objects.all())
-    ).all()
+    cinema = Cinema.objects.all()
 
     context = {
         'title': 'Страница кинотеатров',
-        'cinema': cinemas
+        'cinema': cinema
     }
 
     return render(request, 'customadmin/cinema.html', context=context)
@@ -149,16 +142,12 @@ def cinema_page(request):
             film_instance.save()
 
             for form in gallery_formset:
-                print("тут" + f"{form.cleaned_data}")
                 if form.cleaned_data.get('image'):
                     gallery_image = form.save(commit=False)
                     gallery_image.gallery = gallery_instance
                     gallery_image.save()
 
-            return redirect('success_url')
-        else:
-            print(f"Cinema: {cinema_form.errors}")
-            print(f"Formset: {gallery_formset.errors}")
+            return redirect('adminlte:cinema')
     else:
         cinema_form = CinemaForm()
         gallery_formset = GalleryImageFormSet(queryset=Gallery.objects.none())
@@ -174,24 +163,22 @@ def edit_cinema(request, cinema_id):
     cinema_instance = get_object_or_404(Cinema, pk=cinema_id)
     if request.method == 'POST':
         cinema_form = CinemaForm(request.POST, request.FILES, instance=cinema_instance)
-        gallery_formset = GalleryImageFormSet(request.POST, request.FILES, queryset=GalleryImage.objects.filter(gallery=cinema_instance.gallery))
+        gallery_formset = GalleryImageFormSet(request.POST, request.FILES, queryset=GalleryImage.objects.filter(
+            gallery=cinema_instance.gallery))
 
         if cinema_form.is_valid() and gallery_formset.is_valid():
             cinema_instance = cinema_form.save()
 
-            # Save the formset
             gallery_instances = gallery_formset.save(commit=False)
 
-            # Delete images marked for deletion
             for form in gallery_formset.deleted_forms:
                 form.instance.delete()
 
-            # Save changes to the database
             for gallery_instance in gallery_instances:
                 gallery_instance.gallery = cinema_instance.gallery
                 gallery_instance.save()
 
-            return redirect('success_url')
+            return redirect('adminlte:cinema')
         else:
             print(cinema_form.errors)
             print(gallery_formset.errors)
@@ -200,7 +187,20 @@ def edit_cinema(request, cinema_id):
         gallery_formset = GalleryImageFormSet(queryset=GalleryImage.objects.filter(gallery=cinema_instance.gallery))
 
     return render(request, 'customadmin/edit_cinema.html', {'title': 'Редактирование кинотеатра',
-                                                             'cinema_instance': cinema_instance, 'form': cinema_form, 'gallery_formset': gallery_formset})
+                                                             'cinema_instance': cinema_instance,
+                                                             'form': cinema_form, 'gallery_formset': gallery_formset})
+
+
+@login_required
+@user_passes_test(is_admin)
+def delete_cinema(request, cinema_id):
+    if request.method == 'POST':
+        cinema = Cinema.objects.get(id=cinema_id)
+        cinema.delete()
+        return redirect('adminlte:cinema')
+    else:
+        return redirect('adminlte:cinema')
+
 
 @login_required
 @user_passes_test(is_admin)
@@ -237,7 +237,7 @@ def cinema_hall(request):
 @login_required
 @user_passes_test(is_admin)
 def news(request):
-    all_news = News.objects.prefetch_related().all()
+    all_news = News.objects.all()
     
     context = {
         'title': 'Страница новостей',
@@ -266,10 +266,8 @@ def news_add(request):
                     gallery_image.gallery = gallery_instance
                     gallery_image.save()
 
-            return redirect('success_url')
-        else:
-            print(news_add_form.errors)
-            print(gallery_formset.errors)
+            return redirect('adminlte:news')
+
     else:
         news_add_form = NewsForm()
         gallery_formset = GalleryImageFormSet(queryset=Gallery.objects.none())
@@ -279,6 +277,8 @@ def news_add(request):
                    'gallery_formset': gallery_formset})
 
 
+@login_required
+@user_passes_test(is_admin)
 def edit_news(request, news_id):
     news_instance = get_object_or_404(News, pk=news_id)
     if request.method == 'POST':
@@ -289,19 +289,16 @@ def edit_news(request, news_id):
         if news_form.is_valid() and gallery_formset.is_valid():
             news_instance = news_form.save()
 
-            # Save the formset
             gallery_instances = gallery_formset.save(commit=False)
 
-            # Delete images marked for deletion
             for form in gallery_formset.deleted_forms:
                 form.instance.delete()
 
-            # Save changes to the database
             for gallery_instance in gallery_instances:
                 gallery_instance.gallery = news_instance.gallery
                 gallery_instance.save()
 
-            return redirect('success_url')
+            return redirect('adminlte:news')
         else:
             print(news_form.errors)
             print(gallery_formset.errors)
@@ -318,7 +315,7 @@ def edit_news(request, news_id):
 @user_passes_test(is_admin)
 def sells(request):
 
-    all_sells = Promotions.objects.prefetch_related().all()
+    all_sells = Promotions.objects.all()
 
     context = {
         'title': 'Страница акций',
@@ -347,10 +344,7 @@ def add_sells(request):
                     gallery_image.gallery = gallery_instance
                     gallery_image.save()
 
-            return redirect('success_url')
-        else:
-            print(sells_form.errors)
-            print(gallery_formset.errors)
+            return redirect('adminlte:sells')
     else:
         sells_form = SellsForm()
         gallery_formset = GalleryImageFormSet(queryset=Gallery.objects.none())
@@ -360,6 +354,8 @@ def add_sells(request):
                    'gallery_formset': gallery_formset})
 
 
+@login_required
+@user_passes_test(is_admin)
 def edit_sells(request, sells_id):
     sells_instance = get_object_or_404(Promotions, pk=sells_id)
     if request.method == 'POST':
@@ -370,19 +366,16 @@ def edit_sells(request, sells_id):
         if sells_form.is_valid() and gallery_formset.is_valid():
             news_instance = sells_form.save()
 
-            # Save the formset
             gallery_instances = gallery_formset.save(commit=False)
 
-            # Delete images marked for deletion
             for form in gallery_formset.deleted_forms:
                 form.instance.delete()
 
-            # Save changes to the database
             for gallery_instance in gallery_instances:
                 gallery_instance.gallery = news_instance.gallery
                 gallery_instance.save()
 
-            return redirect('success_url')
+            return redirect('adminlte:sells')
         else:
             print(sells_form.errors)
             print(gallery_formset.errors)
@@ -395,12 +388,11 @@ def edit_sells(request, sells_id):
                                                             'gallery_formset': gallery_formset})
 
 
-
 @login_required
 @user_passes_test(is_admin)
 def pages(request):
 
-    all_pages = Pages.objects.prefetch_related().all()
+    all_pages = Pages.objects.all()
     
     context = {
         'title': 'Страницы',
@@ -451,20 +443,20 @@ def new_page(request):
             new_page_instance.save()
 
             for form in gallery_formset:
-                if form.cleaned_data.get('image'):  # Check if 'image' field is present
+                if form.cleaned_data.get('image'):
                     gallery_image = form.save(commit=False)
                     gallery_image.gallery = gallery_instance
                     gallery_image.save()
 
-            return redirect('success_url')
+            return redirect('adminlte:pages')
         else:
             print(new_page_form.errors)
             print(gallery_formset.errors)
     else:
         new_page_form = PagesForm()
         gallery_formset = GalleryImageFormSet(queryset=Gallery.objects.none())
-    return render(request, 'customadmin/edit_other_page.html',
-                  {'title': 'Редактация страницы', 'name': 'страницы', 'form': new_page_form, 'gallery_formset': gallery_formset})
+    return render(request, 'customadmin/add_page.html',
+                  {'title': 'Добавление страницы', 'name': 'страницы', 'form': new_page_form, 'gallery_formset': gallery_formset})
 
 
 @login_required
@@ -479,24 +471,21 @@ def edit_pages(request, page_id):
         if page_form.is_valid() and gallery_formset.is_valid():
             page_instance = page_form.save()
 
-            # Save the formset
             gallery_instances = gallery_formset.save(commit=False)
 
-            # Delete images marked for deletion
             for form in gallery_formset.deleted_forms:
                 form.instance.delete()
 
-            # Save changes to the database
             for gallery_instance in gallery_instances:
                 gallery_instance.gallery = page_instance.gallery
                 gallery_instance.save()
 
-            return redirect('success_url')
+            return redirect('adminlte:pages')
         else:
             print(page_form.errors)
             print(gallery_formset.errors)
     else:
-        page_form = SellsForm(instance=page_instance)
+        page_form = PagesForm(instance=page_instance)
         gallery_formset = GalleryImageFormSet(queryset=GalleryImage.objects.filter(gallery=page_instance.gallery))
 
     return render(request, 'customadmin/edit_other_page.html', {'title': 'Редактирование новостей',
@@ -508,7 +497,7 @@ def edit_pages(request, page_id):
 @user_passes_test(is_admin)
 def users(request):
 
-    all_users = CustomUser.objects.prefetch_related().all()
+    all_users = CustomUser.objects.select_related().all()
     
     context = {
         'title': 'Страница пользователей',
@@ -521,18 +510,20 @@ def users(request):
 @login_required
 @user_passes_test(is_admin)
 def spam(request):
-    files = Spam.objects.prefetch_related().all()
+    files = Spam.objects.select_related().all()
     if request.method == 'POST':
         form = SpamForm(request.POST, request.FILES)
         if form.is_valid():
             selected_file = form.cleaned_data['file_name']
-            print(selected_file)# Получаем очищенные данные из формы
+            print(selected_file)
+            if request.POST.get('recipientType') == 'allUsers':
+                all_users = CustomUser.objects.all()
+                recipients = [user.email for user in all_users if user.email]
 
-            all_users = CustomUser.objects.all()
-            recipients = [user.email for user in all_users if user.email]
-
-            send_spam_emails.delay(selected_file, recipients)
-            return redirect('success_url')
+                send_spam_emails.delay(selected_file, recipients)
+                return redirect('adminlte:spam')
+            else:
+                print("Выбрана другая опция, рассылка не выполнена.")
         else:
             print(form.errors)
             print("Трабл")
@@ -554,7 +545,6 @@ def spam(request):
 def save_email_file(request):
     if request.method == 'POST' and request.FILES.get('emailFile'):
         email_file = request.FILES['emailFile']
-        # Создаем новый объект модели Spam и сохраняем в базу данных
         spam_object = Spam(file_name=email_file.name, file=email_file)
         spam_object.save()
         return JsonResponse({'success': True})

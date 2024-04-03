@@ -10,7 +10,7 @@ def send_spam_emails(email_template, recipients):
         send_mail(
             subject='Тема вашего письма',
             message='Текст вашего письма',
-            from_email='a.shcherbakandhacker@gmail.com',
+            from_email='beshenlyteam@gmail.com',
             recipient_list=[recipient],
             html_message=spam_template.file.read().decode()
         )
