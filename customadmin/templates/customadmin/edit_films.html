@@ -66,6 +66,7 @@
                                 {{ form.image }}
                                 {{ form.id }}
                                 {{ form.DELETE }}
+                                <button type="button" class="btn btn-danger btn-sm delete-image" data-id="{{ form.id.value }}">Удалить</button>
                             </div>
                         </div>
                     </div>
@@ -186,6 +187,23 @@ document.addEventListener("DOMContentLoaded", function() {
         const inputFile = document.querySelector(`[name="form-${index}-image"]`);
         inputFile.addEventListener('change', function() {
             previewImage(this, index);
+        });
+    });
+
+    var deleteButtons = document.querySelectorAll('.delete-image');
+
+        // Для каждой кнопки добавляем обработчик события click
+    deleteButtons.forEach(function(button) {
+        button.addEventListener('click', function() {
+            // Находим родительский элемент карточки
+            var card = this.closest('.card');
+            // Скрываем карточку
+            card.style.display = 'none';
+            // Находим чекбокс DELETE внутри этой карточки и активируем его
+            var deleteCheckbox = card.querySelector('input[name$="DELETE"]');
+            if (deleteCheckbox) {
+                deleteCheckbox.checked = true;
+            }
         });
     });
 });

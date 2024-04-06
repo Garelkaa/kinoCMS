@@ -3,6 +3,12 @@
 
 {% block css %}
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.2/font/bootstrap-icons.min.css">
+<style>
+    input[type="checkbox"][name$="-DELETE"] {
+        display: none;
+    }
+</style>
+
 {% endblock %}
 
 {% block content %}
@@ -65,7 +71,9 @@
                             <div class="card-body">
                                 {{ form.image }}
                                 {{ form.id }}
-                                {{ form.DELETE.hidden }}
+                                {{ form.DELETE }}
+                                <!-- Добавляем кнопку "Удалить" -->
+                                <button type="button" class="btn btn-danger btn-sm delete-image" data-id="{{ form.id.value }}">Удалить</button>
                             </div>
                         </div>
                     </div>
@@ -73,6 +81,7 @@
             </div>
             <button type="button" class="btn btn-primary btn-sm mt-3" id="add-image">Add Image</button>
         </div>
+
         <button type="submit" class="btn btn-success mt-5">Зберегти</button>
     </form>
 </div>
@@ -204,6 +213,23 @@ document.addEventListener("DOMContentLoaded", function() {
             previewImage(this, index);
         });
     });
+    var deleteButtons = document.querySelectorAll('.delete-image');
+
+        // Для каждой кнопки добавляем обработчик события click
+    deleteButtons.forEach(function(button) {
+        button.addEventListener('click', function() {
+            // Находим родительский элемент карточки
+            var card = this.closest('.card');
+            // Скрываем карточку
+            card.style.display = 'none';
+            // Находим чекбокс DELETE внутри этой карточки и активируем его
+            var deleteCheckbox = card.querySelector('input[name$="DELETE"]');
+            if (deleteCheckbox) {
+                deleteCheckbox.checked = true;
+            }
+        });
+    });
 });
 </script>
+
 {% endblock content %}
