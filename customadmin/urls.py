@@ -33,6 +33,7 @@ urlpatterns = [
     path('contacts/', views.contacts, name='contacts'),
     path('new-page/', views.new_page, name='new_page'),
     path('users/', views.users, name='users'),
+    path('users/<int:user_id>/', views.edit_user, name='edit_users'),
     path('spam/', views.spam, name='spam'),
     path('save_email_file/', views.save_email_file, name='save_email_file'),
 

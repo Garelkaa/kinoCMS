@@ -1,0 +1,93 @@
+{%  extends 'base.html' %}
+{% load static %}
+{% block css %}
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.2/font/bootstrap-icons.min.css">
+{% endblock css %}
+{% block content %}
+
+
+    <h1 class="text-center mt-4">Страница клиента</h1>
+    <div class="container" style="margin-top: 50px">
+        <form method="post" style="display: flex; justify-content: space-around;">
+            {% csrf_token %}
+            <div class="content">
+                <div class="col ms-5" style="display: flex; justify-content: space-between;">
+                    <p>Имя</p>
+                    <input type="text" name="first_name" placeholder="Имя" style="width: 200px;" value="{{ user.first_name }}">
+                </div>
+                <div class="col ms-5" style="display: flex; justify-content: space-between;">
+                    <p>Фамилия</p>
+                    <input type="text" name="last_name" placeholder="Фамилия" style="width: 200px;" value="{{ user.last_name }}">
+                </div>
+                <div class="col ms-5" style="display: flex; justify-content: space-between;">
+                    <p>Псевдоним</p>
+                    <input type="text" name="username" placeholder="Псевдоним" style="width: 200px;" value="{{ user.username }}">
+                </div>
+                <div class="col ms-5" style="display: flex; justify-content: space-between;">
+                    <p>E-mail</p>
+                    <input type="text" name="email" placeholder="E-mail" style="width: 200px;" value="{{ user.email }}">
+                </div>
+                <div class="col ms-5" style="display: flex; justify-content: space-between;">
+                    <p>Адресс</p>
+                    <input type="text" name="address" placeholder="Адресс" style="width: 200px;" value="{{ user.address }}">
+                </div>
+                <div class="col ms-5" style="display: flex; justify-content: space-between;">
+                    <p>Пароль</p>
+                    <input type="text" placeholder="Пароль" style="width: 200px;" value="">
+                </div>
+                <div class="col ms-5" style="display: flex; justify-content: space-between;">
+                    <p>Номер карты</p>
+                    <input type="text" name="card" placeholder="Номер карты" style="width: 200px; justify-content: space-between;" value="{{ user.card }}">
+                </div>
+
+            </div>
+            <div class="content">
+                <div class="col ms-5" style="display: flex; justify-content: space-between;">
+                    <p>Язык</p>
+                    <div class="block language">
+                        <label for="checkbox1">Укр.<input type="radio" name="language" class="form-check-input" id="checkbox1" {% if user.language == 'u' %} checked {% endif %} style="margin-left: 10px" value="u"  onclick="toggleRadios('language', 'checkbox1')"></label><br>
+                        <label for="checkbox2">Рус.<input type="radio" name="language" class="form-check-input" id="checkbox2" {% if user.language == 'r' %} checked {% endif %} style="margin-left: 10px" value="r" onclick="toggleRadios('language', 'checkbox2')"></label>
+                    </div>
+                </div>
+                <div class="col ms-5" style="display: flex; justify-content: space-between;">
+                    <p>Пол</p>
+                    <div class="block gender">
+                        <label for="male">Муж.<input type="radio" name="gender" id="male" style="margin-left: 10px" {% if user.gender == 'm' %} checked {% endif %} value="m" onclick="toggleRadios('gender', 'male')"></label><br>
+                        <label for="female">Жен.<input type="radio" name="gender" id="female" style="margin-left: 10px" {% if user.gender == 'f' %} checked {% endif %} value="f" onclick="toggleRadios('gender', 'female')"></label>
+                    </div>
+                </div>
+                <div class="col ms-5" style="display: flex; justify-content: space-between;">
+                    <p>Телефон</p>
+                    <input type="text" name="phoneNumber" placeholder="Телефон" style="width: 200px;" value="{{ user.phoneNumber }}">
+                </div>
+                <div class="col ms-5" style="display: flex; justify-content: space-between;">
+                    <p>Дата рождения</p>
+                    <input type="date" name="birthdate" placeholder="Дата рождения" style="width: 200px;" value="{{ user.birthdate }}">
+                </div>
+                <div class="col ms-5" style="display: flex; justify-content: space-between;">
+                    <p>Город</p>
+                    <input type="text" name="city" placeholder="Город" style="width: 200px;" value="{{ user.city }}">
+                </div>
+                <div class="col ms-5" style="display: flex; justify-content: space-between;">
+                    <p>Повторить пароль</p>
+                    <input type="text" placeholder="Повторить пароль" style="width: 200px;" value="">
+                </div>
+                <button type="submit" class="btn btn-success center-content" style="width: 300px;">Сохранить</button>
+            </div>
+
+        </form>
+    </div>
+<script>
+
+    // Функция для установки состояния радиокнопок в категории
+    function toggleRadios(category, radioId) {
+        var radios = document.querySelectorAll('.' + category + ' input[type="radio"]');
+        radios.forEach(function(radio) {
+            if (radio.id !== radioId) {
+                radio.checked = false;
+            }
+        });
+    }
+</script>
+
+{% endblock content %}

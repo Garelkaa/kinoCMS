@@ -1,8 +1,11 @@
 from django import forms
+
+from banner.models import MainBanner
 from cinema.models import Cinema, CinemaHall, Movie
 
 from gallery.models import GalleryImage, Gallery
 from other.models import News, Promotions, Pages, MainPage, Spam
+from users.models import CustomUser
 
 
 class NewsForm(forms.ModelForm):
@@ -109,6 +112,17 @@ class SpamForm(forms.ModelForm):
         fields = ['file_name']
 
 
+class MainBannerForm(forms.ModelForm):
+    class Meta:
+        model = MainBanner
+        fields = ['image', 'url', 'text']
+
+
+MainBannerFormSet = forms.modelformset_factory(
+    MainBanner, form=MainBannerForm, extra=0, can_delete=True
+)
+
+
 class GalleryImageForm(forms.ModelForm):
     class Meta:
         model = GalleryImage
@@ -118,3 +132,11 @@ class GalleryImageForm(forms.ModelForm):
 GalleryImageFormSet = forms.modelformset_factory(
     GalleryImage, form=GalleryImageForm, extra=0, can_delete=True
 )
+
+
+class UserForm(forms.ModelForm):
+    class Meta:
+        model = CustomUser
+        fields = ['first_name', 'last_name', 'username', 'card', 'gender', 'language', 'address',
+                  'phoneNumber', 'birthdate', 'city', 'email']
+

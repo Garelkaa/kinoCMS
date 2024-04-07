@@ -7,77 +7,49 @@
 {% block content %}
 <h1 class="text-center">Список фильмов текущих</h1>
 <div class="container border border-secondary rounded-top" id="cardContainer">
-
-    <!-- Initial card -->
-    <form>
+    <form method="post" enctype="multipart/form-data" id="bannerForm">
         {% csrf_token %}
+        {{ formset.management_form }}
 
-        <div class="button-group">
-            <div class="form-group">
-                <select class="form-select form-select-lg" aria-label=".form-select-lg example" style="height: 30px;">
-                    <option selected>Скорость вращения</option>
-                    <option value="5">5с</option>
-                </select>
-            </div>
-            <div class="form-group">
-                <button class="btn btn-success add_photo" type="button" style="width: 100%; height: 50px;">Добавить фото</button>
-            </div>
-            <div class="form-group">
-                <button class="btn btn-success" id="submitForm" style="width: 100%; height: 50px; margin-top: 10px;">Сохранить</button>
-            </div>
+        <div id="formsetForms">
+
         </div>
+        <button class="btn btn-success add_photo" type="button" id="addBanner">Добавить фото</button>
+        <button class="btn btn-success" type="submit">Сохранить</button>
     </form>
 </div>
-<h1 class="text-center">Сквозной банер на заднем фоне</h1>
-<div class="container justify-content-center border border-secondary rounded-top">
-    <div class="row">
-        <div class="col-md-6">
-            <div class="d-flex flex-column align-items-center">
-                <div class="form-check" style="margin-bottom: 20px;">
-                    <input class="form-check-input" type="checkbox" value="" id="checkbox1">
-                    <label class="form-check-label" for="checkbox1">
-                        Checkbox 1
-                    </label>
-                </div>
-                <div class="form-check">
-                    <input class="form-check-input" type="checkbox" value="" id="checkbox2">
-                    <label class="form-check-label" for="checkbox2">
-                        Checkbox 2
-                    </label>
-                </div>
-            </div>
-        </div>
-        <div class="col-md-6">
-            <div class="d-flex flex-column align-items-center">
-                <div style="margin-bottom: 20px;">
-                    <img src="{% static 'image/photo.jpg' %}" alt="123" class="img-fluid">
-                </div>
-                <div class="d-flex">
-                    <button class="btn btn-danger" style="width: 120px; margin-right: 10px;">Удалить</button>
-                    <button class="btn btn-success" style="width: 120px;">Добавить</button>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-<h1 class="text-center">На главной Новости Акции вницу</h1>
 
-<div class="container border border-secondary rounded-top" id="cardContainerEnd">
-    <!-- Initial card -->
-    <div class="button-group">
-        <div class="form-group">
-            <select class="form-select form-select-lg" aria-label=".form-select-lg example" style="height: 30px;">
-                <option selected>Скорость вращения</option>
-                <option value="5">5с</option>
-            </select>
-        </div>
-        <div class="form-group">
-            <button class="btn btn-success add_photo_end" style="width: 100%; height: 50px;">Добавить фото</button>
-        </div>
-        <div class="form-group">
-            <button class="btn btn-success" style="width: 100%; height: 50px; margin-top: 10px;">Сохранить</button>
-        </div>
-    </div>
-</div>
-<script src="{% static 'js/banner.js' %}"></script>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    let addButtonStart = document.getElementById('addBanner');
+    let container = document.getElementById('cardContainer');
+    const formTotalForms = document.getElementById("id_form-TOTAL_FORMS");
+    let formCount = {{ formset.total_form_count }};
+
+    addButtonStart.addEventListener("click", function() {
+        addImageField();
+    });
+
+    function addImageField() {
+        let card = document.createElement('div');
+
+        card.innerHTML = `
+            <input type="file" class="form-control photo-input" accept="image/*" name="image">
+            <div class="card-body">
+                <img src="" class="card-img-top" alt="...">
+                <input type="text" aria-label="Ссылка" class="form-control url-input" placeholder="Ссылка" name="url">
+                <input type="text" aria-label="Введите текст..." class="form-control text-input" placeholder="Введите текст..." name="text">
+                <button class="btn btn-danger delete-btn" style="width: 100%;">Удалить</button>
+            </div>
+        `;
+
+        container.appendChild(card);
+        formCount++;
+        formTotalForms.value = formCount;
+
+
+    }
+});
+
+</script>
 {% endblock content %}

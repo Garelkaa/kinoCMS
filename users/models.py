@@ -4,13 +4,13 @@ from django.db import models
 
 class CustomUser(AbstractUser):
     GENDER_CHOICES = (
-        ("M", "Male"),
-        ("F", "Female"),
+        ("m", "Male"),
+        ("f", "Female"),
     )
 
     LANGUAGE_CHOICES = (
-        ("EN", "English"),
-        ("RU", "Russian")
+        ("u", "English"),
+        ("r", "Russian")
     )
 
     second_name = models.CharField(max_length=100, null=True, blank=True)

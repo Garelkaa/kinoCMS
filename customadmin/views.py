@@ -7,7 +7,7 @@ from django.views.decorators.csrf import csrf_exempt
 from cinema.models import Movie, Cinema
 from users.models import CustomUser
 from .forms import *
-from .forms import NewsForm, SellsForm, CinemaForm, CinemaHallForm, PagesForm, GalleryImageFormSet, SpamForm
+from .forms import NewsForm, SellsForm, CinemaForm, CinemaHallForm, PagesForm, GalleryImageFormSet, SpamForm, UserForm
 from other.models import Promotions, News
 from .tasks import send_spam_emails
 
@@ -33,9 +33,21 @@ def stats(request):
 @login_required
 @user_passes_test(is_admin)
 def banner(request):
+    if request.method == 'POST':
+        formset = MainBannerFormSet(request.POST, request.FILES)
+
+        if formset.is_valid():
+            for form in formset:
+                print(form.cleaned_data)
+            formset.save()
+            return redirect('banner')
+
+    else:
+        formset = MainBannerFormSet()
 
     context = {
-        'title': 'Страница баннеров'
+        'title': 'Страница баннеров',
+        'formset': formset,
     }
     return render(request, 'customadmin/banner.html', context)
 
@@ -505,6 +517,28 @@ def users(request):
     }
     
     return render(request, 'customadmin/users.html', context=context)
+
+
+@login_required
+@user_passes_test(is_admin)
+def edit_user(request, user_id):
+    user_instance = get_object_or_404(CustomUser, pk=user_id)
+    if request.method == 'POST':
+        form = UserForm(request.POST, instance=user_instance)
+        if form.is_valid():
+            form.save()
+            return redirect('adminlte:users')
+        else:
+            print(form.errors)
+    else:
+        pass
+
+    context = {
+        'title': 'Редактация пользователя',
+        'user': user_instance
+    }
+
+    return render(request, 'customadmin/edit_user.html', context=context)
 
 
 @login_required
