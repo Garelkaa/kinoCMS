@@ -9,46 +9,49 @@
 <div class="container border border-secondary rounded-top" id="cardContainer">
     <form method="post" enctype="multipart/form-data" id="bannerForm">
         {% csrf_token %}
-        {{ formset.management_form }}
-
-        <div id="formsetForms">
-
+        <div id="image-container" class="row justify-content-center mt-3">
+            {{ formset.management_form }}
+            {% for form in formset.forms %}
+                {{ form.image }}
+            {% endfor %}
         </div>
-        <button class="btn btn-success add_photo" type="button" id="addBanner">Добавить фото</button>
+        <button class="btn btn-success add_photo" type="button" id="add-image-btn">Добавить фото</button>
         <button class="btn btn-success" type="submit">Сохранить</button>
     </form>
 </div>
 
 <script>
 document.addEventListener('DOMContentLoaded', function() {
-    let addButtonStart = document.getElementById('addBanner');
-    let container = document.getElementById('cardContainer');
+    const addImageButton = document.getElementById("add-image-btn");
+    const imageContainer = document.getElementById("image-container");
     const formTotalForms = document.getElementById("id_form-TOTAL_FORMS");
     let formCount = {{ formset.total_form_count }};
 
-    addButtonStart.addEventListener("click", function() {
+    // Add Image Button
+    addImageButton.addEventListener("click", function() {
         addImageField();
     });
 
+    // Function to add image field
     function addImageField() {
-        let card = document.createElement('div');
+        const formset = document.createElement('div');
+        formset.innerHTML = `
+            <div class="card" style="width: 18rem;">
+                <img src="{% static 'image/photo.jpg' %}" class="card-img-top preview" alt="Preview" style="width: 288px; height: 288px;">
+                <div class="card-body">
+                    <input type="file" name="form-${formCount}-image" class="form-control-file">
+                    <input type="text" name="form-${formCount}-url" class="form-control-file">
+                    <input type="text" name="form-${formCount}-text" class="form-control-file">
+                    <button type="button" class="btn btn-danger btn-sm mt-2 delete-image-btn">Удалить</button>
 
-        card.innerHTML = `
-            <input type="file" class="form-control photo-input" accept="image/*" name="image">
-            <div class="card-body">
-                <img src="" class="card-img-top" alt="...">
-                <input type="text" aria-label="Ссылка" class="form-control url-input" placeholder="Ссылка" name="url">
-                <input type="text" aria-label="Введите текст..." class="form-control text-input" placeholder="Введите текст..." name="text">
-                <button class="btn btn-danger delete-btn" style="width: 100%;">Удалить</button>
+                </div>
             </div>
         `;
-
-        container.appendChild(card);
+        imageContainer.appendChild(formset);
         formCount++;
         formTotalForms.value = formCount;
-
-
     }
+
 });
 
 </script>

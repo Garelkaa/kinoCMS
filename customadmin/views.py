@@ -42,6 +42,7 @@ def banner(request):
             formset.save()
             return redirect('banner')
 
+
     else:
         formset = MainBannerFormSet()
 
