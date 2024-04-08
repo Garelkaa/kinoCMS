@@ -70,43 +70,29 @@
                     <thead>
                         <tr>
                             <th></th>
-                            <th>First name</th>
-                            <th>Last name</th>
-                            <th>Position</th>
-                            <th>Office</th>
-                            <th>Age</th>
-                            <th>Start date</th>
-                            <th>Salary</th>
-                            <th>Extn.</th>
-                            <th>E-mail</th>
+                            <th>Имя</th>
+                            <th>Фамилия</th>
+                            <th>Email</th>
+                            <th>Ник</th>
+                            <th>Телефон</th>
+                            <th>День рождения</th>
+                            <th>Город</th>
+
                         </tr>
                     </thead>
                     <tbody>
-                         <tr>
-                            <td class="dt-type-numeric select-checkbox dtfc-fixed-start dtfc-fixed-left" style="position: sticky; left: 0px;"><input type="checkbox"></td>
-                            <td>Tiger</td>
-                            <td>Nixon</td>
-                            <td>System Architect</td>
-                            <td>Edinburgh</td>
-                            <td>61</td>
-                            <td>2011-04-25</td>
-                            <td>$320,800</td>
-                            <td>5421</td>
-                            <td>t.nixon@datatables.net</td>
-                        </tr>
-                         <tr>
-                            <td class="dt-type-numeric select-checkbox dtfc-fixed-start dtfc-fixed-left" style="position: sticky; left: 0px;"><input type="checkbox"></td>
-                            <td>Tiger</td>
-                            <td>Nixon</td>
-                            <td>System Architect</td>
-                            <td>Edinburgh</td>
-                            <td>61</td>
-                            <td>2011-04-25</td>
-                            <td>$320,800</td>
-                            <td>5421</td>
-                            <td>t.nixon@datatables.net</td>
-                        </tr>
-
+                         {% for user in users %}
+                            <tr>
+                                <td class="dt-type-numeric select-checkbox dtfc-fixed-start dtfc-fixed-left" style="position: sticky; left: 0px;"><input type="checkbox"></td>
+                                <td>{{ user.first_name }}</td>
+                                <td>{{ user.last_name }}</td>
+                                <td>{{ user.email }}</td>
+                                <td>{{ user.username }}</td>
+                                <td>{{ user.phoneNumber }}</td>
+                                <td>{{ user.birthdate }}</td>
+                                <td>{{ user.city }}</td>
+                            </tr>
+                        {% endfor %}
                     </tbody>
                 </table>
             </div>

@@ -5,7 +5,7 @@
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.2/font/bootstrap-icons.min.css">
 {% endblock css %}
 {% block content %}
-<h1 class="text-center">Список фильмов текущих</h1>
+<h1 class="text-center"> На главной верх</h1>
 <div class="container border border-secondary rounded-top" id="cardContainer">
     <form method="post" enctype="multipart/form-data" id="bannerForm">
         {% csrf_token %}
@@ -14,6 +14,15 @@
             {% for form in formset.forms %}
                 {{ form.image }}
             {% endfor %}
+        </div>
+        <label>
+            <select name="top-time-active">
+                <option value="5">5s</option>
+            </select>
+        </label>
+        <div class="form-group">
+            <label for="id_active">Активний:</label>
+            <input type="checkbox" class="form-control" id="id_active" name="active" {% if form.active.value %}checked{% endif %}>
         </div>
         <button class="btn btn-success add_photo" type="button" id="add-image-btn">Добавить фото</button>
         <button class="btn btn-success" type="submit">Сохранить</button>

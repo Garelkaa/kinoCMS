@@ -7,8 +7,8 @@ from django.views.decorators.csrf import csrf_exempt
 from cinema.models import Movie, Cinema
 from users.models import CustomUser
 from .forms import *
-from .forms import NewsForm, SellsForm, CinemaForm, CinemaHallForm, PagesForm, GalleryImageFormSet, SpamForm, UserForm
 from other.models import Promotions, News
+from banner.models import MainBannerSettings
 from .tasks import send_spam_emails
 
 
@@ -37,10 +37,14 @@ def banner(request):
         formset = MainBannerFormSet(request.POST, request.FILES)
 
         if formset.is_valid():
+            formset_instance = MainBannerSettings.objects.create(speed=request.POST.get('top-time-active'),
+                                                                 active=request.POST.get('active') == 'on')
+
             for form in formset:
-                print(form.cleaned_data)
-            formset.save()
-            return redirect('banner')
+                form_banner = form.save(commit=False)
+                form_banner.settings = formset_instance
+                form_banner.save()
+            return redirect('adminlte:banner')
     else:
         formset = MainBannerFormSet()
 
@@ -544,15 +548,13 @@ def edit_user(request, user_id):
 @user_passes_test(is_admin)
 def spam(request):
     files = Spam.objects.select_related().all()
+    all_users = CustomUser.objects.all()
     if request.method == 'POST':
         form = SpamForm(request.POST, request.FILES)
         if form.is_valid():
             selected_file = form.cleaned_data['file_name']
-            print(selected_file)
             if request.POST.get('recipientType') == 'allUsers':
-                all_users = CustomUser.objects.all()
                 recipients = [user.email for user in all_users if user.email]
-
                 send_spam_emails.delay(selected_file, recipients)
                 return redirect('adminlte:spam')
             else:
@@ -566,7 +568,8 @@ def spam(request):
     context = {
         'title': 'Страница рассылки',
         'files': files,
-        'form': form
+        'form': form,
+        'users': all_users
     }
 
     return render(request, 'customadmin/spam.html', context=context)
@@ -583,10 +586,3 @@ def save_email_file(request):
         return JsonResponse({'success': True})
     else:
         return JsonResponse({'success': False})
-
-
-def get_users_data(request):
-    # Логика для получения данных пользователей из базы данных
-    users = CustomUser.objects.all()
-    data = [{'name': user.username, 'email': user.email} for user in users]
-    return JsonResponse(data, safe=False)

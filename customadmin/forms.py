@@ -57,46 +57,6 @@ class MainPageForm(forms.ModelForm):
         fields = ['phone_number', 'seo_text', 'seo_url', 'seo_title', 'seo_keywords', 'description_seo']
 
 
-class AboutCinemaPageForm(forms.ModelForm):
-
-    class Meta:
-        model = Pages
-        fields = ['title', 'description', 'main_image', 'active', 'seo_url', 'seo_title', 'seo_keywords',
-                  'description_seo']
-
-
-class BarPageForm(forms.ModelForm):
-
-    class Meta:
-        model = Pages
-        fields = ['title', 'description', 'main_image', 'active', 'seo_url', 'seo_title', 'seo_keywords',
-                  'description_seo']
-
-
-class VipPageForm(forms.ModelForm):
-
-    class Meta:
-        model = Pages
-        fields = ['title', 'description', 'main_image', 'active', 'seo_url', 'seo_title', 'seo_keywords',
-                  'description_seo']
-
-
-class AdPageForm(forms.ModelForm):
-
-    class Meta:
-        model = Pages
-        fields = ['title', 'description', 'main_image', 'active', 'seo_url', 'seo_title', 'seo_keywords',
-                  'description_seo']
-
-
-class ChildPageForm(forms.ModelForm):
-
-    class Meta:
-        model = Pages
-        fields = ['title', 'description', 'main_image', 'active', 'seo_url', 'seo_title', 'seo_keywords',
-                  'description_seo']
-
-
 class PagesForm(forms.ModelForm):
 
     class Meta:
