@@ -3,6 +3,7 @@
 
 {% block css %}
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.2/font/bootstrap-icons.min.css">
+<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.11.6/css/jquery.dataTables.css">
 <style>
     .border-outline {
         border: 2px solid black;
@@ -26,14 +27,13 @@
                         <label for="allUsers">Все пользователи</label><br>
                         <input type="radio" id="selective" name="recipientType" value="selective">
                         <label for="selective">Выборочно</label>
-                        <button type="button" id="selectUsersButton" style="display: none;" class="btn btn-secondary">Выбрать пользователей</button>
+                        <button type="button" id="selectUsersButton" class="btn btn-secondary">Выбрать пользователей</button>
                     </div>
                     <div class="mb-3">
                         <label for="emailFile">Загрузить письмо:</label>
                         <input type="file" id="emailFile" name="emailFile">
                         <p>Шаблон используемый в рассылке: <span id="selectedFileName"></span></p>
                         <input type="hidden" id="selectedFileInput" name="file_name" value="">
-
                     </div>
                     <div class="mb-3">
                         <p>Кол-во писем: 123</p>
@@ -57,43 +57,113 @@
     </div>
 </div>
 
+<!-- Modal -->
+<div class="modal fade" id="userModal" tabindex="-1" aria-labelledby="userModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="userModalLabel">Список пользователей</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <table id="example" class="stripe row-border order-column nowrap" style="width:100%">
+                    <thead>
+                        <tr>
+                            <th></th>
+                            <th>First name</th>
+                            <th>Last name</th>
+                            <th>Position</th>
+                            <th>Office</th>
+                            <th>Age</th>
+                            <th>Start date</th>
+                            <th>Salary</th>
+                            <th>Extn.</th>
+                            <th>E-mail</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                         <tr>
+                            <td class="dt-type-numeric select-checkbox dtfc-fixed-start dtfc-fixed-left" style="position: sticky; left: 0px;"><input type="checkbox"></td>
+                            <td>Tiger</td>
+                            <td>Nixon</td>
+                            <td>System Architect</td>
+                            <td>Edinburgh</td>
+                            <td>61</td>
+                            <td>2011-04-25</td>
+                            <td>$320,800</td>
+                            <td>5421</td>
+                            <td>t.nixon@datatables.net</td>
+                        </tr>
+                         <tr>
+                            <td class="dt-type-numeric select-checkbox dtfc-fixed-start dtfc-fixed-left" style="position: sticky; left: 0px;"><input type="checkbox"></td>
+                            <td>Tiger</td>
+                            <td>Nixon</td>
+                            <td>System Architect</td>
+                            <td>Edinburgh</td>
+                            <td>61</td>
+                            <td>2011-04-25</td>
+                            <td>$320,800</td>
+                            <td>5421</td>
+                            <td>t.nixon@datatables.net</td>
+                        </tr>
+
+                    </tbody>
+                </table>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Закрыть</button>
+                <button type="button" class="btn btn-primary">Выбрать</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.3.0/js/bootstrap.min.js"></script>
+<script src="https://cdn.datatables.net/1.11.6/js/jquery.dataTables.js"></script>
+
 <script>
-    document.querySelectorAll('input[name="recipientType"]').forEach(function(radio) {
-        radio.addEventListener('change', function () {
-            if (this.value === 'selective') {
-                document.getElementById('selectUsersButton').style.display = 'inline-block';
-            } else {
-                document.getElementById('selectUsersButton').style.display = 'none';
-            }
+    jQuery.noConflict();
+    jQuery(document).ready(function($) {
+        document.querySelectorAll('input[name="recipientType"]').forEach(function(radio) {
+            radio.addEventListener('change', function () {
+                if (this.value === 'selective') {
+                    document.getElementById('selectUsersButton').style.display = 'inline-block';
+                } else {
+                    document.getElementById('selectUsersButton').style.display = 'none';
+                }
+            });
         });
-    });
 
-    document.querySelectorAll('input[name="selectedFile"]').forEach(function(radio) {
-        radio.addEventListener('change', function () {
-            let selectedFileName = this.value;
-            document.getElementById('selectedFileName').innerText = selectedFileName;
-            document.getElementById('selectedFileInput').value = selectedFileName; // Устанавливаем значение скрытого поля
+        // Initialize DataTables when the modal is opened
+        $('#userModal').on('shown.bs.modal', function () {
+            $('#example').DataTable({
+                columnDefs: [
+                    {
+                        orderable: false,
+                        className: 'select-checkbox',
+                        targets: 0
+                    }
+                ],
+                fixedColumns: {
+                    start: 2
+                },
+                order: [[1, 'asc']],
+                paging: false,
+                scrollCollapse: true,
+                scrollX: true,
+                scrollY: 300,
+                select: {
+                    style: 'os',
+                    selector: 'td:first-child'
+                }
+            });
         });
-    });
 
-    document.getElementById('emailFile').addEventListener('change', function () {
-        let fileInput = this;
-        let file = fileInput.files[0];
-        let formData = new FormData();
-        formData.append('emailFile', file);
-
-        let xhr = new XMLHttpRequest();
-        xhr.open('POST', '{% url 'adminlte:save_email_file' %}', true); // URL, на который будет отправлен запрос
-        xhr.onload = function () {
-            if (xhr.status === 200) {
-                // Действия при успешном сохранении файла
-                console.log('Файл успешно сохранен в базу данных.');
-            } else {
-                // Действия при ошибке
-                console.error('Произошла ошибка при сохранении файла.');
-            }
-        };
-        xhr.send(formData);
+        // Handle click event for "Select Users" button
+        document.getElementById('selectUsersButton').addEventListener('click', function () {
+            $('#userModal').modal('show');
+        });
     });
 </script>
 {% endblock content %}

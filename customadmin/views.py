@@ -41,8 +41,6 @@ def banner(request):
                 print(form.cleaned_data)
             formset.save()
             return redirect('banner')
-
-
     else:
         formset = MainBannerFormSet()
 
@@ -585,3 +583,10 @@ def save_email_file(request):
         return JsonResponse({'success': True})
     else:
         return JsonResponse({'success': False})
+
+
+def get_users_data(request):
+    # Логика для получения данных пользователей из базы данных
+    users = CustomUser.objects.all()
+    data = [{'name': user.username, 'email': user.email} for user in users]
+    return JsonResponse(data, safe=False)
