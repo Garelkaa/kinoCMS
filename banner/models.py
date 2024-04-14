@@ -35,8 +35,12 @@ class NewsBanner(models.Model):
 
 
 class BackBanner(models.Model):
+    TYPE_CHOICE = {
+        ('d', 'Default photo'),
+        ('f', 'Fon photo',)
+    }
     image = models.ImageField(verbose_name="Картинка")
-    choice = models.CharField(max_length=1, verbose_name="Вибір якийсь")
+    choice = models.CharField(max_length=1, verbose_name="", choices=TYPE_CHOICE, null=True, blank=True)
 
     class Meta:
         db_table = 'BackBanners'

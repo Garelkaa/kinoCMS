@@ -3,16 +3,34 @@
 {% block css %}
 <link rel="stylesheet" href="{% static 'banner/banner.css' %}">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.2/font/bootstrap-icons.min.css">
+<style>
+    input[type="checkbox"][name$="-DELETE"] {
+        display: none;
+    }
+</style>
 {% endblock css %}
 {% block content %}
 <h1 class="text-center"> На главной верх</h1>
 <div class="container border border-secondary rounded-top" id="cardContainer">
-    <form method="post" enctype="multipart/form-data" id="bannerForm">
+    <form method="post" enctype="multipart/form-data" id="bannerForm" action="{% url 'adminlte:save_main_banner' %}">
         {% csrf_token %}
-        <div id="image-container" class="row justify-content-center mt-3">
-            {{ formset.management_form }}
-            {% for form in formset.forms %}
-                {{ form.image }}
+        <div id="top-image-container" class="row justify-content-center mt-3">
+            {{ main_formset.management_form }}
+            {% for form in main_formset.forms %}
+                <div class="col-md-4">
+                        <div class="card mb-4">
+                            <img src="{% if form.instance.image %}{{ form.instance.image.url }}{% endif %}" class="card-img-top" alt="" style="width: 287px; height: 400px;">
+                            <div class="card-body">
+                                {{ form.id }}
+                                {{ form.image }}
+                                {{ form.url }}
+                                {{ form.text }}
+                                {{ form.DELETE }}
+                                <!-- Добавляем кнопку "Удалить" -->
+                                <button type="button" class="btn btn-danger btn-sm delete-image" data-id="{{ form.id.value }}">Удалить</button>
+                            </div>
+                        </div>
+                    </div>
             {% endfor %}
         </div>
         <label>
@@ -24,44 +42,268 @@
             <label for="id_active">Активний:</label>
             <input type="checkbox" class="form-control" id="id_active" name="active" {% if form.active.value %}checked{% endif %}>
         </div>
-        <button class="btn btn-success add_photo" type="button" id="add-image-btn">Добавить фото</button>
+        <input type="hidden" id="main-formset-total-forms" value="{{ main_formset.total_form_count }}">
+
+        <button class="btn btn-success add_photo" type="button" id="top-add-image-btn">Добавить фото</button>
+        <button class="btn btn-success" type="submit">Сохранить</button>
+    </form>
+</div>
+<h1 class="text-center" style="margin-top: 100px">Сквозной банер на заднем фоне</h1>
+<div class="container border border-secondary rounded" id="banner-container">
+    <div class="row align-items-center">
+        <div class="col-md-6">
+            <div class="form-check">
+                <input class="form-check-input" type="radio" name="choice" id="defaultRadio" value="d" checked>
+                <label class="form-check-label" for="defaultRadio">
+                    Default photo
+                </label>
+            </div>
+            <div class="form-check">
+                <input class="form-check-input" type="radio" name="choice" id="fonRadio" value="f">
+                <label class="form-check-label" for="fonRadio">
+                    Fon photo
+                </label>
+            </div>
+
+        </div>
+        <div class="col-md-6">
+            <img id="banner-image" src="{% static 'image/photo.jpg' %}" alt="Banner Image" class="img-fluid">
+        </div>
+    </div>
+    <div class="row mt-3">
+        <div class="col-md-6">
+            <input type="file" id="file-input" class="form-control-file">
+        </div>
+        <div class="col-md-6">
+            <button id="upload-button" class="btn btn-primary">Загрузить</button>
+            <button id="delete-button" class="btn btn-danger">Удалить</button>
+        </div>
+    </div>
+</div>
+<h1 class="text-center" style="margin-top: 100px">На главной Новости Акции вницу</h1>
+<div class="container border border-secondary rounded" id="another-banner-container">
+    <form method="post" enctype="multipart/form-data" id="anotherBannerForm" action="{% url 'adminlte:save_another_banner' %}">
+        {% csrf_token %}
+        <div id="another-image-container" class="row justify-content-center mt-3">
+            {{ another_formset.management_form }}
+            {% for form in another_formset.forms %}
+                <div class="col-md-4">
+                        <div class="card mb-4">
+                            <img src="{% if form.instance.image %}{{ form.instance.image.url }}{% endif %}" class="card-img-top" alt="" style="width: 287px; height: 400px;">
+                            <div class="card-body">
+                                {{ form.id }}
+                                {{ form.image }}
+                                {{ form.url }}
+                                {{ form.text }}
+                                {{ form.DELETE }}
+                                <!-- Добавляем кнопку "Удалить" -->
+                                <button type="button" class="btn btn-danger btn-sm delete-image" data-id="{{ form.id.value }}">Удалить</button>
+                            </div>
+                        </div>
+                    </div>
+            {% endfor %}
+        </div>
+        <label>
+            <select name="bottom-time-active">
+                <option value="5">5s</option>
+            </select>
+        </label>
+        <div class="form-group">
+            <label for="id_active">Активний:</label>
+            <input type="checkbox" class="form-control" id="id_active" name="active" {% if form.active.value %}checked{% endif %}>
+        </div>
+
+        <button class="btn btn-success add_photo" type="button" id="bottom-add-image-btn">Добавить фото</button>
         <button class="btn btn-success" type="submit">Сохранить</button>
     </form>
 </div>
 
 <script>
 document.addEventListener('DOMContentLoaded', function() {
-    const addImageButton = document.getElementById("add-image-btn");
-    const imageContainer = document.getElementById("image-container");
-    const formTotalForms = document.getElementById("id_form-TOTAL_FORMS");
-    let formCount = {{ formset.total_form_count }};
+    const fileInput = document.getElementById('file-input');
+    const uploadButton = document.getElementById('upload-button');
+    const deleteButton = document.getElementById('delete-button');
+    const bannerImage = document.getElementById('banner-image');
+    const top_addImageButton = document.getElementById("top-add-image-btn");
+    const top_imageContainer = document.getElementById("top-image-container");
+    const bottom_addImageButton = document.getElementById("bottom-add-image-btn");
+    const bottom_imageContainer = document.getElementById("another-image-container");
+    const formTotalMainForms = document.getElementById("id_main-TOTAL_FORMS");
+    const formTotalAnotherForms = document.getElementById("id_another-TOTAL_FORMS");
+    let formCountMain = {{ main_formset.total_form_count }};
+    let formCountAnother = {{ another_formset.total_form_count }};
 
-    // Add Image Button
-    addImageButton.addEventListener("click", function() {
-        addImageField();
+    // Add Image Button for Main Banner Settings
+    top_addImageButton.addEventListener("click", function() {
+        addImageField(top_imageContainer);
+    });
+
+    // Add Image Button for Another Banner Settings
+    bottom_addImageButton.addEventListener("click", function() {
+        downAddImageField(bottom_imageContainer);
     });
 
     // Function to add image field
-    function addImageField() {
+    function addImageField(container) {
+
         const formset = document.createElement('div');
         formset.innerHTML = `
             <div class="card" style="width: 18rem;">
                 <img src="{% static 'image/photo.jpg' %}" class="card-img-top preview" alt="Preview" style="width: 288px; height: 288px;">
                 <div class="card-body">
-                    <input type="file" name="form-${formCount}-image" class="form-control-file">
-                    <input type="text" name="form-${formCount}-url" class="form-control-file">
-                    <input type="text" name="form-${formCount}-text" class="form-control-file">
+                    <input type="file" name="main-${formCountMain}-image" class="form-control-file">
+                    <input type="text" name="main-${formCountMain}-url" class="form-control-file" placeholder='URL'>
+                    <input type="text" name="main-${formCountMain}-text" class="form-control-file" placeholder='Текст...'>
                     <button type="button" class="btn btn-danger btn-sm mt-2 delete-image-btn">Удалить</button>
-
                 </div>
             </div>
         `;
-        imageContainer.appendChild(formset);
-        formCount++;
-        formTotalForms.value = formCount;
+        container.appendChild(formset);
+
+        formCountMain++;
+        formTotalMainForms.value = formCountMain;
     }
 
+    top_imageContainer.addEventListener("click", function(event) {
+        if (event.target && event.target.classList.contains("delete-image-btn")) {
+            const card = event.target.closest(".card");
+            card.remove(); // Удаляем карточку из DOM
+            formCountMain--; // Уменьшаем счетчик форм
+            formTotalMainForms.value = formCountMain; // Обновляем значение счетчика форм
+
+            // Обновляем значения атрибута "name" у всех полей форм в формсете
+            top_imageContainer.querySelectorAll('.card').forEach((card, index) => {
+                const fileInput = card.querySelector('input[type="file"]');
+                fileInput.name = `form-${index}-image`;
+            });
+        }
+    });
+
+    top_imageContainer.addEventListener("change", function(event) {
+        const input = event.target;
+        if (input && input.type === "file") {
+            previewImage(input, input.closest('.card').querySelector('.preview'));
+        }
+    });
+
+    function previewImage(input, preview) {
+        if (input.files && input.files[0]) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                preview.src = e.target.result;
+                preview.style.display = "block";
+            };
+            reader.readAsDataURL(input.files[0]);
+        } else {
+            preview.src = "#";
+            preview.style.display = "none";
+        }
+    }
+
+    function downAddImageField(container) {
+
+        const formset = document.createElement('div');
+        formset.innerHTML = `
+            <div class="card" style="width: 18rem;">
+                <img src="{% static 'image/photo.jpg' %}" class="card-img-top preview" alt="Preview" style="width: 288px; height: 288px;">
+                <div class="card-body">
+                    <input type="file" name="another-${formCountAnother}-image" class="form-control-file">
+                    <input type="text" name="another-${formCountAnother}-url" class="form-control-file" placeholder='URL'>
+                    <input type="text" name="another-${formCountAnother}-text" class="form-control-file" placeholder='Текст...'>
+                    <button type="button" class="btn btn-danger btn-sm mt-2 delete-image-btn">Удалить</button>
+                </div>
+            </div>
+        `;
+        container.appendChild(formset);
+
+        formCountAnother++;
+        formTotalAnotherForms.value = formCountAnother;
+    }
+
+    bottom_imageContainer.addEventListener("click", function(event) {
+        if (event.target && event.target.classList.contains("delete-image-btn")) {
+            const card = event.target.closest(".card");
+            card.remove(); // Удаляем карточку из DOM
+            formCountAnother--; // Уменьшаем счетчик форм
+            formTotalAnotherForms.value = formCountAnother; // Обновляем значение счетчика форм
+
+            // Обновляем значения атрибута "name" у всех полей форм в формсете
+            bottom_imageContainer.querySelectorAll('.card').forEach((card, index) => {
+                const fileInput = card.querySelector('input[type="file"]');
+                fileInput.name = `form-${index}-image`;
+            });
+        }
+    });
+
+    bottom_imageContainer.addEventListener("change", function(event) {
+        const input = event.target;
+        if (input && input.type === "file") {
+            previewImageDown(input, input.closest('.card').querySelector('.preview'));
+        }
+    });
+
+    function previewImageDown(input, preview) {
+        if (input.files && input.files[0]) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                preview.src = e.target.result;
+                preview.style.display = "block";
+            };
+            reader.readAsDataURL(input.files[0]);
+        } else {
+            preview.src = "#";
+            preview.style.display = "none";
+        }
+    }
+
+
+    uploadButton.addEventListener('click', function() {
+        const file = fileInput.files[0];
+        const formData = new FormData();
+        formData.append('back_banner_photo', file);
+
+        fetch('{% url 'adminlte:save_back_banner' %}', {
+            method: 'POST',
+            body: formData,
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                // Если успешно загружено на сервер, обновляем изображение
+                bannerImage.src = URL.createObjectURL(file);
+            } else {
+                console.log('Ошибка при загрузке на сервер');
+            }
+        })
+        .catch(error => {
+            console.error('Ошибка:', error);
+        });
+    });
+
+    // Обработчик события для кнопки "Удалить"
+    deleteButton.addEventListener('click', function() {
+        // Заменяем изображение на дефолтное
+        bannerImage.src = '{% static 'image/photo.jpg' %}';
+    });
+
+    let deleteButtons = document.querySelectorAll('.delete-image');
+
+        // Для каждой кнопки добавляем обработчик события click
+    deleteButtons.forEach(function(button) {
+        button.addEventListener('click', function() {
+            // Находим родительский элемент карточки
+            var card = this.closest('.card');
+            // Скрываем карточку
+            card.style.display = 'none';
+            // Находим чекбокс DELETE внутри этой карточки и активируем его
+            var deleteCheckbox = card.querySelector('input[name$="DELETE"]');
+            if (deleteCheckbox) {
+                deleteCheckbox.checked = true;
+            }
+        });
+    });
 });
+
 
 </script>
 {% endblock content %}

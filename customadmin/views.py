@@ -1,5 +1,6 @@
+from django.core.mail import send_mail
 from django.db.models import Prefetch
-from django.http import JsonResponse
+from django.http import JsonResponse, HttpResponse
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.views.decorators.csrf import csrf_exempt
@@ -8,8 +9,8 @@ from cinema.models import Movie, Cinema
 from users.models import CustomUser
 from .forms import *
 from other.models import Promotions, News
-from banner.models import MainBannerSettings
-from .tasks import send_spam_emails
+from banner.models import MainBannerSettings, NewsBannerSettings, BackBanner
+from .tasks import send_spam_emails, send_selected_users
 
 
 def is_admin(user):
@@ -33,26 +34,82 @@ def stats(request):
 @login_required
 @user_passes_test(is_admin)
 def banner(request):
+
+    main_formset = MainBannerFormSet(queryset=MainBanner.objects.all(), prefix='main')
+    another_formset = DownBannerFormSet(queryset=NewsBanner.objects.all(), prefix='another')
+
+    context = {
+        'title': 'Страница баннеров',
+        'main_formset': main_formset,
+        'another_formset': another_formset,
+    }
+    return render(request, 'customadmin/banner.html', context)
+
+
+@login_required
+@user_passes_test(is_admin)
+def save_main_banner(request):
     if request.method == 'POST':
-        formset = MainBannerFormSet(request.POST, request.FILES)
+        formset = MainBannerFormSet(request.POST, request.FILES, prefix='main')
 
         if formset.is_valid():
-            formset_instance = MainBannerSettings.objects.create(speed=request.POST.get('top-time-active'),
-                                                                 active=request.POST.get('active') == 'on')
+            formset_instance = MainBannerSettings.objects.create(
+                speed=request.POST.get('top-time-active'),
+                active=request.POST.get('active') == 'on'
+            )
+
+            for form in formset.deleted_forms:
+                form.instance.delete()
 
             for form in formset:
                 form_banner = form.save(commit=False)
                 form_banner.settings = formset_instance
                 form_banner.save()
-            return redirect('adminlte:banner')
-    else:
-        formset = MainBannerFormSet()
 
-    context = {
-        'title': 'Страница баннеров',
-        'formset': formset,
-    }
-    return render(request, 'customadmin/banner.html', context)
+            return redirect('adminlte:banner')
+
+        else:
+            print(formset.errors)
+
+
+@login_required
+@user_passes_test(is_admin)
+def save_another_banner(request):
+    if request.method == 'POST':
+        formset = DownBannerFormSet(request.POST, request.FILES, prefix='another')
+
+        if formset.is_valid():
+            formset_instance = NewsBannerSettings.objects.create(
+                speed=request.POST.get('bottom-time-active'),
+                active=request.POST.get('active') == 'on'
+            )
+
+            for form in formset.deleted_forms:
+                if form.instance.id:
+                    form.instance.delete()
+
+            for form in formset:
+                print(form)
+                form_banner = form.save(commit=False)
+                form_banner.settings = formset_instance
+                form_banner.save()
+
+            return redirect('adminlte:banner')
+        else:
+            print(formset.errors)
+
+
+@login_required
+@user_passes_test(is_admin)
+@csrf_exempt
+def save_back_banner(request):
+    if request.method == 'POST' and request.FILES.get('back_banner_photo'):
+        back_banner_photo = request.FILES['back_banner_photo']
+        back_banner_object = BackBanner(image=back_banner_photo, choice=request.POST.get('choice'))
+        back_banner_object.save()
+        return JsonResponse({'success': True})
+    else:
+        return JsonResponse({'success': False})
 
 
 @login_required
@@ -557,11 +614,17 @@ def spam(request):
                 recipients = [user.email for user in all_users if user.email]
                 send_spam_emails.delay(selected_file, recipients)
                 return redirect('adminlte:spam')
+            elif request.POST.get('recipientType') == 'selective':
+                # Получаем выбранных пользователей из формы
+                selectedUsers = request.POST.get('selectedUsers[]').split(',')
+                # Отправляем письма выбранным пользователям
+                send_selected_users.delay(selected_file, selectedUsers)
+                return JsonResponse({'message': 'Рассылка только выбранным пользователям запущена.'})
             else:
-                print("Выбрана другая опция, рассылка не выполнена.")
+                return JsonResponse({'error': 'Некорректный тип получателей.'}, status=400)
         else:
             print(form.errors)
-            print("Трабл")
+            return JsonResponse({'error': 'Ошибка валидации формы.'}, status=400)
     else:
         form = SpamForm()
 

@@ -1,6 +1,6 @@
 from django import forms
 
-from banner.models import MainBanner
+from banner.models import MainBanner, NewsBanner
 from cinema.models import Cinema, CinemaHall, Movie
 
 from gallery.models import GalleryImage, Gallery
@@ -10,7 +10,6 @@ from users.models import CustomUser
 
 class NewsForm(forms.ModelForm):
 
-
     class Meta:
         model = News
         fields = ['title', 'description', 'main_image', 'url_trailer', 'active', 'seo_url', 'seo_title', 'seo_keywords',
@@ -18,7 +17,6 @@ class NewsForm(forms.ModelForm):
 
 
 class CinemaForm(forms.ModelForm):
-
 
     class Meta:
         model = Cinema
@@ -80,6 +78,17 @@ class MainBannerForm(forms.ModelForm):
 
 MainBannerFormSet = forms.modelformset_factory(
     MainBanner, form=MainBannerForm, extra=0, can_delete=True
+)
+
+
+class DownBannerForm(forms.ModelForm):
+    class Meta:
+        model = NewsBanner
+        fields = ['image', 'url', 'text']
+
+
+DownBannerFormSet = forms.modelformset_factory(
+    NewsBanner, form=DownBannerForm, extra=0, can_delete=True
 )
 
 

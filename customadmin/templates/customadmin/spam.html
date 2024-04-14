@@ -10,7 +10,11 @@
         padding: 10px;
         margin-bottom: 20px;
     }
+    #selectUsersButton {
+        display: none;
+    }
 </style>
+
 {% endblock css %}
 
 {% block content %}
@@ -40,6 +44,8 @@
                         <p>Рассылка выполнена: 44%</p>
                     </div>
                     <button type="submit" class="btn btn-primary">Отправить</button>
+                    <!-- Скрытое поле для передачи выбранных пользователей -->
+                    <input type="hidden" id="selectedUsersInput" name="selectedUsers[]" value="">
                 </form>
             </div>
         </div>
@@ -77,7 +83,6 @@
                             <th>Телефон</th>
                             <th>День рождения</th>
                             <th>Город</th>
-
                         </tr>
                     </thead>
                     <tbody>
@@ -111,6 +116,40 @@
 <script>
     jQuery.noConflict();
     jQuery(document).ready(function($) {
+        // Добавляем обработчик клика на кнопку "Выбрать" в модальном окне
+        $('#userModal').on('click', '.btn-primary', function () {
+            var selectedEmails = [];
+            $('#example input:checked').each(function() {
+                var email = $(this).closest('tr').find('td:eq(3)').text();
+                selectedEmails.push(email);
+            });
+
+            // Заполняем скрытое поле формы с выбранными email
+            $('#selectedUsersInput').val(selectedEmails.join(','));
+
+            $('#userModal').modal('hide');
+        });
+
+        // Обновляем отправку формы, добавляя выбранные email
+        $('#emailForm').submit(function(event) {
+            if ($('input[name="recipientType"]:checked').val() === 'selective') {
+                event.preventDefault();
+                // Здесь можно добавить логику для отправки писем
+                $.ajax({
+                    url: '',
+                    type: 'POST',
+                    data: $(this).serialize(),
+                    success: function(response) {
+                        console.log(response);
+                    },
+                    error: function(xhr, status, error) {
+                        console.error(error);
+                    }
+                });
+            }
+        });
+
+        // Показываем/скрываем кнопку выбора пользователей в зависимости от выбранного типа получателей
         document.querySelectorAll('input[name="recipientType"]').forEach(function(radio) {
             radio.addEventListener('change', function () {
                 if (this.value === 'selective') {
@@ -121,7 +160,7 @@
             });
         });
 
-        // Initialize DataTables when the modal is opened
+        // Инициализируем DataTables при открытии модального окна
         $('#userModal').on('shown.bs.modal', function () {
             $('#example').DataTable({
                 columnDefs: [
@@ -146,10 +185,48 @@
             });
         });
 
-        // Handle click event for "Select Users" button
+        // Обработчик клика для открытия модального окна выбора пользователей
         document.getElementById('selectUsersButton').addEventListener('click', function () {
             $('#userModal').modal('show');
         });
     });
+    document.querySelectorAll('input[name="recipientType"]').forEach(function(radio) {
+        radio.addEventListener('change', function () {
+            if (this.value === 'selective') {
+                document.getElementById('selectUsersButton').style.display = 'inline-block';
+            } else {
+                document.getElementById('selectUsersButton').style.display = 'none';
+            }
+        });
+    });
+
+    document.querySelectorAll('input[name="selectedFile"]').forEach(function(radio) {
+        radio.addEventListener('change', function () {
+            let selectedFileName = this.value;
+            document.getElementById('selectedFileName').innerText = selectedFileName;
+            document.getElementById('selectedFileInput').value = selectedFileName; // Устанавливаем значение скрытого поля
+        });
+    });
+
+    document.getElementById('emailFile').addEventListener('change', function () {
+        let fileInput = this;
+        let file = fileInput.files[0];
+        let formData = new FormData();
+        formData.append('emailFile', file);
+
+        let xhr = new XMLHttpRequest();
+        xhr.open('POST', '{% url 'adminlte:save_email_file' %}', true); // URL, на который будет отправлен запрос
+        xhr.onload = function () {
+            if (xhr.status === 200) {
+                // Действия при успешном сохранении файла
+                console.log('Файл успешно сохранен в базу данных.');
+            } else {
+                // Действия при ошибке
+                console.error('Произошла ошибка при сохранении файла.');
+            }
+        };
+        xhr.send(formData);
+    });
+
 </script>
 {% endblock content %}

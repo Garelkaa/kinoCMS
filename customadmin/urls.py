@@ -13,6 +13,9 @@ urlpatterns = [
     path('logout/', LogoutView.as_view(next_page=settings.LOGOUT_REDIRECT_URL), name='logout'),
     path('stats/', views.stats, name='stats'),
     path('banner/', views.banner, name='banner'),
+    path('save_main_banner/', views.save_main_banner, name='save_main_banner'),
+    path('save_another_banner/', views.save_another_banner, name='save_another_banner'),
+    path('save-back-banner/', views.save_back_banner, name='save_back_banner'),
     path('films/', views.films, name='film'),
     path('pagefilm/', views.page_film, name='page_film'),
     path('films/<int:film_id>', views.edit_film, name='edit_films'),
@@ -36,6 +39,4 @@ urlpatterns = [
     path('users/<int:user_id>/', views.edit_user, name='edit_users'),
     path('spam/', views.spam, name='spam'),
     path('save_email_file/', views.save_email_file, name='save_email_file'),
-
-
     ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
