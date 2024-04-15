@@ -58,16 +58,17 @@ def save_main_banner(request):
                 active=request.POST.get('active') == 'on'
             )
 
-            for form in formset.deleted_forms:
-                form.instance.delete()
-
             for form in formset:
-                form_banner = form.save(commit=False)
-                form_banner.settings = formset_instance
-                form_banner.save()
+                if form.cleaned_data.get('DELETE'):
+                    # If the form is marked for deletion, delete the associated instance
+                    if form.instance.pk:
+                        form.instance.delete()
+                else:
+                    form_banner = form.save(commit=False)
+                    form_banner.settings = formset_instance
+                    form_banner.save()
 
             return redirect('adminlte:banner')
-
         else:
             print(formset.errors)
 
@@ -84,15 +85,15 @@ def save_another_banner(request):
                 active=request.POST.get('active') == 'on'
             )
 
-            for form in formset.deleted_forms:
-                if form.instance.id:
-                    form.instance.delete()
-
             for form in formset:
-                print(form)
-                form_banner = form.save(commit=False)
-                form_banner.settings = formset_instance
-                form_banner.save()
+                if form.cleaned_data.get('DELETE'):
+                    # If the form is marked for deletion, delete the associated instance
+                    if form.instance.pk:
+                        form.instance.delete()
+                else:
+                    form_banner = form.save(commit=False)
+                    form_banner.settings = formset_instance
+                    form_banner.save()
 
             return redirect('adminlte:banner')
         else:

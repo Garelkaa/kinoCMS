@@ -10,7 +10,7 @@
 </style>
 {% endblock css %}
 {% block content %}
-<h1 class="text-center"> На главной верх</h1>
+<h1 class="text-center">На главной верх</h1>
 <div class="container border border-secondary rounded-top" id="cardContainer">
     <form method="post" enctype="multipart/form-data" id="bannerForm" action="{% url 'adminlte:save_main_banner' %}">
         {% csrf_token %}
@@ -18,19 +18,19 @@
             {{ main_formset.management_form }}
             {% for form in main_formset.forms %}
                 <div class="col-md-4">
-                        <div class="card mb-4">
-                            <img src="{% if form.instance.image %}{{ form.instance.image.url }}{% endif %}" class="card-img-top" alt="" style="width: 287px; height: 400px;">
-                            <div class="card-body">
-                                {{ form.id }}
-                                {{ form.image }}
-                                {{ form.url }}
-                                {{ form.text }}
-                                {{ form.DELETE }}
-                                <!-- Добавляем кнопку "Удалить" -->
-                                <button type="button" class="btn btn-danger btn-sm delete-image" data-id="{{ form.id.value }}">Удалить</button>
-                            </div>
+                    <div class="card mb-4">
+                        <img src="{% if form.instance.image %}{{ form.instance.image.url }}{% endif %}" class="card-img-top" alt="" style="width: 287px; height: 400px;">
+                        <div class="card-body">
+                            {{ form.id }}
+                            {{ form.image }}
+                            {{ form.url }}
+                            {{ form.text }}
+                            {{ form.DELETE }}
+                            <!-- Добавляем кнопку "Удалить" -->
+                            <button type="button" class="btn btn-danger btn-sm delete-image" data-id="{{ form.id.value }}">Удалить</button>
                         </div>
                     </div>
+                </div>
             {% endfor %}
         </div>
         <label>
@@ -39,7 +39,7 @@
             </select>
         </label>
         <div class="form-group">
-            <label for="id_active">Активний:</label>
+            <label for="id_active">Активный:</label>
             <input type="checkbox" class="form-control" id="id_active" name="active" {% if form.active.value %}checked{% endif %}>
         </div>
         <input type="hidden" id="main-formset-total-forms" value="{{ main_formset.total_form_count }}">
@@ -80,7 +80,7 @@
         </div>
     </div>
 </div>
-<h1 class="text-center" style="margin-top: 100px">На главной Новости Акции вницу</h1>
+<h1 class="text-center" style="margin-top: 100px">На главной Новости Акции внизу</h1>
 <div class="container border border-secondary rounded" id="another-banner-container">
     <form method="post" enctype="multipart/form-data" id="anotherBannerForm" action="{% url 'adminlte:save_another_banner' %}">
         {% csrf_token %}
@@ -88,19 +88,19 @@
             {{ another_formset.management_form }}
             {% for form in another_formset.forms %}
                 <div class="col-md-4">
-                        <div class="card mb-4">
-                            <img src="{% if form.instance.image %}{{ form.instance.image.url }}{% endif %}" class="card-img-top" alt="" style="width: 287px; height: 400px;">
-                            <div class="card-body">
-                                {{ form.id }}
-                                {{ form.image }}
-                                {{ form.url }}
-                                {{ form.text }}
-                                {{ form.DELETE }}
-                                <!-- Добавляем кнопку "Удалить" -->
-                                <button type="button" class="btn btn-danger btn-sm delete-image" data-id="{{ form.id.value }}">Удалить</button>
-                            </div>
+                    <div class="card mb-4">
+                        <img src="{% if form.instance.image %}{{ form.instance.image.url }}{% endif %}" class="card-img-top" alt="" style="width: 287px; height: 400px;">
+                        <div class="card-body">
+                            {{ form.id }}
+                            {{ form.image }}
+                            {{ form.url }}
+                            {{ form.text }}
+                            {{ form.DELETE }}
+                            <!-- Добавляем кнопку "Удалить" -->
+                            <button type="button" class="btn btn-danger btn-sm delete-image" data-id="{{ form.id.value }}">Удалить</button>
                         </div>
                     </div>
+                </div>
             {% endfor %}
         </div>
         <label>
@@ -109,7 +109,7 @@
             </select>
         </label>
         <div class="form-group">
-            <label for="id_active">Активний:</label>
+            <label for="id_active">Активный:</label>
             <input type="checkbox" class="form-control" id="id_active" name="active" {% if form.active.value %}checked{% endif %}>
         </div>
 
@@ -174,7 +174,7 @@ document.addEventListener('DOMContentLoaded', function() {
             // Обновляем значения атрибута "name" у всех полей форм в формсете
             top_imageContainer.querySelectorAll('.card').forEach((card, index) => {
                 const fileInput = card.querySelector('input[type="file"]');
-                fileInput.name = `form-${index}-image`;
+                fileInput.name = `main-${index}-image`;
             });
         }
     });
@@ -230,7 +230,7 @@ document.addEventListener('DOMContentLoaded', function() {
             // Обновляем значения атрибута "name" у всех полей форм в формсете
             bottom_imageContainer.querySelectorAll('.card').forEach((card, index) => {
                 const fileInput = card.querySelector('input[type="file"]');
-                fileInput.name = `form-${index}-image`;
+                fileInput.name = `another-${index}-image`;
             });
         }
     });
@@ -288,7 +288,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     let deleteButtons = document.querySelectorAll('.delete-image');
 
-        // Для каждой кнопки добавляем обработчик события click
+    // Для каждой кнопки добавляем обработчик события click
     deleteButtons.forEach(function(button) {
         button.addEventListener('click', function() {
             // Находим родительский элемент карточки
@@ -302,6 +302,7 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         });
     });
+
 });
 
 
