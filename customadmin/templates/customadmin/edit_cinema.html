@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% load i18n %}
 {% load static %}
 
 {% block css %}
@@ -12,9 +13,33 @@
 {% endblock %}
 
 {% block content %}
-{% for error in form.errors %}
-    <p>{{ error }}</p>
-{% endfor %}
+<div class="container">
+    <div class="row">
+        <div class="col-md-3 offset-md-10">
+            <form action="{% url 'set_language' %}" method="post">
+                {% csrf_token %}
+                <input name="next" type="hidden" value="{{ redirect_to }}">
+                <div class="form-group">
+                    <select name="language" class="form-control">
+                        {% get_current_language as LANGUAGE_CODE %}
+                        {% get_available_languages as LANGUAGES %}
+                        {% get_language_info_list for LANGUAGES as languages %}
+                        {% for language in languages %}
+                            <option value="{{ language.code }}"{% if language.code == LANGUAGE_CODE %} selected{% endif %}>
+                                {{ language.name_local }} ({{ language.code }})
+                            </option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <input type="submit" value="Go" class="btn btn-primary">
+            </form>
+            {% for error in form.errors %}
+                <p>{{ error }}</p>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+
 
 <div class="container" style="margin-top: 100px;">
     <form method="post" enctype="multipart/form-data" id="cinema-form">

@@ -209,7 +209,9 @@ def cinema_page(request):
         cinema_form = CinemaForm(request.POST, request.FILES)
         gallery_formset = GalleryImageFormSet(request.POST, request.FILES)
         if cinema_form.is_valid() and gallery_formset.is_valid():
+
             film_instance = cinema_form.save(commit=False)
+            film_instance.title_uk = cinema_form.cleaned_data['title_uk']
             gallery_instance = Gallery.objects.create(title=film_instance.title)
             film_instance.gallery = gallery_instance
             film_instance.save()

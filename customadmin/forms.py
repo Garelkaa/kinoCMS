@@ -20,7 +20,7 @@ class CinemaForm(forms.ModelForm):
 
     class Meta:
         model = Cinema
-        fields = ['title', 'description', 'main_image', 'top_image', 'url_trailer', 'active', 'seo_url', 'seo_title', 'seo_keywords',
+        fields = ['title', 'title_uk',  'description', 'description_en', 'description_uk', 'main_image', 'top_image', 'url_trailer', 'active', 'seo_url', 'seo_title', 'seo_keywords',
                   'description_seo']
 
 
@@ -45,7 +45,7 @@ class FilmsForm(forms.ModelForm):
 
     class Meta:
         model = Movie
-        fields = ['title', 'description', 'main_image', 'url_trailer', 'type', 'seo_url', 'seo_title', 'seo_keywords', 'description_seo']
+        fields = ['title', 'title_uk',  'description', 'description_en', 'description_uk', 'main_image', 'url_trailer', 'type', 'seo_url', 'seo_title', 'seo_keywords', 'description_seo']
 
 
 class MainPageForm(forms.ModelForm):

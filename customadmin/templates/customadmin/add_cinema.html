@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% load i18n %}
 {% load static %}
 
 {% block css %}
@@ -10,90 +11,131 @@
     <p>{{ error }}</p>
 {% endfor %}
 
+<div class="container">
+    <div class="row">
+        <div class="col-md-3 offset-md-10">
+            <form action="{% url 'set_language' %}" method="post">
+                {% csrf_token %}
+                <input name="next" type="hidden" value="{{ redirect_to }}">
+                <div class="form-group">
+                    <select name="language" class="form-control">
+                        {% get_current_language as LANGUAGE_CODE %}
+                        {% get_available_languages as LANGUAGES %}
+                        {% get_language_info_list for LANGUAGES as languages %}
+                        {% for language in languages %}
+                            <option value="{{ language.code }}"{% if language.code == LANGUAGE_CODE %} selected{% endif %}>
+                                {{ language.name_local }} ({{ language.code }})
+                            </option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <input type="submit" value="Go" class="btn btn-primary">
+            </form>
+            {% for error in form.errors %}
+                <p>{{ error }}</p>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+
 <div class="container" style="margin-top: 100px;">
     <form method="post" enctype="multipart/form-data" id="image-form">
         {% csrf_token %}
         <div class="form-group">
-            <label for="id_title">Назва:</label>
-            <input type="text" class="form-control" id="id_title" name="title" placeholder="Введіть назву {{ name }}" >
+            <label for="id_title">{% trans "Назва на англійскій:" %}</label>
+            <input type="text" class="form-control" id="id_title" name="title" placeholder="{% trans "Введіть назву" %} {{ name }}" >
             {% if form.title.errors %}
-                <p>Надо заполнить это поле</p>
+                <p>{% trans "Надо заполнить это поле" %}</p>
             {% endif %}
         </div>
         <div class="form-group">
-            <label for="id_description">Опис:</label>
-            <textarea class="form-control" id="id_description" name="description" placeholder="Введіть опис {{ name }}"></textarea>
+            <label for="id_title">{% trans "Назва на українській:" %}</label>
+            <input type="text" class="form-control" id="id_title" name="title_uk" placeholder="{% trans "Введіть назву" %} {{ name }}" >
+            {% if form.title.errors %}
+                <p>{% trans "Надо заполнить это поле" %}</p>
+            {% endif %}
+        </div>
+        <div class="form-group">
+            <label for="id_description">{% trans "Опис на англійській:" %}</label>
+            <textarea class="form-control" id="id_description" name="description" placeholder="{% trans "Введіть опис" %} {{ name }}"></textarea>
             {% if form.description.errors %}
-                <p>Надо заполнить это поле</p>
+                <p>{% trans "Надо заполнить это поле" %}</p>
             {% endif %}
         </div>
         <div class="form-group">
-            <label for="id_main_image">Головне зображення:</label>
-            <input type="file" class="form-control-file" id="id_main_image" name="main_image" placeholder="Завантажте головне зображення">
+            <label for="id_description">{% trans "Опис на українській:" %}</label>
+            <textarea class="form-control" id="id_description" name="description_uk" placeholder="{% trans "Введіть опис" %} {{ name }}"></textarea>
+            {% if form.description.errors %}
+                <p>{% trans "Надо заполнить это поле" %}</p>
+            {% endif %}
+        </div>
+        <div class="form-group">
+            <label for="id_main_image">{% trans "Головне зображення:" %}</label>
+            <input type="file" class="form-control-file" id="id_main_image" name="main_image" placeholder="{% trans "Завантажте головне зображення" %}">
             {% if form.main_image.errors %}
-                <p>Надо заполнить это поле</p>
+                <p>{% trans "Надо заполнить это поле" %}</p>
             {% endif %}
-            <img id="main-image-preview" src="#" alt="Preview" style="display: none; max-width: 100px; max-height: 100px;">
+            <img id="main-image-preview" src="#" alt="{% trans "Preview" %}" style="display: none; max-width: 100px; max-height: 100px;">
         </div>
         <div class="form-group">
-            <label for="id_top_image">Верхнее зображення:</label>
-            <input type="file" class="form-control-file" id="id_top_image" name="top_image" placeholder="Завантажте верхне зображення">
+            <label for="id_top_image">{% trans "Верхнее зображення:" %}</label>
+            <input type="file" class="form-control-file" id="id_top_image" name="top_image" placeholder="{% trans "Завантажте верхне зображення" %}">
             {% if form.top_image.errors %}
-                <p>Надо заполнить это поле</p>
+                <p>{% trans "Надо заполнить это поле" %}</p>
             {% endif %}
-            <img id="top-image-preview" src="#" alt="Preview" style="display: none; max-width: 100px; max-height: 100px;">
+            <img id="top-image-preview" src="#" alt="{% trans "Preview" %}" style="display: none; max-width: 100px; max-height: 100px;">
         </div>
-        <label for="mainImage">Галерея картинок</label>
+        <label for="mainImage">{% trans "Галерея картинок" %}</label>
         <div id="image-container" class="row justify-content-center mt-3">
             {{ gallery_formset.management_form }}
             {% for form in gallery_formset.forms %}
                 {{ form.image }}
             {% endfor %}
             {% if gallery_formset.non_form_errors %}
-                <p>Надо заполнить это поле</p>
+                <p>{% trans "Надо заполнить это поле" %}</p>
             {% endif %}
         </div>
-        <button type="button" id="add-image-btn" class="btn btn-success mt-3">Додати ще картинку</button>
+        <button type="button" id="add-image-btn" class="btn btn-success mt-3">{% trans "Додати ще картинку" %}</button>
         <div class="form-group">
-            <label for="id_active">Активний:</label>
+            <label for="id_active">{% trans "Активний:" %}</label>
             <input type="checkbox" class="form-control" id="id_active" name="active" {% if form.active.value %}checked{% endif %}>
         </div>
         <div class="form-group">
-            <label for="id_url_trailer">Посилання на відео:</label>
-            <input type="text" class="form-control" id="id_url_trailer" name="url_trailer" placeholder="Введіть посилання на відео з YouTube">
+            <label for="id_url_trailer">{% trans "Посилання на відео:" %}</label>
+            <input type="text" class="form-control" id="id_url_trailer" name="url_trailer" placeholder="{% trans "Введіть посилання на відео з YouTube" %}">
             {% if form.url_trailer.errors %}
-                <p>Надо заполнить это поле</p>
+                <p>{% trans "Надо заполнить это поле" %}</p>
             {% endif %}
         </div>
         <div class="form-group">
-            <label for="id_seo_url">SEO URL:</label>
-            <input type="text" class="form-control" id="id_seo_url" name="seo_url" placeholder="Введіть SEO URL" >
+            <label for="id_seo_url">{% trans "SEO URL:" %}</label>
+            <input type="text" class="form-control" id="id_seo_url" name="seo_url" placeholder="{% trans "Введіть SEO URL" %}" >
             {% if form.seo_url.errors %}
-                <p>Надо заполнить это поле</p>
+                <p>{% trans "Надо заполнить это поле" %}</p>
             {% endif %}
         </div>
         <div class="form-group">
-            <label for="id_seo_title">SEO Title:</label>
-            <input type="text" class="form-control" id="id_seo_title" name="seo_title" placeholder="Введіть SEO Title" >
+            <label for="id_seo_title">{% trans "SEO Title:" %}</label>
+            <input type="text" class="form-control" id="id_seo_title" name="seo_title" placeholder="{% trans "Введіть SEO Title" %}" >
             {% if form.seo_title.errors %}
-                <p>Надо заполнить это поле</p>
+                <p>{% trans "Надо заполнить это поле" %}</p>
             {% endif %}
         </div>
         <div class="form-group">
-            <label for="id_seo_keywords">SEO Keywords:</label>
-            <input type="text" class="form-control" id="id_seo_keywords" name="seo_keywords" placeholder="Введіть SEO Keywords" >
+            <label for="id_seo_keywords">{% trans "SEO Keywords:" %}</label>
+            <input type="text" class="form-control" id="id_seo_keywords" name="seo_keywords" placeholder="{% trans "Введіть SEO Keywords" %}" >
             {% if form.seo_keywords.errors %}
-                <p>Надо заполнить это поле</p>
+                <p>{% trans "Надо заполнить это поле" %}</p>
             {% endif %}
         </div>
         <div class="form-group">
-            <label for="id_description_seo">SEO Description:</label>
-            <textarea class="form-control" id="id_description_seo" name="description_seo" placeholder="Введіть SEO Description"></textarea>
+            <label for="id_description_seo">{% trans "SEO Description:" %}</label>
+            <textarea class="form-control" id="id_description_seo" name="description_seo" placeholder="{% trans "Введіть SEO Description" %}"></textarea>
             {% if form.description_seo.errors %}
-                <p>Надо заполнить это поле</p>
+                <p>{% trans "Надо заполнить это поле" %}</p>
             {% endif %}
         </div>
-        <button type="submit" class="btn btn-success mt-5">Зберегти</button>
+        <button type="submit" class="btn btn-success mt-5">{% trans "Зберегти" %}</button>
     </form>
 </div>
 
@@ -180,6 +222,25 @@ document.addEventListener("DOMContentLoaded", function() {
         previewImage(topImageInput, topImagePreview);
     });
 });
+function changeLanguage(lang) {
+    // Отправляем запрос на сервер для изменения языка
+    fetch(`/change-language/?language=${lang}`, {
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json',
+            // Если используется сессии, добавьте CSRF-токен к заголовкам запроса
+            // 'X-CSRFToken': '{{ csrf_token }}'
+        },
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error('Failed to change language');
+        }
+        // Перезагружаем страницу для применения изменений языка
+        window.location.reload();
+    })
+    .catch(error => console.error('Error:', error));
+}
 </script>
 
 
