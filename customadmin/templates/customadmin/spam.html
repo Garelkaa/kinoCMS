@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% load i18n %}
 {% load static %}
 
 {% block css %}
@@ -18,32 +19,61 @@
 {% endblock css %}
 
 {% block content %}
+<div class="container">
+    <div class="row">
+        <div class="col-md-3 offset-md-10">
+            <form action="{% url 'set_language' %}" method="post">
+                {% csrf_token %}
+                <input name="next" type="hidden" value="{{ redirect_to }}">
+                <div class="form-group">
+                    <select name="language" class="form-control">
+                        {% get_current_language as LANGUAGE_CODE %}
+                        {% get_available_languages as LANGUAGES %}
+                        {% get_language_info_list for LANGUAGES as languages %}
+                        {% for language in languages %}
+                            <option value="{{ language.code }}"{% if language.code == LANGUAGE_CODE %} selected{% endif %}>
+                                {{ language.name_local }} ({{ language.code }})
+                            </option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <input type="submit" value="{% trans 'Go' %}" class="btn btn-primary">
+            </form>
+            {% for error in form.errors %}
+                <p>{{ error }}</p>
+            {% endfor %}
+        </div>
+    </div>
+</div>
 <div class="container border-outline">
     <div class="row">
         <div class="col-md-6">
             <div class="border-outline">
-                <h2 class="text-center">Рассылка</h2>
+                <h2 class="text-center">{% trans 'Рассылка' %}</h2>
                 <form id="emailForm" method="post">
                     {% csrf_token %}
                     <div class="mb-3">
-                        <label for="recipient">Кому слать:</label><br>
+                        <label for="recipient">{% trans 'Кому слать:' %}</label><br>
                         <input type="radio" id="allUsers" name="recipientType" value="allUsers">
-                        <label for="allUsers">Все пользователи</label><br>
+                        <label for="allUsers">{% trans 'Все пользователи' %}</label><br>
                         <input type="radio" id="selective" name="recipientType" value="selective">
-                        <label for="selective">Выборочно</label>
-                        <button type="button" id="selectUsersButton" class="btn btn-secondary">Выбрать пользователей</button>
+                        <label for="selective">{% trans 'Выборочно' %}</label>
+                        <button type="button" id="selectUsersButton" class="btn btn-secondary">{% trans 'Выбрать пользователей' %}</button>
                     </div>
                     <div class="mb-3">
-                        <label for="emailFile">Загрузить письмо:</label>
+                        <label for="emailFile">{% trans 'Загрузить письмо:' %}</label>
                         <input type="file" id="emailFile" name="emailFile">
-                        <p>Шаблон используемый в рассылке: <span id="selectedFileName"></span></p>
+                        <p>{% trans 'Шаблон используемый в рассылке:' %} <span id="selectedFileName"></span></p>
                         <input type="hidden" id="selectedFileInput" name="file_name" value="">
                     </div>
                     <div class="mb-3">
-                        <p>Кол-во писем: 123</p>
-                        <p>Рассылка выполнена: 44%</p>
+                        <p id="emailCount">{% trans 'Кол-во писем:' %} 0</p>
+                        <div class="progress" style="height: 20px;">
+                            <div id="emailProgress" class="progress-bar" role="progressbar" style="width: 0%;" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">0%</div>
+                        </div>
                     </div>
-                    <button type="submit" class="btn btn-primary">Отправить</button>
+
+                    <button type="submit" class="btn btn-primary">{% trans 'Отправить' %}</button>
                     <!-- Скрытое поле для передачи выбранных пользователей -->
                     <input type="hidden" id="selectedUsersInput" name="selectedUsers[]" value="">
                 </form>
@@ -51,7 +81,7 @@
         </div>
         <div class="col-md-6">
             <div class="border-outline">
-                <h2 class="text-center">Загруженные письма</h2>
+                <h2 class="text-center">{% trans 'Загруженные письма' %}</h2>
                 <ul>
                     {% for file in files %}
                         <input type="radio" name="selectedFile" value="{{ file.file_name }}">
@@ -65,10 +95,10 @@
 
 <!-- Modal -->
 <div class="modal fade" id="userModal" tabindex="-1" aria-labelledby="userModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-lg">
+    <div class="modal-dialog modal-xl modal-dialog-scrollable">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="userModalLabel">Список пользователей</h5>
+                <h5 class="modal-title" id="userModalLabel">{% trans 'Список пользователей' %}</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
@@ -76,38 +106,39 @@
                     <thead>
                         <tr>
                             <th></th>
-                            <th>Имя</th>
-                            <th>Фамилия</th>
-                            <th>Email</th>
-                            <th>Ник</th>
-                            <th>Телефон</th>
-                            <th>День рождения</th>
-                            <th>Город</th>
+                            <th>{% trans 'Имя' %}</th>
+                            <th>{% trans 'Фамилия' %}</th>
+                            <th>{% trans 'Email' %}</th>
+                            <th>{% trans 'Ник' %}</th>
+                            <th>{% trans 'Телефон' %}</th>
+                            <th>{% trans 'День рождения' %}</th>
+                            <th>{% trans 'Город' %}</th>
                         </tr>
                     </thead>
                     <tbody>
-                         {% for user in users %}
-                            <tr>
-                                <td class="dt-type-numeric select-checkbox dtfc-fixed-start dtfc-fixed-left" style="position: sticky; left: 0px;"><input type="checkbox"></td>
-                                <td>{{ user.first_name }}</td>
-                                <td>{{ user.last_name }}</td>
-                                <td>{{ user.email }}</td>
-                                <td>{{ user.username }}</td>
-                                <td>{{ user.phoneNumber }}</td>
-                                <td>{{ user.birthdate }}</td>
-                                <td>{{ user.city }}</td>
-                            </tr>
+                        {% for user in users %}
+                        <tr>
+                            <td class="dt-type-numeric select-checkbox dtfc-fixed-start dtfc-fixed-left" style="position: sticky; left: 0px;"><input type="checkbox"></td>
+                            <td>{{ user.first_name }}</td>
+                            <td>{{ user.last_name }}</td>
+                            <td>{{ user.email }}</td>
+                            <td>{{ user.username }}</td>
+                            <td>{{ user.phoneNumber }}</td>
+                            <td>{{ user.birthdate }}</td>
+                            <td>{{ user.city }}</td>
+                        </tr>
                         {% endfor %}
                     </tbody>
                 </table>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Закрыть</button>
-                <button type="button" class="btn btn-primary">Выбрать</button>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% trans 'Закрыть' %}</button>
+                <button type="button" class="btn btn-primary">{% trans 'Выбрать' %}</button>
             </div>
         </div>
     </div>
 </div>
+
 
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.3.0/js/bootstrap.min.js"></script>
@@ -174,29 +205,30 @@
                     start: 2
                 },
                 order: [[1, 'asc']],
-                paging: false,
+                paging: true, // Включить пагинацию
+                lengthChange: false,
+                searching: false,
                 scrollCollapse: true,
                 scrollX: true,
                 scrollY: 300,
                 select: {
                     style: 'os',
                     selector: 'td:first-child'
+                },
+                "language": { // Добавление языковой настройки для DataTables
+                    "paginate": {
+                        "previous": "{% trans 'Предыдущая' %}",
+                        "next": "{% trans 'Следующая' %}"
+                    },
+                    "info": "{% trans 'Показаны записи с _START_ по _END_ из _TOTAL_ записей' %}"
                 }
             });
         });
 
+
         // Обработчик клика для открытия модального окна выбора пользователей
         document.getElementById('selectUsersButton').addEventListener('click', function () {
             $('#userModal').modal('show');
-        });
-    });
-    document.querySelectorAll('input[name="recipientType"]').forEach(function(radio) {
-        radio.addEventListener('change', function () {
-            if (this.value === 'selective') {
-                document.getElementById('selectUsersButton').style.display = 'inline-block';
-            } else {
-                document.getElementById('selectUsersButton').style.display = 'none';
-            }
         });
     });
 

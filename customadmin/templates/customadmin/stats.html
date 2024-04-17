@@ -56,7 +56,7 @@
                     <!-- New card goes here -->
                     <div class="card card-danger">
                         <div class="card-header">
-                            <h3 class="card-title">text</h3>
+                            <h3 class="card-title">Пончик</h3>
                             <div class="card-tools">
                                 <button type="button" class="btn btn-tool" data-card-widget="collapse">
                                     <i class="fas fa-minus"></i>
@@ -260,25 +260,16 @@
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
     $(function () {
-
-
         var donutChartCanvas = $('#donutChart').get(0).getContext('2d');
         var donutData = {
-            labels: [
-                'Intel',
-                'AMD',
-                'NZXT',
-                'Kingston',
-                'Direct',
-                'Corsair',
-                'NVIDIA'
-            ],
+            labels: ['Ukrainian', 'English'],
             datasets: [
                 {
-                    data: [345, 2345, 123, 321, 313, 612, 400],
-                    backgroundColor: ['#f56954', '#00a65a', '#f39c12', '#00c0ef', '#3c8dbc', '#d2d6de', '#000'],
+                    data: [{{ percentage_ukrainian }}, {{ percentage_english }}],
+                    backgroundColor: ['#f56954', '#00a65a'],
                 }
             ]
+
         };
         var donutOptions = {
             maintainAspectRatio: false,
@@ -331,20 +322,13 @@
 
 
         var lineChartData = {
-            labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July'],
+            labels: ['User 1', 'User 2', 'User 3', 'User 4', 'User 5'], // Пример имен пользователей
             datasets: [
                 {
-                    label: 'Dataset 1',
+                    label: 'Last Login',
                     borderColor: '#f56954',
                     backgroundColor: 'rgba(245, 105, 84, 0.5)',
-                    data: [65, 59, 20, 81, 56, 55, 40],
-                    fill: true,
-                },
-                {
-                    label: 'Dataset 2',
-                    borderColor: '#00a65a',
-                    backgroundColor: 'rgba(0, 166, 90, 0.5)',
-                    data: [28, 48, 40, 19, 86, 27, 90],
+                    data: {{ last_logins | safe }},
                     fill: true,
                 }
             ]

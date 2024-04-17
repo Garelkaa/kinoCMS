@@ -1,18 +1,45 @@
 {% extends "base.html" %}
+{% load i18n %}
 {% load static %}
 {% block css %}
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.2/font/bootstrap-icons.min.css">
 {% endblock %}
 {% block content %}
 <div class="container">
+    <div class="row">
+        <div class="col-md-3 offset-md-10">
+            <form action="{% url 'set_language' %}" method="post">
+                {% csrf_token %}
+                <input name="next" type="hidden" value="{{ redirect_to }}">
+                <div class="form-group">
+                    <select name="language" class="form-control">
+                        {% get_current_language as LANGUAGE_CODE %}
+                        {% get_available_languages as LANGUAGES %}
+                        {% get_language_info_list for LANGUAGES as languages %}
+                        {% for language in languages %}
+                            <option value="{{ language.code }}"{% if language.code == LANGUAGE_CODE %} selected{% endif %}>
+                                {{ language.name_local }} ({{ language.code }})
+                            </option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <input type="submit" value="{% trans 'Go' %}" class="btn btn-primary">
+            </form>
+            {% for error in form.errors %}
+                <p>{{ error }}</p>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+<div class="container">
     <div class="row justify-content-end">
         <div class="col-md-6">
             <div class="d-flex align-items-center">
-                <h1>Пользователи</h1>
+                <h1>{% trans 'Пользователи' %}</h1>
                 <div class="col-md-6">
                     <div class="d-flex">
-                        <input type="text" placeholder="Поиск" class="form-control mr-2">
-                        <button class="btn btn-success">Поиск</button>
+                        <input type="text" placeholder="{% trans 'Поиск' %}" class="form-control mr-2">
+                        <button class="btn btn-success">{% trans 'Поиск' %}</button>
                     </div>
                 </div>
             </div>
@@ -24,14 +51,14 @@
         <thead>
             <tr>
                 <th scope="col" style="width: 20px;">ID</th>
-                <th scope="col">Дата регистрации</th>
-                <th scope="col"> День рождения	</th>
-                <th scope="col">Email</th> 
-                <th scope="col">Телефон</th> 
-                <th scope="col">ФИО</th> 
-                <th scope="col">Псевдоним</th> 
-                <th scope="col">Город</th> 
-                <th scope="col">Действия</th> 
+                <th scope="col">{% trans 'Дата регистрации' %}</th>
+                <th scope="col">{% trans 'День рождения' %}</th>
+                <th scope="col">Email</th>
+                <th scope="col">{% trans 'Телефон' %}</th>
+                <th scope="col">{% trans 'ФИО' %}</th>
+                <th scope="col">{% trans 'Псевдоним' %}</th>
+                <th scope="col">{% trans 'Город' %}</th>
+                <th scope="col">{% trans 'Действия' %}</th>
             </tr>
         </thead>
         {% for user in users %}

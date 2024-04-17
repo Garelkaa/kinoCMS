@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% load i18n %}
 {% load static %}
 
 {% block css %}
@@ -6,30 +7,56 @@
 {% endblock %}
 
 {% block content %}
+<div class="container">
+    <div class="row">
+        <div class="col-md-3 offset-md-10">
+            <form action="{% url 'set_language' %}" method="post">
+                {% csrf_token %}
+                <input name="next" type="hidden" value="{{ redirect_to }}">
+                <div class="form-group">
+                    <select name="language" class="form-control">
+                        {% get_current_language as LANGUAGE_CODE %}
+                        {% get_available_languages as LANGUAGES %}
+                        {% get_language_info_list for LANGUAGES as languages %}
+                        {% for language in languages %}
+                            <option value="{{ language.code }}"{% if language.code == LANGUAGE_CODE %} selected{% endif %}>
+                                {{ language.name_local }} ({{ language.code }})
+                            </option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <input type="submit" value="{% trans 'Go' %}" class="btn btn-primary">
+            </form>
+            {% for error in form.errors %}
+                <p>{{ error }}</p>
+            {% endfor %}
+        </div>
+    </div>
+</div>
 <div class="container justify-content-center" style="margin-top: 100px;">
     <div class="row justify-content-center">
         <table class="table table-bordered border-primary">
             <thead>
                 <tr>
-                    <th scope="col">Название</th>
-                    <th scope="col">Дата создания</th>
-                    <th scope="col">Статус</th>
-                    <th scope="col">Действия</th> 
+                    <th scope="col">{% trans 'Название' %}</th>
+                    <th scope="col">{% trans 'Дата создания' %}</th>
+                    <th scope="col">{% trans 'Статус' %}</th>
+                    <th scope="col">{% trans 'Действия' %}</th>
                 </tr>
             </thead>
             {% for sell in sells %}
                 <tr>
                     <td>{{ sell.title }}</td>
                     <td>{{ sell.created }}</td>
-                    <td>{% if sell.active %}ВКЛ{% else %}Выкл{% endif %}</td>
+                    <td>{% if sell.active %}{% trans 'ВКЛ' %}{% else %}{% trans 'Выкл' %}{% endif %}</td>
                     <td>
                         <a href="{{ sell.id }}"><i class="bi bi-pencil"></i></a>
                         <a href="#"><i class="bi bi-trash"></i></a>
                     </td>
                 </tr>
             {% endfor %}
-        </table> 
-        <a href='{% url "adminlte:add_sells" %}'><button class="btn btn-success">Создать Акцию</button></a>
+        </table>
+        <a href='{% url "adminlte:add_sells" %}'><button class="btn btn-success">{% trans 'Создать Акцию' %}</button></a>
     </div>
 </div>
 {% endblock content %}

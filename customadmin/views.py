@@ -1,8 +1,10 @@
+from django.contrib.auth.hashers import make_password
 from django.core.mail import send_mail
 from django.db.models import Prefetch
 from django.http import JsonResponse, HttpResponse
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required, user_passes_test
+from django.utils import timezone
 from django.views.decorators.csrf import csrf_exempt
 
 from cinema.models import Movie, Cinema
@@ -17,19 +19,25 @@ def is_admin(user):
     return user.is_authenticated and user.is_staff
 
 
-@login_required
-@user_passes_test(is_admin)
 def stats(request):
-
     count_users = CustomUser.objects.count()
 
+    count_users_ukrainian = CustomUser.objects.filter(language='u').count()
+    count_users_english = CustomUser.objects.filter(language='r').count()
+    last_logins = CustomUser.objects.exclude(last_login=None).values_list('last_login', flat=True)
+
+    # Convert last login times to timestamps
+    last_logins_timestamps = [(login - timezone.datetime(1970, 1, 1, tzinfo=timezone.utc)).total_seconds() for login in
+                              last_logins]
     context = {
         'title': 'Страница статистики',
-        'user_count': count_users
+        'user_count': count_users,
+        'percentage_ukrainian': (count_users_ukrainian / count_users) * 100 if count_users > 0 else 0,
+        'percentage_english': (count_users_english / count_users) * 100 if count_users > 0 else 0,
+        'last_logins': last_logins_timestamps,
     }
-    
-    return render(request, 'customadmin/stats.html', context=context)
 
+    return render(request, 'customadmin/stats.html', context=context)
 
 @login_required
 @user_passes_test(is_admin)
@@ -106,9 +114,10 @@ def save_another_banner(request):
 def save_back_banner(request):
     if request.method == 'POST' and request.FILES.get('back_banner_photo'):
         back_banner_photo = request.FILES['back_banner_photo']
-        back_banner_object = BackBanner(image=back_banner_photo, choice=request.POST.get('choice'))
+        choice = request.POST.get('choice', 'd')  # Default to 'd' if choice is not provided
+        back_banner_object = BackBanner(image=back_banner_photo, choice=choice)
         back_banner_object.save()
-        return JsonResponse({'success': True})
+        return JsonResponse({'success': True, 'image_url': back_banner_object.image.url, 'choice': back_banner_object.choice})
     else:
         return JsonResponse({'success': False})
 
@@ -133,6 +142,8 @@ def page_film(request):
         gallery_formset = GalleryImageFormSet(request.POST, request.FILES)
         if films_form.is_valid() and gallery_formset.is_valid():
             film_instance = films_form.save(commit=False)
+            film_instance.title_en = films_form.cleaned_data['title']
+            film_instance.description_en = films_form.cleaned_data['description']
             gallery_instance = Gallery.objects.create(title=film_instance.title)
             film_instance.gallery = gallery_instance
             film_instance.save()
@@ -211,7 +222,8 @@ def cinema_page(request):
         if cinema_form.is_valid() and gallery_formset.is_valid():
 
             film_instance = cinema_form.save(commit=False)
-            film_instance.title_uk = cinema_form.cleaned_data['title_uk']
+            film_instance.title_en = cinema_form.cleaned_data['title']
+            film_instance.description_en = cinema_form.cleaned_data['description']
             gallery_instance = Gallery.objects.create(title=film_instance.title)
             film_instance.gallery = gallery_instance
             film_instance.save()
@@ -243,6 +255,8 @@ def edit_cinema(request, cinema_id):
 
         if cinema_form.is_valid() and gallery_formset.is_valid():
             cinema_instance = cinema_form.save()
+            cinema_instance.title_en = cinema_form.cleaned_data['title']
+            cinema_instance.description_en = cinema_form.cleaned_data['description']
 
             gallery_instances = gallery_formset.save(commit=False)
 
@@ -330,6 +344,8 @@ def news_add(request):
         gallery_formset = GalleryImageFormSet(request.POST, request.FILES)
         if news_add_form.is_valid() and gallery_formset.is_valid():
             film_instance = news_add_form.save(commit=False)
+            film_instance.title_en = news_add_form.cleaned_data['title']
+            film_instance.description_en = news_add_form.cleaned_data['description']
             gallery_instance = Gallery.objects.create(title=film_instance.title)
             film_instance.gallery = gallery_instance
             film_instance.save()
@@ -408,6 +424,8 @@ def add_sells(request):
         gallery_formset = GalleryImageFormSet(request.POST, request.FILES)
         if sells_form.is_valid() and gallery_formset.is_valid():
             film_instance = sells_form.save(commit=False)
+            film_instance.title_en = sells_form.cleaned_data['title']
+            film_instance.description_en = sells_form.cleaned_data['description']
             gallery_instance = Gallery.objects.create(title=film_instance.title)
             film_instance.gallery = gallery_instance
             film_instance.save()
@@ -479,12 +497,12 @@ def pages(request):
 
 @login_required
 @user_passes_test(is_admin)
-def main_page(request, main_page_id=4):
+def main_page(request, main_page_id=1):
     main_page_instance = get_object_or_404(MainPage, pk=main_page_id)
     if request.method == 'POST':
         main_page_form = MainPageForm(request.POST, instance=main_page_instance)
 
-        if main_page_form.is_valid() :
+        if main_page_form.is_valid():
             main_page_form.save()
         else:
             print(main_page_form.errors)
@@ -512,10 +530,12 @@ def new_page(request):
         new_page_form = PagesForm(request.POST, request.FILES)
         gallery_formset = GalleryImageFormSet(request.POST, request.FILES)
         if new_page_form.is_valid() and gallery_formset.is_valid():
-            new_page_instance = new_page_form.save(commit=False)
-            gallery_instance = Gallery.objects.create(title=new_page_instance.title)
-            new_page_instance.gallery = gallery_instance
-            new_page_instance.save()
+            film_instance = new_page_form.save(commit=False)
+            film_instance.title_en = new_page_form.cleaned_data['title']
+            film_instance.description_en = new_page_form.cleaned_data['description']
+            gallery_instance = Gallery.objects.create(title=film_instance.title)
+            film_instance.gallery = gallery_instance
+            film_instance.save()
 
             for form in gallery_formset:
                 if form.cleaned_data.get('image'):
@@ -589,7 +609,16 @@ def edit_user(request, user_id):
     if request.method == 'POST':
         form = UserForm(request.POST, instance=user_instance)
         if form.is_valid():
+            # Сохраняем данные пользователя из формы
             form.save()
+
+            # Обработка нового пароля, если он был введен
+            new_password = request.POST.get('password')
+            if new_password:
+                # Хешируем новый пароль и сохраняем его
+                user_instance.password = make_password(new_password)
+                user_instance.save()
+
             return redirect('adminlte:users')
         else:
             print(form.errors)

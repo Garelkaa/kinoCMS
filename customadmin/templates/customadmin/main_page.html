@@ -1,4 +1,5 @@
 {% extends 'base.html' %}
+{% load i18n %}
 {% load static %}
 
 {% block css %}
@@ -6,33 +7,59 @@
 {% endblock %}
 
 {% block content %}
+<div class="container">
+    <div class="row">
+        <div class="col-md-3 offset-md-10">
+            <form action="{% url 'set_language' %}" method="post">
+                {% csrf_token %}
+                <input name="next" type="hidden" value="{{ redirect_to }}">
+                <div class="form-group">
+                    <select name="language" class="form-control">
+                        {% get_current_language as LANGUAGE_CODE %}
+                        {% get_available_languages as LANGUAGES %}
+                        {% get_language_info_list for LANGUAGES as languages %}
+                        {% for language in languages %}
+                            <option value="{{ language.code }}"{% if language.code == LANGUAGE_CODE %} selected{% endif %}>
+                                {{ language.name_local }} ({{ language.code }})
+                            </option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <input type="submit" value="{% trans 'Go' %}" class="btn btn-primary">
+            </form>
+            {% for error in form.errors %}
+                <p>{{ error }}</p>
+            {% endfor %}
+        </div>
+    </div>
+</div>
 <div class="container text-center">
     <form method="post" enctype="multipart/form-data" id="image-form">
         {% csrf_token %}
         <div class="row justify-content-center mb-3" style="margin-top: 50px;">
-            <h1>Телефон</h1>
+            <h1>{% trans 'Телефон' %}</h1>
         </div>
         <div class="row justify-content-center mb-3">
-            <input type="text" name="phone_number" aria-label="Телефон" class="form-control" placeholder="Телефон" value="{{ main_page_instance.phone_number }}" style="width: 200px;">
+            <input type="text" name="phone_number" aria-label="{% trans 'Телефон' %}" class="form-control" placeholder="{% trans 'Телефон' %}" value="{{ main_page_instance.phone_number }}" style="width: 200px;">
         </div>
         <div class="row justify-content-center mb-3" style="margin-top: 100px;">
-            <h1>SEO текст</h1>
+            <h1>{% trans 'SEO текст' %}</h1>
         </div>
         <div class="row justify-content-center mb-3">
-            <textarea name="seo_text" aria-label="Телефон" class="form-control" placeholder="текст" style="width: 400px; height: 200px;">{{ main_page_instance.seo_text }}</textarea>
+            <textarea name="seo_text" aria-label="{% trans 'Телефон' %}" class="form-control" placeholder="{% trans 'текст' %}" style="width: 400px; height: 200px;">{{ main_page_instance.seo_text }}</textarea>
         </div>
         <div class="row justify-content-center mb-3" style="margin-top: 60px;">
-            <h1>SEO блок</h1>
+            <h1>{% trans 'SEO блок' %}</h1>
         </div>
         <div class="row justify-content-center mt-3 mb-4">
             <div class="col-md-6 mb-3 text-center">
-                <input type="text" name="seo_url" class="form-control" placeholder="URL" value="{{ main_page_instance.seo_url}}">
-                <input type="text" name="seo_title" class="form-control mt-2" placeholder="title" value="{{ main_page_instance.seo_title }}">
-                <input type="text" name="seo_keywords" class="form-control mt-2" placeholder="Word" value="{{ main_page_instance.seo_keywords }}">
-                <input type="text" name="description_seo" class="form-control mt-2" placeholder="Description" value="{{ main_page_instance.description_seo }}">
+                <input type="text" name="seo_url" class="form-control" placeholder="{% trans 'URL' %}" value="{{ main_page_instance.seo_url}}">
+                <input type="text" name="seo_title" class="form-control mt-2" placeholder="{% trans 'title' %}" value="{{ main_page_instance.seo_title }}">
+                <input type="text" name="seo_keywords" class="form-control mt-2" placeholder="{% trans 'Word' %}" value="{{ main_page_instance.seo_keywords }}">
+                <input type="text" name="description_seo" class="form-control mt-2" placeholder="{% trans 'Description' %}" value="{{ main_page_instance.description_seo }}">
             </div>
         </div>
-        <button type="submit" class="btn btn-success">Сохранить</button>
+        <button type="submit" class="btn btn-success">{% trans 'Сохранить' %}</button>
     </form>
 </div>
 {% endblock %}

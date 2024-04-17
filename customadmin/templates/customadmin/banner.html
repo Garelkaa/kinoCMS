@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% load i18n %}
 {% load static %}
 {% block css %}
 <link rel="stylesheet" href="{% static 'banner/banner.css' %}">
@@ -7,10 +8,43 @@
     input[type="checkbox"][name$="-DELETE"] {
         display: none;
     }
+    .card {
+        min-height: 500px; /* или любая другая высота, обеспечивающая достаточное пространство для содержимого */
+        transition: all 0.3s ease; /* Добавим плавный переход для плавного удаления */
+    }
+
 </style>
 {% endblock css %}
 {% block content %}
-<h1 class="text-center">На главной верх</h1>
+<div class="container">
+    <div class="row">
+        <div class="col-md-3 offset-md-10">
+            <form action="{% url 'set_language' %}" method="post">
+                {% csrf_token %}
+                <input name="next" type="hidden" value="{{ redirect_to }}">
+                <div class="form-group">
+                    <select name="language" class="form-control">
+                        {% get_current_language as LANGUAGE_CODE %}
+                        {% get_available_languages as LANGUAGES %}
+                        {% get_language_info_list for LANGUAGES as languages %}
+                        {% for language in languages %}
+                            <option value="{{ language.code }}"{% if language.code == LANGUAGE_CODE %} selected{% endif %}>
+                                {{ language.name_local }} ({{ language.code }})
+                            </option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <input type="submit" value="Go" class="btn btn-primary">
+            </form>
+            {% for error in form.errors %}
+                <p>{{ error }}</p>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+
+
+<h1 class="text-center">{% trans 'На главной верх' %}</h1>
 <div class="container border border-secondary rounded-top" id="cardContainer">
     <form method="post" enctype="multipart/form-data" id="bannerForm" action="{% url 'adminlte:save_main_banner' %}">
         {% csrf_token %}
@@ -19,7 +53,7 @@
             {% for form in main_formset.forms %}
                 <div class="col-md-4">
                     <div class="card mb-4">
-                        <img src="{% if form.instance.image %}{{ form.instance.image.url }}{% endif %}" class="card-img-top" alt="" style="width: 287px; height: 400px;">
+                        <img src="{% if form.instance.image %}{{ form.instance.image.url }}{% endif %}" class="card-img-top" alt="" style="width: 280px; height: 400px;">
                         <div class="card-body">
                             {{ form.id }}
                             {{ form.image }}
@@ -39,35 +73,34 @@
             </select>
         </label>
         <div class="form-group">
-            <label for="id_active">Активный:</label>
+            <label for="id_active">{% trans 'Активный' %}:</label>
             <input type="checkbox" class="form-control" id="id_active" name="active" {% if form.active.value %}checked{% endif %}>
         </div>
         <input type="hidden" id="main-formset-total-forms" value="{{ main_formset.total_form_count }}">
 
-        <button class="btn btn-success add_photo" type="button" id="top-add-image-btn">Добавить фото</button>
-        <button class="btn btn-success" type="submit">Сохранить</button>
+        <button class="btn btn-success add_photo" type="button" id="top-add-image-btn">{% trans 'Добавить фото' %}</button>
+        <button class="btn btn-success" type="submit">{% trans 'Сохранить' %}</button>
     </form>
 </div>
-<h1 class="text-center" style="margin-top: 100px">Сквозной банер на заднем фоне</h1>
+<h1 class="text-center" style="margin-top: 100px">{% trans 'Сквозной банер на заднем фоне' %}</h1>
 <div class="container border border-secondary rounded" id="banner-container">
     <div class="row align-items-center">
         <div class="col-md-6">
             <div class="form-check">
                 <input class="form-check-input" type="radio" name="choice" id="defaultRadio" value="d" checked>
                 <label class="form-check-label" for="defaultRadio">
-                    Default photo
+                    {% trans 'Default photo' %}
                 </label>
             </div>
             <div class="form-check">
                 <input class="form-check-input" type="radio" name="choice" id="fonRadio" value="f">
                 <label class="form-check-label" for="fonRadio">
-                    Fon photo
+                    {% trans 'Fon photo' %}
                 </label>
             </div>
-
         </div>
         <div class="col-md-6">
-            <img id="banner-image" src="{% static 'image/photo.jpg' %}" alt="Banner Image" class="img-fluid">
+            <img id="banner-image" src="{% static 'image/photo.jpg' %}" alt="{% trans 'Banner Image' %}" class="img-fluid" style="width: 400px; height: 400px">
         </div>
     </div>
     <div class="row mt-3">
@@ -75,12 +108,12 @@
             <input type="file" id="file-input" class="form-control-file">
         </div>
         <div class="col-md-6">
-            <button id="upload-button" class="btn btn-primary">Загрузить</button>
-            <button id="delete-button" class="btn btn-danger">Удалить</button>
+            <button id="upload-button" class="btn btn-primary">{% trans 'Загрузить' %}</button>
+            <button id="delete-button" class="btn btn-danger">{% trans 'Удалить' %}</button>
         </div>
     </div>
 </div>
-<h1 class="text-center" style="margin-top: 100px">На главной Новости Акции внизу</h1>
+<h1 class="text-center" style="margin-top: 100px">{% trans 'На главной Новости Акции внизу' %}</h1>
 <div class="container border border-secondary rounded" id="another-banner-container">
     <form method="post" enctype="multipart/form-data" id="anotherBannerForm" action="{% url 'adminlte:save_another_banner' %}">
         {% csrf_token %}
@@ -109,12 +142,12 @@
             </select>
         </label>
         <div class="form-group">
-            <label for="id_active">Активный:</label>
+            <label for="id_active">{% trans 'Активный' %}:</label>
             <input type="checkbox" class="form-control" id="id_active" name="active" {% if form.active.value %}checked{% endif %}>
         </div>
 
-        <button class="btn btn-success add_photo" type="button" id="bottom-add-image-btn">Добавить фото</button>
-        <button class="btn btn-success" type="submit">Сохранить</button>
+        <button class="btn btn-success add_photo" type="button" id="bottom-add-image-btn">{% trans 'Добавить фото' %}</button>
+        <button class="btn btn-success" type="submit">{% trans 'Сохранить' %}</button>
     </form>
 </div>
 
@@ -133,6 +166,17 @@ document.addEventListener('DOMContentLoaded', function() {
     let formCountMain = {{ main_formset.total_form_count }};
     let formCountAnother = {{ another_formset.total_form_count }};
 
+    document.getElementById('file-input').addEventListener('change', function() {
+            var input = this;
+            if (input.files && input.files[0]) {
+                var reader = new FileReader();
+                reader.onload = function(e) {
+                    document.getElementById('banner-image').src = e.target.result;
+                };
+                reader.readAsDataURL(input.files[0]);
+            }
+        });
+
     // Add Image Button for Main Banner Settings
     top_addImageButton.addEventListener("click", function() {
         addImageField(top_imageContainer);
@@ -149,12 +193,12 @@ document.addEventListener('DOMContentLoaded', function() {
         const formset = document.createElement('div');
         formset.innerHTML = `
             <div class="card" style="width: 18rem;">
-                <img src="{% static 'image/photo.jpg' %}" class="card-img-top preview" alt="Preview" style="width: 288px; height: 288px;">
+                <img src="{% static 'image/photo.jpg' %}" class="card-img-top preview" alt="{% trans 'Preview' %}" style="width: 288px; height: 288px;">
                 <div class="card-body">
                     <input type="file" name="main-${formCountMain}-image" class="form-control-file">
-                    <input type="text" name="main-${formCountMain}-url" class="form-control-file" placeholder='URL'>
-                    <input type="text" name="main-${formCountMain}-text" class="form-control-file" placeholder='Текст...'>
-                    <button type="button" class="btn btn-danger btn-sm mt-2 delete-image-btn">Удалить</button>
+                    <input type="text" name="main-${formCountMain}-url" class="form-control-file" placeholder='{% trans "URL" %}'>
+                    <input type="text" name="main-${formCountMain}-text" class="form-control-file" placeholder='{% trans "Текст..." %}'>
+                    <button type="button" class="btn btn-danger btn-sm mt-2 delete-image-btn">{% trans "Удалить" %}</button>
                 </div>
             </div>
         `;
@@ -205,12 +249,12 @@ document.addEventListener('DOMContentLoaded', function() {
         const formset = document.createElement('div');
         formset.innerHTML = `
             <div class="card" style="width: 18rem;">
-                <img src="{% static 'image/photo.jpg' %}" class="card-img-top preview" alt="Preview" style="width: 288px; height: 288px;">
+                <img src="{% static 'image/photo.jpg' %}" class="card-img-top preview" alt="{% trans 'Preview' %}" style="width: 288px; height: 288px;">
                 <div class="card-body">
                     <input type="file" name="another-${formCountAnother}-image" class="form-control-file">
-                    <input type="text" name="another-${formCountAnother}-url" class="form-control-file" placeholder='URL'>
-                    <input type="text" name="another-${formCountAnother}-text" class="form-control-file" placeholder='Текст...'>
-                    <button type="button" class="btn btn-danger btn-sm mt-2 delete-image-btn">Удалить</button>
+                    <input type="text" name="another-${formCountAnother}-url" class="form-control-file" placeholder='{% trans "URL" %}'>
+                    <input type="text" name="another-${formCountAnother}-text" class="form-control-file" placeholder='{% trans "Текст..." %}'>
+                    <button type="button" class="btn btn-danger btn-sm mt-2 delete-image-btn">{% trans "Удалить" %}</button>
                 </div>
             </div>
         `;
@@ -262,6 +306,10 @@ document.addEventListener('DOMContentLoaded', function() {
         const formData = new FormData();
         formData.append('back_banner_photo', file);
 
+        // Добавляем значение choice в formData
+        const choice = document.querySelector('input[name="choice"]:checked').value;
+        formData.append('choice', choice);
+
         fetch('{% url 'adminlte:save_back_banner' %}', {
             method: 'POST',
             body: formData,
@@ -272,13 +320,14 @@ document.addEventListener('DOMContentLoaded', function() {
                 // Если успешно загружено на сервер, обновляем изображение
                 bannerImage.src = URL.createObjectURL(file);
             } else {
-                console.log('Ошибка при загрузке на сервер');
+                console.log('{% trans "Ошибка при загрузке на сервер" %}');
             }
         })
         .catch(error => {
-            console.error('Ошибка:', error);
+            console.error('{% trans "Ошибка" %}:', error);
         });
     });
+
 
     // Обработчик события для кнопки "Удалить"
     deleteButton.addEventListener('click', function() {

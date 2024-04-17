@@ -12,7 +12,7 @@ class NewsForm(forms.ModelForm):
 
     class Meta:
         model = News
-        fields = ['title', 'description', 'main_image', 'url_trailer', 'active', 'seo_url', 'seo_title', 'seo_keywords',
+        fields = ['title', 'title_uk',  'description', 'description_en', 'description_uk', 'main_image', 'url_trailer', 'active', 'seo_url', 'seo_title', 'seo_keywords',
                   'description_seo']
 
 
@@ -28,7 +28,7 @@ class SellsForm(forms.ModelForm):
 
     class Meta:
         model = Promotions
-        fields = ['title', 'description', 'main_image', 'url_trailer', 'active', 'seo_url', 'seo_title', 'seo_keywords',
+        fields = ['title', 'title_uk',  'description', 'description_en', 'description_uk', 'main_image', 'url_trailer', 'active', 'seo_url', 'seo_title', 'seo_keywords',
                   'description_seo']
 
 
@@ -36,7 +36,7 @@ class CinemaHallForm(forms.ModelForm):
 
     class Meta:
         model = CinemaHall
-        fields = ['number', 'description', 'scheme_image', 'top_image', 'seo_url', 'seo_title', 'seo_keywords',
+        fields = ['number', 'description', 'description_en', 'scheme_image', 'top_image', 'seo_url', 'seo_title', 'seo_keywords',
                   'description_seo']
 
 
@@ -59,7 +59,7 @@ class PagesForm(forms.ModelForm):
 
     class Meta:
         model = Pages
-        fields = ['title', 'description', 'main_image', 'active', 'seo_url', 'seo_title', 'seo_keywords',
+        fields = ['title', 'title_uk',  'description', 'description_en', 'description_uk', 'main_image', 'active', 'seo_url', 'seo_title', 'seo_keywords',
                   'description_seo']
 
 
