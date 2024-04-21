@@ -319,21 +319,25 @@
         });
 
         var lineChartCanvas = $('#lineChart').get(0).getContext('2d');
-
-
         var lineChartData = {
-            labels: ['User 1', 'User 2', 'User 3', 'User 4', 'User 5'], // Пример имен пользователей
+            labels: {{ usernames | safe }},
             datasets: [
+                {
+                    label: 'Date Joined',
+                    borderColor: '#00a65a',
+                    backgroundColor: 'rgba(0, 166, 90, 0.3)',
+                    data: {{ dates_joined | safe }},
+                    fill: false,
+                },
                 {
                     label: 'Last Login',
                     borderColor: '#f56954',
-                    backgroundColor: 'rgba(245, 105, 84, 0.5)',
+                    backgroundColor: 'rgba(245, 105, 84, 0.3)',
                     data: {{ last_logins | safe }},
-                    fill: true,
+                    fill: false,
                 }
             ]
         };
-
         var lineChartOptions = {
             maintainAspectRatio: false,
             responsive: true,
@@ -341,6 +345,16 @@
                 display: true,
                 position: 'right',
             },
+            scales: {
+                xAxes: [{
+                    type: 'time',
+                    time: {
+                        unit: 'day',
+                        tooltipFormat: 'll',
+                    },
+                    distribution: 'linear'
+                }],
+            }
         };
 
         var lineChart = new Chart(lineChartCanvas, {

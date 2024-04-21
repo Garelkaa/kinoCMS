@@ -20,24 +20,35 @@ def is_admin(user):
 
 
 def stats(request):
+    # Определяем общее количество пользователей
     count_users = CustomUser.objects.count()
 
+    # Подсчет пользователей с украинским языком
     count_users_ukrainian = CustomUser.objects.filter(language='u').count()
-    count_users_english = CustomUser.objects.filter(language='r').count()
-    last_logins = CustomUser.objects.exclude(last_login=None).values_list('last_login', flat=True)
 
-    # Convert last login times to timestamps
-    last_logins_timestamps = [(login - timezone.datetime(1970, 1, 1, tzinfo=timezone.utc)).total_seconds() for login in
-                              last_logins]
+    # Подсчет пользователей с английским языком
+    count_users_english = CustomUser.objects.filter(language='r').count()
+
+    # Сбор данных о пользователях
+    users = CustomUser.objects.exclude(date_joined=None).values('date_joined', 'last_login', 'username')  # Используем username или другой удобный идентификатор
+
+    # Подготовка данных для графика
+    dates_joined_timestamps = [(user['date_joined'] - timezone.datetime(1970, 1, 1, tzinfo=timezone.utc)).total_seconds() * 1000 for user in users if user['date_joined'] is not None]  # Конвертация в миллисекунды
+    last_logins_timestamps = [(user['last_login'] - timezone.datetime(1970, 1, 1, tzinfo=timezone.utc)).total_seconds() * 1000 for user in users if user['last_login'] is not None]  # Конвертация в миллисекунды
+    usernames = [user['username'] for user in users]  # Сбор имен пользователей
+
     context = {
         'title': 'Страница статистики',
         'user_count': count_users,
         'percentage_ukrainian': (count_users_ukrainian / count_users) * 100 if count_users > 0 else 0,
         'percentage_english': (count_users_english / count_users) * 100 if count_users > 0 else 0,
+        'dates_joined': dates_joined_timestamps,
         'last_logins': last_logins_timestamps,
+        'usernames': usernames,
     }
 
     return render(request, 'customadmin/stats.html', context=context)
+
 
 @login_required
 @user_passes_test(is_admin)
@@ -161,7 +172,7 @@ def page_film(request):
         gallery_formset = GalleryImageFormSet(queryset=Gallery.objects.none())
 
     return render(request, 'customadmin/add_film.html',
-                  {'title': 'Добавление фильма', 'name': 'фильма', 'form': films_form,
+                  {'title': 'Добавление фильма', 'form': films_form,
                    'gallery_formset': gallery_formset})
 
 
@@ -240,7 +251,7 @@ def cinema_page(request):
         gallery_formset = GalleryImageFormSet(queryset=Gallery.objects.none())
 
     return render(request, 'customadmin/add_cinema.html',
-                  {'title': 'Добавление кинотеатра', 'name': 'кинотеатра', 'form': cinema_form,
+                  {'title': 'Добавление кинотеатра', 'form': cinema_form,
                    'gallery_formset': gallery_formset})
 
 
@@ -319,7 +330,7 @@ def cinema_hall(request):
         gallery_formset = GalleryImageFormSet(queryset=Gallery.objects.none())
 
     return render(request, 'customadmin/card_hall.html',
-                  {'title': 'Добавление зала', 'name': 'зала', 'form': cinema_hall_form,
+                  {'title': 'Добавление зала', 'form': cinema_hall_form,
                    'gallery_formset': gallery_formset})
 
 
@@ -364,7 +375,7 @@ def news_add(request):
         gallery_formset = GalleryImageFormSet(queryset=Gallery.objects.none())
 
     return render(request, 'customadmin/forms.html',
-                  {'title': 'Добавление новости', 'name': 'новости', 'form': news_add_form,
+                  {'title': 'Добавление новости', 'form': news_add_form,
                    'gallery_formset': gallery_formset})
 
 
@@ -443,7 +454,7 @@ def add_sells(request):
         gallery_formset = GalleryImageFormSet(queryset=Gallery.objects.none())
 
     return render(request, 'customadmin/forms.html',
-                  {'title': 'Добавление акции', 'name': 'акции', 'form': sells_form,
+                  {'title': 'Добавление акции', 'form': sells_form,
                    'gallery_formset': gallery_formset})
 
 
@@ -551,7 +562,7 @@ def new_page(request):
         new_page_form = PagesForm()
         gallery_formset = GalleryImageFormSet(queryset=Gallery.objects.none())
     return render(request, 'customadmin/add_page.html',
-                  {'title': 'Добавление страницы', 'name': 'страницы', 'form': new_page_form, 'gallery_formset': gallery_formset})
+                  {'title': 'Добавление страницы', 'form': new_page_form, 'gallery_formset': gallery_formset})
 
 
 @login_required
