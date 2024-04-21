@@ -655,14 +655,14 @@ def spam(request):
             selected_file = form.cleaned_data['file_name']
             if request.POST.get('recipientType') == 'allUsers':
                 recipients = [user.email for user in all_users if user.email]
-                send_spam_emails.delay(selected_file, recipients)
-                return redirect('adminlte:spam')
+                task = send_spam_emails.delay(selected_file, recipients)
+                return render(request, 'customadmin/spam.html', context={'title': 'Страница рассылки', 'files': files, 'form': form, 'users': all_users, 'task_id': task.task_id})
             elif request.POST.get('recipientType') == 'selective':
                 # Получаем выбранных пользователей из формы
                 selectedUsers = request.POST.get('selectedUsers[]').split(',')
                 # Отправляем письма выбранным пользователям
-                send_selected_users.delay(selected_file, selectedUsers)
-                return JsonResponse({'message': 'Рассылка только выбранным пользователям запущена.'})
+                task = send_selected_users.delay(selected_file, selectedUsers)
+                return render(request, 'customadmin/spam.html', context={'title': 'Страница рассылки', 'files': files, 'form': form, 'users': all_users, 'task_id': task.task_id})
             else:
                 return JsonResponse({'error': 'Некорректный тип получателей.'}, status=400)
         else:
@@ -681,6 +681,22 @@ def spam(request):
     return render(request, 'customadmin/spam.html', context=context)
 
 
+@login_required
+@user_passes_test(is_admin)
+def spam_email_verif(request):
+    if request.method == 'POST':
+        files = Spam.objects.select_related().all()
+        all_users = CustomUser.objects.all()
+        form = SpamForm(request.POST, request.FILES)
+        selected_file = form.cleaned_data['file_name']
+        if request.POST.get('recipientType') == 'selective':
+            # Получаем выбранных пользователей из формы
+            selectedUsers = request.POST.get('selectedUsers[]').split(',')
+            # Отправляем письма выбранным пользователям
+            task = send_selected_users.delay(selected_file, selectedUsers)
+            return render(request, 'customadmin/spam.html', context={'title': 'Страница рассылки', 'files': files, 'form': form, 'users': all_users, 'task_id': task.task_id})
+        
+        
 @login_required
 @user_passes_test(is_admin)
 @csrf_exempt

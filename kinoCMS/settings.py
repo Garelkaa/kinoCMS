@@ -44,6 +44,8 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django_celery_results',
+    'celery_progress',
 
     'customadmin.apps.CustomadminConfig',
     'users.apps.UsersConfig',

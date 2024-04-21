@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-04-17 17:16+0300\n"
+"POT-Creation-Date: 2024-04-21 23:54+0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -22,7 +22,7 @@ msgstr ""
 #: customadmin/templates/customadmin/add_film.html:45
 #: customadmin/templates/customadmin/edit_cinema.html:48
 #: customadmin/templates/customadmin/edit_films.html:50
-#: customadmin/templates/customadmin/edit_other_page.html:18
+#: customadmin/templates/customadmin/edit_other_page.html:45
 #: customadmin/templates/customadmin/forms.html:45
 msgid "Назва на англійскій:"
 msgstr "Name in English:"
@@ -31,13 +31,13 @@ msgstr "Name in English:"
 #: customadmin/templates/customadmin/add_cinema.html:53
 #: customadmin/templates/customadmin/add_film.html:46
 #: customadmin/templates/customadmin/add_film.html:53
-#: customadmin/templates/customadmin/add_page.html:19
+#: customadmin/templates/customadmin/add_page.html:45
 #: customadmin/templates/customadmin/edit_cinema.html:49
 #: customadmin/templates/customadmin/edit_cinema.html:56
 #: customadmin/templates/customadmin/edit_films.html:51
 #: customadmin/templates/customadmin/edit_films.html:58
-#: customadmin/templates/customadmin/edit_other_page.html:19
-#: customadmin/templates/customadmin/edit_other_page.html:26
+#: customadmin/templates/customadmin/edit_other_page.html:46
+#: customadmin/templates/customadmin/edit_other_page.html:53
 #: customadmin/templates/customadmin/forms.html:46
 #: customadmin/templates/customadmin/forms.html:53
 msgid "Введіть назву"
@@ -75,10 +75,10 @@ msgstr "Enter the name"
 #: customadmin/templates/customadmin/edit_films.html:60
 #: customadmin/templates/customadmin/edit_films.html:67
 #: customadmin/templates/customadmin/edit_films.html:74
-#: customadmin/templates/customadmin/edit_other_page.html:21
-#: customadmin/templates/customadmin/edit_other_page.html:28
-#: customadmin/templates/customadmin/edit_other_page.html:35
-#: customadmin/templates/customadmin/edit_other_page.html:42
+#: customadmin/templates/customadmin/edit_other_page.html:48
+#: customadmin/templates/customadmin/edit_other_page.html:55
+#: customadmin/templates/customadmin/edit_other_page.html:62
+#: customadmin/templates/customadmin/edit_other_page.html:69
 #: customadmin/templates/customadmin/forms.html:48
 #: customadmin/templates/customadmin/forms.html:55
 #: customadmin/templates/customadmin/forms.html:62
@@ -96,7 +96,7 @@ msgstr "This field is required"
 #: customadmin/templates/customadmin/add_film.html:52
 #: customadmin/templates/customadmin/edit_cinema.html:55
 #: customadmin/templates/customadmin/edit_films.html:57
-#: customadmin/templates/customadmin/edit_other_page.html:25
+#: customadmin/templates/customadmin/edit_other_page.html:52
 #: customadmin/templates/customadmin/forms.html:52
 msgid "Назва на українській:"
 msgstr "Name in Ukrainian:"
@@ -105,7 +105,7 @@ msgstr "Name in Ukrainian:"
 #: customadmin/templates/customadmin/add_film.html:59
 #: customadmin/templates/customadmin/edit_cinema.html:62
 #: customadmin/templates/customadmin/edit_films.html:64
-#: customadmin/templates/customadmin/edit_other_page.html:32
+#: customadmin/templates/customadmin/edit_other_page.html:59
 #: customadmin/templates/customadmin/forms.html:59
 msgid "Опис на англійській:"
 msgstr "Description in English:"
@@ -114,13 +114,13 @@ msgstr "Description in English:"
 #: customadmin/templates/customadmin/add_cinema.html:67
 #: customadmin/templates/customadmin/add_film.html:60
 #: customadmin/templates/customadmin/add_film.html:67
-#: customadmin/templates/customadmin/add_page.html:23
+#: customadmin/templates/customadmin/add_page.html:49
 #: customadmin/templates/customadmin/edit_cinema.html:63
 #: customadmin/templates/customadmin/edit_cinema.html:70
 #: customadmin/templates/customadmin/edit_films.html:65
 #: customadmin/templates/customadmin/edit_films.html:72
-#: customadmin/templates/customadmin/edit_other_page.html:33
-#: customadmin/templates/customadmin/edit_other_page.html:40
+#: customadmin/templates/customadmin/edit_other_page.html:60
+#: customadmin/templates/customadmin/edit_other_page.html:67
 #: customadmin/templates/customadmin/forms.html:60
 #: customadmin/templates/customadmin/forms.html:67
 msgid "Введіть опис"
@@ -130,21 +130,21 @@ msgstr "Enter the description"
 #: customadmin/templates/customadmin/add_film.html:66
 #: customadmin/templates/customadmin/edit_cinema.html:69
 #: customadmin/templates/customadmin/edit_films.html:71
-#: customadmin/templates/customadmin/edit_other_page.html:39
+#: customadmin/templates/customadmin/edit_other_page.html:66
 #: customadmin/templates/customadmin/forms.html:66
 msgid "Опис на українській:"
 msgstr "Description in Ukrainian:"
 
 #: customadmin/templates/customadmin/add_cinema.html:73
 #: customadmin/templates/customadmin/add_film.html:73
-#: customadmin/templates/customadmin/add_page.html:26
+#: customadmin/templates/customadmin/add_page.html:52
 #: customadmin/templates/customadmin/forms.html:73
 msgid "Головне зображення:"
 msgstr "Main Image:"
 
 #: customadmin/templates/customadmin/add_cinema.html:74
 #: customadmin/templates/customadmin/add_film.html:74
-#: customadmin/templates/customadmin/add_page.html:27
+#: customadmin/templates/customadmin/add_page.html:53
 #: customadmin/templates/customadmin/forms.html:74
 msgid "Завантажте головне зображення"
 msgstr "Upload the main image"
@@ -152,12 +152,12 @@ msgstr "Upload the main image"
 #: customadmin/templates/customadmin/add_cinema.html:78
 #: customadmin/templates/customadmin/add_cinema.html:86
 #: customadmin/templates/customadmin/add_film.html:78
-#: customadmin/templates/customadmin/add_page.html:28
-#: customadmin/templates/customadmin/add_page.html:84
-#: customadmin/templates/customadmin/banner.html:181
-#: customadmin/templates/customadmin/banner.html:237
+#: customadmin/templates/customadmin/add_page.html:54
+#: customadmin/templates/customadmin/add_page.html:119
+#: customadmin/templates/customadmin/banner.html:205
+#: customadmin/templates/customadmin/banner.html:261
 #: customadmin/templates/customadmin/forms.html:75
-#: customadmin/templates/customadmin/forms.html:149
+#: customadmin/templates/customadmin/forms.html:158
 msgid "Preview"
 msgstr "Preview"
 
@@ -171,7 +171,7 @@ msgstr "Upload the top image"
 
 #: customadmin/templates/customadmin/add_cinema.html:88
 #: customadmin/templates/customadmin/add_film.html:80
-#: customadmin/templates/customadmin/add_page.html:31
+#: customadmin/templates/customadmin/add_page.html:57
 #: customadmin/templates/customadmin/card_hall.html:47
 #: customadmin/templates/customadmin/forms.html:81
 msgid "Галерея картинок"
@@ -179,91 +179,91 @@ msgstr "Image Gallery"
 
 #: customadmin/templates/customadmin/add_cinema.html:98
 #: customadmin/templates/customadmin/add_film.html:90
-#: customadmin/templates/customadmin/add_page.html:38
+#: customadmin/templates/customadmin/add_page.html:64
 #: customadmin/templates/customadmin/forms.html:88
 msgid "Додати ще картинку"
 msgstr "Add another image"
 
 #: customadmin/templates/customadmin/add_cinema.html:100
 #: customadmin/templates/customadmin/add_film.html:104
-#: customadmin/templates/customadmin/add_page.html:40
+#: customadmin/templates/customadmin/add_page.html:66
 #: customadmin/templates/customadmin/forms.html:90
 msgid "Активний:"
 msgstr "Active:"
 
 #: customadmin/templates/customadmin/add_cinema.html:104
 #: customadmin/templates/customadmin/add_film.html:108
-#: customadmin/templates/customadmin/add_page.html:44
+#: customadmin/templates/customadmin/add_page.html:70
 #: customadmin/templates/customadmin/forms.html:94
 msgid "Посилання на відео:"
 msgstr "Video Link:"
 
 #: customadmin/templates/customadmin/add_cinema.html:105
 #: customadmin/templates/customadmin/add_film.html:109
-#: customadmin/templates/customadmin/add_page.html:45
+#: customadmin/templates/customadmin/add_page.html:71
 #: customadmin/templates/customadmin/forms.html:95
 msgid "Введіть посилання на відео з YouTube"
 msgstr "Enter the link to the YouTube video"
 
 #: customadmin/templates/customadmin/add_cinema.html:111
 #: customadmin/templates/customadmin/add_film.html:115
-#: customadmin/templates/customadmin/add_page.html:48
+#: customadmin/templates/customadmin/add_page.html:74
 #: customadmin/templates/customadmin/forms.html:101
 msgid "SEO URL:"
 msgstr "SEO URL:"
 
 #: customadmin/templates/customadmin/add_cinema.html:112
 #: customadmin/templates/customadmin/add_film.html:116
-#: customadmin/templates/customadmin/add_page.html:49
+#: customadmin/templates/customadmin/add_page.html:75
 #: customadmin/templates/customadmin/forms.html:102
 msgid "Введіть SEO URL"
 msgstr "Enter SEO URL"
 
 #: customadmin/templates/customadmin/add_cinema.html:118
 #: customadmin/templates/customadmin/add_film.html:122
-#: customadmin/templates/customadmin/add_page.html:52
+#: customadmin/templates/customadmin/add_page.html:78
 #: customadmin/templates/customadmin/forms.html:108
 msgid "SEO Title:"
 msgstr "SEO Title:"
 
 #: customadmin/templates/customadmin/add_cinema.html:119
 #: customadmin/templates/customadmin/add_film.html:123
-#: customadmin/templates/customadmin/add_page.html:53
+#: customadmin/templates/customadmin/add_page.html:79
 #: customadmin/templates/customadmin/forms.html:109
 msgid "Введіть SEO Title"
 msgstr "Enter SEO Title"
 
 #: customadmin/templates/customadmin/add_cinema.html:125
 #: customadmin/templates/customadmin/add_film.html:129
-#: customadmin/templates/customadmin/add_page.html:56
+#: customadmin/templates/customadmin/add_page.html:82
 #: customadmin/templates/customadmin/forms.html:115
 msgid "SEO Keywords:"
 msgstr "SEO Keywords:"
 
 #: customadmin/templates/customadmin/add_cinema.html:126
 #: customadmin/templates/customadmin/add_film.html:130
-#: customadmin/templates/customadmin/add_page.html:57
+#: customadmin/templates/customadmin/add_page.html:83
 #: customadmin/templates/customadmin/forms.html:116
 msgid "Введіть SEO Keywords"
 msgstr "Enter SEO Keywords"
 
 #: customadmin/templates/customadmin/add_cinema.html:132
 #: customadmin/templates/customadmin/add_film.html:136
-#: customadmin/templates/customadmin/add_page.html:60
+#: customadmin/templates/customadmin/add_page.html:86
 #: customadmin/templates/customadmin/forms.html:122
 msgid "SEO Description:"
 msgstr "SEO Description:"
 
 #: customadmin/templates/customadmin/add_cinema.html:133
 #: customadmin/templates/customadmin/add_film.html:137
-#: customadmin/templates/customadmin/add_page.html:61
+#: customadmin/templates/customadmin/add_page.html:87
 #: customadmin/templates/customadmin/forms.html:123
 msgid "Введіть SEO Description"
 msgstr "Enter SEO Description"
 
 #: customadmin/templates/customadmin/add_cinema.html:138
 #: customadmin/templates/customadmin/add_film.html:142
-#: customadmin/templates/customadmin/add_page.html:63
+#: customadmin/templates/customadmin/add_page.html:89
 #: customadmin/templates/customadmin/forms.html:128
 msgid "Зберегти"
 msgstr "Save"
@@ -272,92 +272,92 @@ msgstr "Save"
 msgid "Тип кіно:"
 msgstr "Film type:"
 
-#: customadmin/templates/customadmin/add_page.html:18
+#: customadmin/templates/customadmin/add_page.html:44
 msgid "Назва:"
-msgstr ""
+msgstr "Name"
 
-#: customadmin/templates/customadmin/add_page.html:22
+#: customadmin/templates/customadmin/add_page.html:48
 msgid "Опис:"
-msgstr ""
+msgstr "Description"
 
-#: customadmin/templates/customadmin/add_page.html:87
-#: customadmin/templates/customadmin/banner.html:108
-#: customadmin/templates/customadmin/banner.html:186
-#: customadmin/templates/customadmin/banner.html:242
+#: customadmin/templates/customadmin/add_page.html:122
+#: customadmin/templates/customadmin/banner.html:112
+#: customadmin/templates/customadmin/banner.html:210
+#: customadmin/templates/customadmin/banner.html:266
 #: customadmin/templates/customadmin/card_hall.html:30
 #: customadmin/templates/customadmin/card_hall.html:42
-#: customadmin/templates/customadmin/cinema.html:21
+#: customadmin/templates/customadmin/cinema.html:47
 #: customadmin/templates/customadmin/contacts.html:36
-#: customadmin/templates/customadmin/forms.html:152
+#: customadmin/templates/customadmin/forms.html:161
 msgid "Удалить"
 msgstr "Delete"
 
-#: customadmin/templates/customadmin/banner.html:42
+#: customadmin/templates/customadmin/banner.html:47
 msgid "На главной верх"
 msgstr "At the top of the main page"
 
-#: customadmin/templates/customadmin/banner.html:71
-#: customadmin/templates/customadmin/banner.html:141
+#: customadmin/templates/customadmin/banner.html:76
+#: customadmin/templates/customadmin/banner.html:145
 msgid "Активный"
 msgstr "Active"
 
-#: customadmin/templates/customadmin/banner.html:76
-#: customadmin/templates/customadmin/banner.html:145
+#: customadmin/templates/customadmin/banner.html:81
+#: customadmin/templates/customadmin/banner.html:149
 msgid "Добавить фото"
 msgstr "Add photo"
 
-#: customadmin/templates/customadmin/banner.html:77
-#: customadmin/templates/customadmin/banner.html:146
+#: customadmin/templates/customadmin/banner.html:82
+#: customadmin/templates/customadmin/banner.html:150
 #: customadmin/templates/customadmin/card_hall.html:74
 #: customadmin/templates/customadmin/main_page.html:62
 msgid "Сохранить"
 msgstr "Save"
 
-#: customadmin/templates/customadmin/banner.html:80
+#: customadmin/templates/customadmin/banner.html:85
 msgid "Сквозной банер на заднем фоне"
 msgstr "Continuous banner on the background"
 
-#: customadmin/templates/customadmin/banner.html:87
+#: customadmin/templates/customadmin/banner.html:92
 msgid "Default photo"
 msgstr "Default photo"
 
-#: customadmin/templates/customadmin/banner.html:93
+#: customadmin/templates/customadmin/banner.html:98
 msgid "Fon photo"
 msgstr "Background photo"
 
-#: customadmin/templates/customadmin/banner.html:99
+#: customadmin/templates/customadmin/banner.html:103
 msgid "Banner Image"
 msgstr "Banner Image"
 
-#: customadmin/templates/customadmin/banner.html:107
+#: customadmin/templates/customadmin/banner.html:111
 #: customadmin/templates/customadmin/card_hall.html:29
 #: customadmin/templates/customadmin/card_hall.html:41
 #: customadmin/templates/customadmin/contacts.html:35
 msgid "Загрузить"
 msgstr "Upload"
 
-#: customadmin/templates/customadmin/banner.html:112
+#: customadmin/templates/customadmin/banner.html:116
 msgid "На главной Новости Акции внизу"
 msgstr "On the main page, News and Promotions at the bottom"
 
-#: customadmin/templates/customadmin/banner.html:184
-#: customadmin/templates/customadmin/banner.html:240
+#: customadmin/templates/customadmin/banner.html:208
+#: customadmin/templates/customadmin/banner.html:264
 #: customadmin/templates/customadmin/card_hall.html:70
 #: customadmin/templates/customadmin/contacts.html:43
 #: customadmin/templates/customadmin/main_page.html:56
 msgid "URL"
 msgstr "URL"
 
-#: customadmin/templates/customadmin/banner.html:185
-#: customadmin/templates/customadmin/banner.html:241
+#: customadmin/templates/customadmin/banner.html:209
+#: customadmin/templates/customadmin/banner.html:265
 msgid "Текст..."
 msgstr "Text..."
 
-#: customadmin/templates/customadmin/banner.html:304
+#: customadmin/templates/customadmin/banner.html:332
 msgid "Ошибка при загрузке на сервер"
 msgstr "Error uploading to the server"
 
-#: customadmin/templates/customadmin/banner.html:308
+#: customadmin/templates/customadmin/banner.html:336
 msgid "Ошибка"
 msgstr "Error"
 
@@ -390,7 +390,7 @@ msgstr "Top Banner Photo"
 #: customadmin/templates/customadmin/card_hall.html:51
 #: customadmin/templates/customadmin/card_hall.html:57
 #: customadmin/templates/customadmin/card_hall.html:63
-#: customadmin/templates/customadmin/cinema.html:29
+#: customadmin/templates/customadmin/cinema.html:55
 #: customadmin/templates/customadmin/contacts.html:47
 msgid "Добавить"
 msgstr "Add"
@@ -418,7 +418,7 @@ msgstr "Word"
 msgid "Description"
 msgstr "Description"
 
-#: customadmin/templates/customadmin/cinema.html:11
+#: customadmin/templates/customadmin/cinema.html:37
 msgid "Список кинотеатров"
 msgstr "List of Cinemas"
 
@@ -440,16 +440,6 @@ msgstr "Map Coordinates"
 msgid "Главная картинка"
 msgstr "Main Image"
 
-#: customadmin/templates/customadmin/films.html:28
-#: customadmin/templates/customadmin/main_page.html:28
-#: customadmin/templates/customadmin/news.html:28
-#: customadmin/templates/customadmin/pages.html:28
-#: customadmin/templates/customadmin/sells.html:28
-#: customadmin/templates/customadmin/spam.html:40
-#: customadmin/templates/customadmin/users.html:26
-msgid "Go"
-msgstr "Go"
-
 #: customadmin/templates/customadmin/films.html:37
 msgid "Список фильмов текущих"
 msgstr "Current Films List"
@@ -457,7 +447,7 @@ msgstr "Current Films List"
 #: customadmin/templates/customadmin/main_page.html:40
 #: customadmin/templates/customadmin/main_page.html:43
 #: customadmin/templates/customadmin/main_page.html:49
-#: customadmin/templates/customadmin/spam.html:110
+#: customadmin/templates/customadmin/spam.html:135
 #: customadmin/templates/customadmin/users.html:57
 msgid "Телефон"
 msgstr "Phone"
@@ -534,99 +524,83 @@ msgstr "Create New"
 msgid "Создать Акцию"
 msgstr "Create Promotion"
 
-#: customadmin/templates/customadmin/spam.html:52
+#: customadmin/templates/customadmin/spam.html:75
 msgid "Рассылка"
 msgstr "Mailing"
 
-#: customadmin/templates/customadmin/spam.html:56
+#: customadmin/templates/customadmin/spam.html:79
 msgid "Кому слать:"
 msgstr "Send to:"
 
-#: customadmin/templates/customadmin/spam.html:58
+#: customadmin/templates/customadmin/spam.html:81
 msgid "Все пользователи"
 msgstr "All Users"
 
-#: customadmin/templates/customadmin/spam.html:60
+#: customadmin/templates/customadmin/spam.html:83
 msgid "Выборочно"
 msgstr "Selectively"
 
-#: customadmin/templates/customadmin/spam.html:61
+#: customadmin/templates/customadmin/spam.html:84
 msgid "Выбрать пользователей"
 msgstr "Select Users"
 
-#: customadmin/templates/customadmin/spam.html:64
+#: customadmin/templates/customadmin/spam.html:87
 msgid "Загрузить письмо:"
 msgstr "Upload Email:"
 
-#: customadmin/templates/customadmin/spam.html:66
+#: customadmin/templates/customadmin/spam.html:89
 msgid "Шаблон используемый в рассылке:"
 msgstr "Template Used in Mailing:"
 
-#: customadmin/templates/customadmin/spam.html:70
-msgid "Кол-во писем:"
-msgstr "Number of Emails:"
+#: customadmin/templates/customadmin/spam.html:96
+msgid "Очікування"
+msgstr "Waiting..."
 
-#: customadmin/templates/customadmin/spam.html:71
-msgid "Рассылка выполнена:"
-msgstr "Mailing Completed:"
-
-#: customadmin/templates/customadmin/spam.html:73
+#: customadmin/templates/customadmin/spam.html:98
 msgid "Отправить"
 msgstr "Send"
 
-#: customadmin/templates/customadmin/spam.html:81
+#: customadmin/templates/customadmin/spam.html:106
 msgid "Загруженные письма"
 msgstr "Uploaded Emails"
 
-#: customadmin/templates/customadmin/spam.html:98
+#: customadmin/templates/customadmin/spam.html:123
 msgid "Список пользователей"
 msgstr "User List"
 
-#: customadmin/templates/customadmin/spam.html:106
+#: customadmin/templates/customadmin/spam.html:131
 msgid "Имя"
 msgstr "Name"
 
-#: customadmin/templates/customadmin/spam.html:107
+#: customadmin/templates/customadmin/spam.html:132
 msgid "Фамилия"
 msgstr "Surname"
 
-#: customadmin/templates/customadmin/spam.html:108
+#: customadmin/templates/customadmin/spam.html:133
 msgid "Email"
 msgstr "Email"
 
-#: customadmin/templates/customadmin/spam.html:109
+#: customadmin/templates/customadmin/spam.html:134
 msgid "Ник"
 msgstr "Nickname"
 
-#: customadmin/templates/customadmin/spam.html:111
+#: customadmin/templates/customadmin/spam.html:136
 #: customadmin/templates/customadmin/users.html:55
 msgid "День рождения"
 msgstr "Birthday"
 
-#: customadmin/templates/customadmin/spam.html:112
+#: customadmin/templates/customadmin/spam.html:137
 #: customadmin/templates/customadmin/users.html:60
 msgid "Город"
 msgstr "City"
 
-#: customadmin/templates/customadmin/spam.html:132
+#: customadmin/templates/customadmin/spam.html:157
 msgid "Закрыть"
 msgstr "Close"
 
-#: customadmin/templates/customadmin/spam.html:133
+#: customadmin/templates/customadmin/spam.html:158
 msgid "Выбрать"
 msgstr "Choose"
-
-#: customadmin/templates/customadmin/spam.html:217
-msgid "Предыдущая"
-msgstr ""
-
-#: customadmin/templates/customadmin/spam.html:218
-msgid "Следующая"
-msgstr ""
-
-#: customadmin/templates/customadmin/spam.html:220
-msgid "Показаны записи с _START_ по _END_ из _TOTAL_ записей"
-msgstr ""
 
 #: customadmin/templates/customadmin/users.html:38
 msgid "Пользователи"
@@ -648,3 +622,20 @@ msgstr "Full Name"
 #: customadmin/templates/customadmin/users.html:59
 msgid "Псевдоним"
 msgstr "Alias"
+
+#: kinoCMS/settings.py:132
+msgid "English"
+msgstr "English"
+
+#: kinoCMS/settings.py:133
+msgid "Ukrainian"
+msgstr "Ukrainian"
+
+#~ msgid "Go"
+#~ msgstr "Go"
+
+#~ msgid "Кол-во писем:"
+#~ msgstr "Number of Emails:"
+
+#~ msgid "Рассылка выполнена:"
+#~ msgstr "Mailing Completed:"

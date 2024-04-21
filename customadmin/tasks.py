@@ -46,5 +46,5 @@ def send_selected_users(self, email_template, selectedUsers):
         )
         emails_sent += 1
         progress_recorder.set_progress(emails_sent, total_emails)
-
-    return {'total': total_emails, 'sent': emails_sent}
+        
+    return True

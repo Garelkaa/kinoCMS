@@ -38,5 +38,6 @@ urlpatterns = [
     path('users/', views.users, name='users'),
     path('users/<int:user_id>/', views.edit_user, name='edit_users'),
     path('spam/', views.spam, name='spam'),
+    # path('spam-users/', views.spam_email_verif, name='spam_users'),
     path('save_email_file/', views.save_email_file, name='save_email_file'),
     ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
