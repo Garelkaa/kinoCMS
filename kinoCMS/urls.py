@@ -6,6 +6,7 @@ from django.conf.urls.static import static
 
 urlpatterns = [
     path('admin/', include('customadmin.urls', namespace='adminlte')),
+    path('', include('main.urls', namespace='main')),
     path('i18n/', include('django.conf.urls.i18n')),
     path(r'^celery-progress/', include('celery_progress.urls')),
     

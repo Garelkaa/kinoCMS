@@ -47,6 +47,7 @@ INSTALLED_APPS = [
     'django_celery_results',
     'celery_progress',
 
+    'main.apps.MainConfig',
     'customadmin.apps.CustomadminConfig',
     'users.apps.UsersConfig',
     'banner.apps.BannerConfig',

@@ -38,6 +38,7 @@ class Movie(models.Model):
     main_image = models.ImageField(verbose_name='Картинка на главной')
     url_trailer = models.CharField(max_length=512, verbose_name='URL трейлер')
     type = models.CharField(max_length=4, choices=TYPE_CHOICES, verbose_name='Тип', null=True, blank=True)
+    active = models.BooleanField(verbose_name='Статус', null=True, blank=True)
     seo_url = models.TextField(null=True, blank=True)
     seo_title = models.TextField(null=True, blank=True)
     seo_keywords = models.TextField(null=True, blank=True)

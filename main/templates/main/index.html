@@ -1,0 +1,103 @@
+{% extends "base_site.html" %}
+{% load static %}
+
+{% block css %}
+    <style>
+        #carouselExample {
+            max-width: 1000px;
+            margin: auto;
+        }
+
+        #carouselExample img {
+            height: 700px; 
+            object-fit: cover;
+        }
+        body {
+            background: url({% static "image/bg_aphisha.jpg" %}); 
+        }
+        h5 {
+            white-space: nowrap; 
+        }
+        .container {
+            background-color: #ffffff; 
+            border-radius: 10px;
+            padding: 20px; 
+            margin-top: 20px; 
+        }
+
+        .center-content {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+    </style>
+{% endblock %}
+
+{% block content %}
+    
+    <div id="carouselExample" class="carousel slide" data-bs-ride="carousel">
+        <div class="carousel-inner">
+            {% for image in banners %}
+                <div class="carousel-item active">
+                    <img src="{{ image.image.url }}" class="d-block w-100" alt="...">
+                </div>
+            {% endfor %}    
+        </div>
+        <button class="carousel-control-prev" type="button" data-bs-target="#carouselExample" data-bs-slide="prev">
+            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Previous</span>
+        </button>
+        <button class="carousel-control-next" type="button" data-bs-target="#carouselExample" data-bs-slide="next">
+            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Next</span>
+        </button>
+    </div>
+    <div class="container mt-4">
+        <h1 class="text-center">Смотрите сегодня</h1>
+        <div class="row row-cols-1 row-cols-md-3 g-4">
+            {% for movie in movies %}
+                <div class="col">
+                    <div class="card">
+                        <img src="{% if movie.main_image %}{{ movie.main_image.url }}{% else %}{% static "image/photo.jpg" %}{%endif%}" class="card-img-top" alt="..." style="max-width:415px; height:521px;">
+                        <div class="card-body">
+                            <p class="card-text">{{ movie.title }}</p>
+                            <button class="btn btn-primary">Купить билет</button>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}    
+        </div>
+    </div>
+    <div class="container mt-4">
+        <h1 class="text-center">Смотрите скоро</h1>
+        <div class="row row-cols-1 row-cols-md-3 g-4">
+            {% for movie in upcoming_movies %}
+                <div class="col">
+                    <div class="card">
+                        <img src="{% if movie.main_image %}{{ movie.main_image.url }}{% else %}{% static "image/photo.jpg" %}{%endif%}" class="card-img-top" alt="..." style="max-width:415px; height:521px;">
+                        <div class="card-body">
+                            <p class="card-text">{{ movie.title }}</p>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}    
+        </div>
+    </div>
+    
+    <div class="container text-center">
+        <h1>Новости и Акции</h1>
+    
+        <div class="row justify-content-center">
+            <div class="col-md-15">
+                <img src="{% static "image/photo.jpg" %}" alt="" class="img-fluid" style="width: 1700px; height: 500px;">
+            </div>
+        </div>
+    
+        <div class="row justify-content-center mt-4">
+            <div class="col-md-10">
+                <img src="{% static "image/photo.jpg" %}" alt="" class="img-fluid" style="width: 1100px; height: 300px;">
+            </div>
+        </div>
+    </div>
+
+{% endblock %}

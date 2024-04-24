@@ -6,7 +6,7 @@ class MainBannerSettings(models.Model):
     active = models.BooleanField(verbose_name="Активно")
 
     class Meta:
-        db_table = 'MainBannerSettings'
+        db_table = 'mainbannersettings'
 
 
 class MainBanner(models.Model):
@@ -16,7 +16,7 @@ class MainBanner(models.Model):
     settings = models.ForeignKey(MainBannerSettings, on_delete=models.CASCADE)
 
     class Meta:
-        db_table = 'MainBanner'
+        db_table = 'mainbanner'
 
 
 class NewsBannerSettings(models.Model):
@@ -31,7 +31,7 @@ class NewsBanner(models.Model):
     settings = models.ForeignKey(NewsBannerSettings, on_delete=models.CASCADE)
 
     class Meta:
-        db_table = 'NewsBanner'
+        db_table = 'newsbanner'
 
 
 class BackBanner(models.Model):
@@ -43,4 +43,4 @@ class BackBanner(models.Model):
     choice = models.CharField(max_length=1, verbose_name="", choices=TYPE_CHOICE, null=True, blank=True)
 
     class Meta:
-        db_table = 'BackBanners'
+        db_table = 'backbanners'
