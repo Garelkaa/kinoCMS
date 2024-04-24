@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-04-21 23:52+0300\n"
+"POT-Creation-Date: 2024-04-23 22:06+0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -58,6 +58,16 @@ msgstr "Введіть назву"
 #: customadmin/templates/customadmin/add_cinema.html:121
 #: customadmin/templates/customadmin/add_cinema.html:128
 #: customadmin/templates/customadmin/add_cinema.html:135
+#: customadmin/templates/customadmin/add_cinema_hall.html:48
+#: customadmin/templates/customadmin/add_cinema_hall.html:55
+#: customadmin/templates/customadmin/add_cinema_hall.html:62
+#: customadmin/templates/customadmin/add_cinema_hall.html:70
+#: customadmin/templates/customadmin/add_cinema_hall.html:81
+#: customadmin/templates/customadmin/add_cinema_hall.html:89
+#: customadmin/templates/customadmin/add_cinema_hall.html:96
+#: customadmin/templates/customadmin/add_cinema_hall.html:103
+#: customadmin/templates/customadmin/add_cinema_hall.html:110
+#: customadmin/templates/customadmin/add_cinema_hall.html:117
 #: customadmin/templates/customadmin/add_film.html:48
 #: customadmin/templates/customadmin/add_film.html:55
 #: customadmin/templates/customadmin/add_film.html:62
@@ -105,6 +115,7 @@ msgid "Назва на українській:"
 msgstr "Назва на українській:"
 
 #: customadmin/templates/customadmin/add_cinema.html:59
+#: customadmin/templates/customadmin/add_cinema_hall.html:45
 #: customadmin/templates/customadmin/add_film.html:59
 #: customadmin/templates/customadmin/edit_cinema.html:62
 #: customadmin/templates/customadmin/edit_films.html:64
@@ -115,6 +126,8 @@ msgstr "Опис на англійській:"
 
 #: customadmin/templates/customadmin/add_cinema.html:60
 #: customadmin/templates/customadmin/add_cinema.html:67
+#: customadmin/templates/customadmin/add_cinema_hall.html:46
+#: customadmin/templates/customadmin/add_cinema_hall.html:53
 #: customadmin/templates/customadmin/add_film.html:60
 #: customadmin/templates/customadmin/add_film.html:67
 #: customadmin/templates/customadmin/add_page.html:49
@@ -130,6 +143,7 @@ msgid "Введіть опис"
 msgstr "Введіть опис"
 
 #: customadmin/templates/customadmin/add_cinema.html:66
+#: customadmin/templates/customadmin/add_cinema_hall.html:52
 #: customadmin/templates/customadmin/add_film.html:66
 #: customadmin/templates/customadmin/edit_cinema.html:69
 #: customadmin/templates/customadmin/edit_films.html:71
@@ -146,6 +160,7 @@ msgid "Головне зображення:"
 msgstr "Головне зображення:"
 
 #: customadmin/templates/customadmin/add_cinema.html:74
+#: customadmin/templates/customadmin/add_cinema_hall.html:60
 #: customadmin/templates/customadmin/add_film.html:74
 #: customadmin/templates/customadmin/add_page.html:53
 #: customadmin/templates/customadmin/forms.html:74
@@ -154,6 +169,8 @@ msgstr "Завантажте головне зображення"
 
 #: customadmin/templates/customadmin/add_cinema.html:78
 #: customadmin/templates/customadmin/add_cinema.html:86
+#: customadmin/templates/customadmin/add_cinema_hall.html:64
+#: customadmin/templates/customadmin/add_cinema_hall.html:72
 #: customadmin/templates/customadmin/add_film.html:78
 #: customadmin/templates/customadmin/add_page.html:54
 #: customadmin/templates/customadmin/add_page.html:119
@@ -165,22 +182,25 @@ msgid "Preview"
 msgstr "Попередній перегляд"
 
 #: customadmin/templates/customadmin/add_cinema.html:81
+#: customadmin/templates/customadmin/add_cinema_hall.html:67
 msgid "Верхнее зображення:"
 msgstr "Верхнє зображення:"
 
 #: customadmin/templates/customadmin/add_cinema.html:82
+#: customadmin/templates/customadmin/add_cinema_hall.html:68
 msgid "Завантажте верхне зображення"
 msgstr "Завантажте верхнє зображення"
 
 #: customadmin/templates/customadmin/add_cinema.html:88
+#: customadmin/templates/customadmin/add_cinema_hall.html:74
 #: customadmin/templates/customadmin/add_film.html:80
 #: customadmin/templates/customadmin/add_page.html:57
-#: customadmin/templates/customadmin/card_hall.html:47
 #: customadmin/templates/customadmin/forms.html:81
 msgid "Галерея картинок"
 msgstr "Галерея зображень"
 
 #: customadmin/templates/customadmin/add_cinema.html:98
+#: customadmin/templates/customadmin/add_cinema_hall.html:84
 #: customadmin/templates/customadmin/add_film.html:90
 #: customadmin/templates/customadmin/add_page.html:64
 #: customadmin/templates/customadmin/forms.html:88
@@ -195,6 +215,7 @@ msgid "Активний:"
 msgstr "Активний:"
 
 #: customadmin/templates/customadmin/add_cinema.html:104
+#: customadmin/templates/customadmin/add_cinema_hall.html:86
 #: customadmin/templates/customadmin/add_film.html:108
 #: customadmin/templates/customadmin/add_page.html:70
 #: customadmin/templates/customadmin/forms.html:94
@@ -202,6 +223,7 @@ msgid "Посилання на відео:"
 msgstr "Посилання на відео:"
 
 #: customadmin/templates/customadmin/add_cinema.html:105
+#: customadmin/templates/customadmin/add_cinema_hall.html:87
 #: customadmin/templates/customadmin/add_film.html:109
 #: customadmin/templates/customadmin/add_page.html:71
 #: customadmin/templates/customadmin/forms.html:95
@@ -209,6 +231,7 @@ msgid "Введіть посилання на відео з YouTube"
 msgstr "Введіть посилання на відео з YouTube"
 
 #: customadmin/templates/customadmin/add_cinema.html:111
+#: customadmin/templates/customadmin/add_cinema_hall.html:93
 #: customadmin/templates/customadmin/add_film.html:115
 #: customadmin/templates/customadmin/add_page.html:74
 #: customadmin/templates/customadmin/forms.html:101
@@ -216,6 +239,7 @@ msgid "SEO URL:"
 msgstr "SEO URL:"
 
 #: customadmin/templates/customadmin/add_cinema.html:112
+#: customadmin/templates/customadmin/add_cinema_hall.html:94
 #: customadmin/templates/customadmin/add_film.html:116
 #: customadmin/templates/customadmin/add_page.html:75
 #: customadmin/templates/customadmin/forms.html:102
@@ -223,6 +247,7 @@ msgid "Введіть SEO URL"
 msgstr "Введіть SEO URL"
 
 #: customadmin/templates/customadmin/add_cinema.html:118
+#: customadmin/templates/customadmin/add_cinema_hall.html:100
 #: customadmin/templates/customadmin/add_film.html:122
 #: customadmin/templates/customadmin/add_page.html:78
 #: customadmin/templates/customadmin/forms.html:108
@@ -230,6 +255,7 @@ msgid "SEO Title:"
 msgstr "SEO Заголовок:"
 
 #: customadmin/templates/customadmin/add_cinema.html:119
+#: customadmin/templates/customadmin/add_cinema_hall.html:101
 #: customadmin/templates/customadmin/add_film.html:123
 #: customadmin/templates/customadmin/add_page.html:79
 #: customadmin/templates/customadmin/forms.html:109
@@ -237,6 +263,7 @@ msgid "Введіть SEO Title"
 msgstr "Введіть SEO Заголовок"
 
 #: customadmin/templates/customadmin/add_cinema.html:125
+#: customadmin/templates/customadmin/add_cinema_hall.html:107
 #: customadmin/templates/customadmin/add_film.html:129
 #: customadmin/templates/customadmin/add_page.html:82
 #: customadmin/templates/customadmin/forms.html:115
@@ -244,6 +271,7 @@ msgid "SEO Keywords:"
 msgstr "SEO Ключові слова:"
 
 #: customadmin/templates/customadmin/add_cinema.html:126
+#: customadmin/templates/customadmin/add_cinema_hall.html:108
 #: customadmin/templates/customadmin/add_film.html:130
 #: customadmin/templates/customadmin/add_page.html:83
 #: customadmin/templates/customadmin/forms.html:116
@@ -251,6 +279,7 @@ msgid "Введіть SEO Keywords"
 msgstr "Введіть SEO Ключові слова"
 
 #: customadmin/templates/customadmin/add_cinema.html:132
+#: customadmin/templates/customadmin/add_cinema_hall.html:114
 #: customadmin/templates/customadmin/add_film.html:136
 #: customadmin/templates/customadmin/add_page.html:86
 #: customadmin/templates/customadmin/forms.html:122
@@ -258,6 +287,7 @@ msgid "SEO Description:"
 msgstr "SEO Опис:"
 
 #: customadmin/templates/customadmin/add_cinema.html:133
+#: customadmin/templates/customadmin/add_cinema_hall.html:115
 #: customadmin/templates/customadmin/add_film.html:137
 #: customadmin/templates/customadmin/add_page.html:87
 #: customadmin/templates/customadmin/forms.html:123
@@ -265,11 +295,24 @@ msgid "Введіть SEO Description"
 msgstr "Введіть SEO Опис"
 
 #: customadmin/templates/customadmin/add_cinema.html:138
+#: customadmin/templates/customadmin/add_cinema_hall.html:120
 #: customadmin/templates/customadmin/add_film.html:142
 #: customadmin/templates/customadmin/add_page.html:89
 #: customadmin/templates/customadmin/forms.html:128
 msgid "Зберегти"
 msgstr "Зберегти"
+
+#: customadmin/templates/customadmin/add_cinema_hall.html:40
+msgid "Номер зала"
+msgstr "Номер зали"
+
+#: customadmin/templates/customadmin/add_cinema_hall.html:41
+msgid "8 зал"
+msgstr "8 зали"
+
+#: customadmin/templates/customadmin/add_cinema_hall.html:59
+msgid "Схема зала"
+msgstr "Схема зали"
 
 #: customadmin/templates/customadmin/add_film.html:92
 msgid "Тип кіно:"
@@ -287,8 +330,6 @@ msgstr ""
 #: customadmin/templates/customadmin/banner.html:112
 #: customadmin/templates/customadmin/banner.html:210
 #: customadmin/templates/customadmin/banner.html:266
-#: customadmin/templates/customadmin/card_hall.html:30
-#: customadmin/templates/customadmin/card_hall.html:42
 #: customadmin/templates/customadmin/cinema.html:47
 #: customadmin/templates/customadmin/contacts.html:36
 #: customadmin/templates/customadmin/forms.html:161
@@ -313,7 +354,6 @@ msgstr "Додати фото"
 
 #: customadmin/templates/customadmin/banner.html:82
 #: customadmin/templates/customadmin/banner.html:150
-#: customadmin/templates/customadmin/card_hall.html:74
 #: customadmin/templates/customadmin/main_page.html:62
 msgid "Сохранить"
 msgstr "Зберегти"
@@ -335,8 +375,6 @@ msgid "Banner Image"
 msgstr "Зображення банеру"
 
 #: customadmin/templates/customadmin/banner.html:111
-#: customadmin/templates/customadmin/card_hall.html:29
-#: customadmin/templates/customadmin/card_hall.html:41
 #: customadmin/templates/customadmin/contacts.html:35
 msgid "Загрузить"
 msgstr "Завантаження"
@@ -347,7 +385,6 @@ msgstr "На головній Новини Акції знизу"
 
 #: customadmin/templates/customadmin/banner.html:208
 #: customadmin/templates/customadmin/banner.html:264
-#: customadmin/templates/customadmin/card_hall.html:70
 #: customadmin/templates/customadmin/contacts.html:43
 #: customadmin/templates/customadmin/main_page.html:56
 msgid "URL"
@@ -366,66 +403,14 @@ msgstr ""
 msgid "Ошибка"
 msgstr "Помилка"
 
-#: customadmin/templates/customadmin/card_hall.html:12
-msgid "Номер зала"
-msgstr "Номер зали"
+#: customadmin/templates/customadmin/cinema.html:37
+msgid "Список кинотеатров"
+msgstr "Список кінотеатрів"
 
-#: customadmin/templates/customadmin/card_hall.html:13
-msgid "8 зал"
-msgstr "8 зали"
-
-#: customadmin/templates/customadmin/card_hall.html:18
-msgid "Описание зала"
-msgstr "Опис зали"
-
-#: customadmin/templates/customadmin/card_hall.html:19
-#: customadmin/templates/customadmin/contacts.html:19
-#: customadmin/templates/customadmin/main_page.html:49
-msgid "текст"
-msgstr "текст"
-
-#: customadmin/templates/customadmin/card_hall.html:24
-msgid "Схема зала"
-msgstr "Схема зали"
-
-#: customadmin/templates/customadmin/card_hall.html:36
-msgid "Фото верхнего баннера"
-msgstr "Фото верхнього банера"
-
-#: customadmin/templates/customadmin/card_hall.html:51
-#: customadmin/templates/customadmin/card_hall.html:57
-#: customadmin/templates/customadmin/card_hall.html:63
 #: customadmin/templates/customadmin/cinema.html:55
 #: customadmin/templates/customadmin/contacts.html:47
 msgid "Добавить"
 msgstr "Додати"
-
-#: customadmin/templates/customadmin/card_hall.html:68
-#: customadmin/templates/customadmin/contacts.html:41
-msgid "Сео блок"
-msgstr "SEO блок"
-
-#: customadmin/templates/customadmin/card_hall.html:71
-#: customadmin/templates/customadmin/contacts.html:44
-#: customadmin/templates/customadmin/main_page.html:57
-msgid "title"
-msgstr "заголовок"
-
-#: customadmin/templates/customadmin/card_hall.html:72
-#: customadmin/templates/customadmin/contacts.html:45
-#: customadmin/templates/customadmin/main_page.html:58
-msgid "Word"
-msgstr "Слово"
-
-#: customadmin/templates/customadmin/card_hall.html:73
-#: customadmin/templates/customadmin/contacts.html:46
-#: customadmin/templates/customadmin/main_page.html:59
-msgid "Description"
-msgstr "Опис"
-
-#: customadmin/templates/customadmin/cinema.html:37
-msgid "Список кинотеатров"
-msgstr "Список кінотеатрів"
 
 #: customadmin/templates/customadmin/contacts.html:12
 #: customadmin/templates/customadmin/contacts.html:13
@@ -436,6 +421,11 @@ msgstr "Назва кінотеатру"
 msgid "Адресс"
 msgstr "Адреса"
 
+#: customadmin/templates/customadmin/contacts.html:19
+#: customadmin/templates/customadmin/main_page.html:49
+msgid "текст"
+msgstr "текст"
+
 #: customadmin/templates/customadmin/contacts.html:24
 #: customadmin/templates/customadmin/contacts.html:25
 msgid "Координаты для карты"
@@ -444,6 +434,51 @@ msgstr "Координати для карти"
 #: customadmin/templates/customadmin/contacts.html:30
 msgid "Главная картинка"
 msgstr "Головне зображення"
+
+#: customadmin/templates/customadmin/contacts.html:41
+msgid "Сео блок"
+msgstr "SEO блок"
+
+#: customadmin/templates/customadmin/contacts.html:44
+#: customadmin/templates/customadmin/main_page.html:57
+msgid "title"
+msgstr "заголовок"
+
+#: customadmin/templates/customadmin/contacts.html:45
+#: customadmin/templates/customadmin/main_page.html:58
+msgid "Word"
+msgstr "Слово"
+
+#: customadmin/templates/customadmin/contacts.html:46
+#: customadmin/templates/customadmin/main_page.html:59
+msgid "Description"
+msgstr "Опис"
+
+#: customadmin/templates/customadmin/edit_cinema.html:106
+msgid "Список Залов"
+msgstr "Cписок залів"
+
+#: customadmin/templates/customadmin/edit_cinema.html:110
+#: customadmin/templates/customadmin/news.html:42
+#: customadmin/templates/customadmin/pages.html:41
+#: customadmin/templates/customadmin/sells.html:41
+msgid "Название"
+msgstr "Назва"
+
+#: customadmin/templates/customadmin/edit_cinema.html:111
+#: customadmin/templates/customadmin/news.html:43
+#: customadmin/templates/customadmin/pages.html:42
+#: customadmin/templates/customadmin/sells.html:42
+msgid "Дата создания"
+msgstr "Дата створення"
+
+#: customadmin/templates/customadmin/edit_cinema.html:112
+#: customadmin/templates/customadmin/news.html:45
+#: customadmin/templates/customadmin/pages.html:44
+#: customadmin/templates/customadmin/sells.html:44
+#: customadmin/templates/customadmin/users.html:61
+msgid "Действия"
+msgstr "Дії"
 
 #: customadmin/templates/customadmin/films.html:37
 msgid "Список фильмов текущих"
@@ -469,30 +504,11 @@ msgstr "SEO блок"
 msgid "Список Новостей"
 msgstr "Список новин"
 
-#: customadmin/templates/customadmin/news.html:42
-#: customadmin/templates/customadmin/pages.html:41
-#: customadmin/templates/customadmin/sells.html:41
-msgid "Название"
-msgstr "Назва"
-
-#: customadmin/templates/customadmin/news.html:43
-#: customadmin/templates/customadmin/pages.html:42
-#: customadmin/templates/customadmin/sells.html:42
-msgid "Дата создания"
-msgstr "Дата створення"
-
 #: customadmin/templates/customadmin/news.html:44
 #: customadmin/templates/customadmin/pages.html:43
 #: customadmin/templates/customadmin/sells.html:43
 msgid "Статус"
 msgstr "Статус"
-
-#: customadmin/templates/customadmin/news.html:45
-#: customadmin/templates/customadmin/pages.html:44
-#: customadmin/templates/customadmin/sells.html:44
-#: customadmin/templates/customadmin/users.html:61
-msgid "Действия"
-msgstr "Дії"
 
 #: customadmin/templates/customadmin/news.html:52
 #: customadmin/templates/customadmin/pages.html:50
@@ -635,6 +651,12 @@ msgstr "Англійська"
 #: kinoCMS/settings.py:133
 msgid "Ukrainian"
 msgstr "Українська"
+
+#~ msgid "Описание зала"
+#~ msgstr "Опис зали"
+
+#~ msgid "Фото верхнего баннера"
+#~ msgstr "Фото верхнього банера"
 
 #~ msgid "Go"
 #~ msgstr "Перейти"

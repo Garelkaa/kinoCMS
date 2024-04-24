@@ -82,6 +82,50 @@
             <input type="file" class="form-control-file" id="id_top_image" name="top_image" onchange="previewTopImage(this)">
             <img id="top-image-preview" src="{% if form.top_image.value %}{{ form.top_image.value.url }}{% endif %}" alt="Top Image" style="max-width: 200px;">
         </div>
+        <div id="image-container">
+            {{ gallery_formset.management_form }}
+            <div id="gallery-formset" class="row">
+                {% for form in gallery_formset.forms %}
+                    <div class="" style="max-width:365px; margin-left:10px;">
+                        <div class="card ">
+                            <img src="{% if form.instance.image %}{{ form.instance.image.url }}{% endif %}" class="card-img-top" alt="" style="width: 365px; height: 400px;">
+                            <div class="card-body">
+                                {{ form.image }}
+                                {{ form.id }}
+                                {{ form.DELETE }}
+                                <!-- Добавляем кнопку "Удалить" -->
+                                <button type="button" class="btn btn-danger btn-sm delete-image" data-id="{{ form.id.value }}">Удалить</button>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+            <button type="button" class="btn btn-primary btn-sm mt-3" id="add-image">Add Image</button>
+        </div>
+        <div class="container mt-3 mb-5">
+            <h2 class="text-center">{% trans "Список Залов"%}</h2>
+            <table class="table table-bordered border-primary">
+                <thead>
+                    <tr>
+                        <th scope="col">{% trans "Название"%}</th>
+                        <th scope="col">{% trans "Дата создания"%}</th>
+                        <th scope="col">{% trans "Действия"%}</th>
+                    </tr>
+                </thead>
+                {% for hall in halls %}
+                    <tr>
+                        <td>{{ hall.number }}</td>
+                        <td>{{ hall.create_at }}</td>
+                        <td>
+                            <a href="{% url 'adminlte:edit_cinema_hall' hall.id %}"><i class="bi bi-pencil"></i></a>
+                            <a href="#"><i class="bi bi-trash"></i></a>
+                        </td>
+                    </tr>
+                {% endfor %}    
+                
+            </table>
+            <a href="{% url 'adminlte:cinema_hall' cinema_id %}"><button class="btn btn-success mt-3" type="button">{% trans "Добавить"%}</button></a>
+        </div>
         <div class="form-group">
             <label for="id_url_trailer">Посилання на відео:</label>
             <input type="text" class="form-control" id="id_url_trailer" name="url_trailer" value="{{ form.url_trailer.value }}">
@@ -106,27 +150,6 @@
             <label for="id_description_seo">SEO Description:</label>
             <textarea class="form-control" id="id_description_seo" name="description_seo">{{ form.description_seo.value }}</textarea>
         </div>
-        <div id="image-container">
-            {{ gallery_formset.management_form }}
-            <div id="gallery-formset" class="row">
-                {% for form in gallery_formset.forms %}
-                    <div class="col-md-4">
-                        <div class="card mb-4">
-                            <img src="{% if form.instance.image %}{{ form.instance.image.url }}{% endif %}" class="card-img-top" alt="" style="width: 365px; height: 400px;">
-                            <div class="card-body">
-                                {{ form.image }}
-                                {{ form.id }}
-                                {{ form.DELETE }}
-                                <!-- Добавляем кнопку "Удалить" -->
-                                <button type="button" class="btn btn-danger btn-sm delete-image" data-id="{{ form.id.value }}">Удалить</button>
-                            </div>
-                        </div>
-                    </div>
-                {% endfor %}
-            </div>
-            <button type="button" class="btn btn-primary btn-sm mt-3" id="add-image">Add Image</button>
-        </div>
-
         <button type="submit" class="btn btn-success mt-5">Зберегти</button>
     </form>
 </div>

@@ -71,8 +71,9 @@ class CinemaHall(models.Model):
     seo_title = models.TextField(null=True, blank=True)
     seo_keywords = models.TextField(null=True, blank=True)
     description_seo = models.TextField(null=True, blank=True)
-    gallery_id = models.OneToOneField(Gallery, on_delete=models.CASCADE, verbose_name='', default=None)
-    movie_session_id = models.OneToOneField(MovieSession, on_delete=models.CASCADE, default=1)
+    gallery = models.OneToOneField(Gallery, on_delete=models.CASCADE, verbose_name='', default=None)
+    movie_session = models.OneToOneField(MovieSession, on_delete=models.CASCADE, null=True, blank=True)
+    cinema = models.ForeignKey(Cinema, on_delete=models.CASCADE, verbose_name="Айди кинотеатра", default=None)
 
 
     class Meta:

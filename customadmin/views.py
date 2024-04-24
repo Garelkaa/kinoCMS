@@ -33,15 +33,15 @@ def stats(request):
     users = CustomUser.objects.exclude(date_joined=None).values('date_joined', 'last_login', 'username')  # Используем username или другой удобный идентификатор
 
     # Подготовка данных для графика
-    dates_joined_timestamps = [(user['date_joined'] - timezone.datetime(1970, 1, 1, tzinfo=timezone.utc)).total_seconds() * 1000 for user in users if user['date_joined'] is not None]  # Конвертация в миллисекунды
-    last_logins_timestamps = [(user['last_login'] - timezone.datetime(1970, 1, 1, tzinfo=timezone.utc)).total_seconds() * 1000 for user in users if user['last_login'] is not None]  # Конвертация в миллисекунды
+    dates_joined_timestamps = [(user['date_joined'] - timezone.datetime(2024, 3, 1, tzinfo=timezone.utc)).total_seconds() for user in users if user['date_joined'] is not None]
+    last_logins_timestamps = [(user['last_login'] - timezone.datetime(2024, 3, 1, tzinfo=timezone.utc)).total_seconds() for user in users if user['last_login'] is not None]
     usernames = [user['username'] for user in users]  # Сбор имен пользователей
 
     context = {
         'title': 'Страница статистики',
         'user_count': count_users,
-        'percentage_ukrainian': (count_users_ukrainian / count_users) * 100 if count_users > 0 else 0,
-        'percentage_english': (count_users_english / count_users) * 100 if count_users > 0 else 0,
+        'percentage_ukrainian':(count_users_ukrainian / count_users) if count_users > 0 else 0,
+        'percentage_english': (count_users_english / count_users) if count_users > 0 else 0,
         'dates_joined': dates_joined_timestamps,
         'last_logins': last_logins_timestamps,
         'usernames': usernames,
@@ -259,6 +259,9 @@ def cinema_page(request):
 @user_passes_test(is_admin)
 def edit_cinema(request, cinema_id):
     cinema_instance = get_object_or_404(Cinema, pk=cinema_id)
+    halls = CinemaHall.objects.filter(cinema=cinema_instance)
+    # Получение залов для кинотеатра
+
     if request.method == 'POST':
         cinema_form = CinemaForm(request.POST, request.FILES, instance=cinema_instance)
         gallery_formset = GalleryImageFormSet(request.POST, request.FILES, queryset=GalleryImage.objects.filter(
@@ -268,15 +271,15 @@ def edit_cinema(request, cinema_id):
             cinema_instance = cinema_form.save()
             cinema_instance.title_en = cinema_form.cleaned_data['title']
             cinema_instance.description_en = cinema_form.cleaned_data['description']
-
-            gallery_instances = gallery_formset.save(commit=False)
-
+            
             for form in gallery_formset.deleted_forms:
                 form.instance.delete()
 
-            for gallery_instance in gallery_instances:
-                gallery_instance.gallery = cinema_instance.gallery
-                gallery_instance.save()
+            for form in gallery_formset:
+                if form.cleaned_data.get('image'):
+                    gallery_image = form.save(commit=False)
+                    gallery_image.gallery = cinema_instance.gallery
+                    gallery_image.save()
 
             return redirect('adminlte:cinema')
         else:
@@ -286,9 +289,14 @@ def edit_cinema(request, cinema_id):
         cinema_form = CinemaForm(instance=cinema_instance)
         gallery_formset = GalleryImageFormSet(queryset=GalleryImage.objects.filter(gallery=cinema_instance.gallery))
 
-    return render(request, 'customadmin/edit_cinema.html', {'title': 'Редактирование кинотеатра',
-                                                             'cinema_instance': cinema_instance,
-                                                             'form': cinema_form, 'gallery_formset': gallery_formset})
+    return render(request, 'customadmin/edit_cinema.html', {
+        'title': 'Редактирование кинотеатра',
+        'cinema_instance': cinema_instance,
+        'form': cinema_form,
+        'gallery_formset': gallery_formset,
+        'cinema_id': cinema_id,
+        'halls': halls  # Передача списка залов в контекст
+    })
 
 
 @login_required
@@ -304,34 +312,70 @@ def delete_cinema(request, cinema_id):
 
 @login_required
 @user_passes_test(is_admin)
-def cinema_hall(request):
+def cinema_hall(request, cinema_id):
     if request.method == 'POST':
+        print(cinema_id)
         cinema_hall_form = CinemaHallForm(request.POST, request.FILES)
         gallery_formset = GalleryImageFormSet(request.POST, request.FILES)
         if cinema_hall_form.is_valid() and gallery_formset.is_valid():
-            film_instance = cinema_hall_form.save(commit=False)
-            gallery_instance = Gallery.objects.create(title=film_instance.title)
-            film_instance.gallery = gallery_instance
-            film_instance.save()
+
+            cinema_hall_instance = cinema_hall_form.save(commit=False)
+            cinema_hall_instance.description_en = cinema_hall_form.cleaned_data['description']
+            gallery_instance = Gallery.objects.create(title=cinema_hall_instance.number)
+            cinema_hall_instance.cinema_id = cinema_id
+            cinema_hall_instance.gallery = gallery_instance
+            cinema_hall_instance.save()
 
             for form in gallery_formset:
-                print(form.cleaned_data)
                 if form.cleaned_data.get('image'):
                     gallery_image = form.save(commit=False)
                     gallery_image.gallery = gallery_instance
                     gallery_image.save()
 
-            return redirect('success_url')
+            return redirect('adminlte:cinema')
         else:
             print(cinema_hall_form.errors)
-            print(gallery_formset.errors)
     else:
-        cinema_hall_form = CinemaHallForm()
+        cinema_hall_form = CinemaHallForm(initial={'cinema_id': cinema_id})
         gallery_formset = GalleryImageFormSet(queryset=Gallery.objects.none())
 
-    return render(request, 'customadmin/card_hall.html',
-                  {'title': 'Добавление зала', 'form': cinema_hall_form,
+    return render(request, 'customadmin/add_cinema_hall.html',
+                  {'title': 'Добавление кинотеатра', 'form': cinema_hall_form,
                    'gallery_formset': gallery_formset})
+    
+    
+@login_required
+@user_passes_test(is_admin)
+def edit_cinema_hall(request, hall_id):
+    hall_instanse = get_object_or_404(CinemaHall, pk=hall_id)
+    if request.method == 'POST':
+        hall_form = CinemaHallForm(request.POST, request.FILES, instance=hall_instanse)
+        gallery_formset = GalleryImageFormSet(request.POST, request.FILES, queryset=GalleryImage.objects.filter(gallery=hall_instanse.gallery))
+        
+        if hall_form.is_valid() and gallery_formset.is_valid():
+            hall_instanse = hall_form.save()
+            hall_instanse.description_en = hall_form.cleaned_data['description']
+            
+            gallery_instances = gallery_formset.save(commit=False)
+
+            for form in gallery_formset.deleted_forms:
+                form.instance.delete()
+
+            for gallery_instance in gallery_instances:
+                gallery_instance.gallery = hall_instanse.gallery
+                gallery_instance.save()
+            
+            
+            return redirect('adminlte:cinema')
+        else:
+            print(f"тут трабл {hall_form.errors}")
+            print(f"И тут трабл {gallery_formset.errors}")
+    else:
+        hall_form = CinemaHallForm(instance=hall_instanse)
+        gallery_formset = GalleryImageFormSet(queryset=GalleryImage.objects.filter(gallery=hall_instanse.gallery))
+    
+    
+    return render(request, 'customadmin/edit_halls.html', {'title': 'Редактирование зала', 'form': hall_form, 'gallery_formset': gallery_formset})    
 
 
 @login_required

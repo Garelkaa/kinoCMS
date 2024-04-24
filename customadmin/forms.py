@@ -36,8 +36,8 @@ class CinemaHallForm(forms.ModelForm):
 
     class Meta:
         model = CinemaHall
-        fields = ['number', 'description', 'description_en', 'scheme_image', 'top_image', 'seo_url', 'seo_title', 'seo_keywords',
-                  'description_seo']
+        fields = ['number', 'description', 'description_en', 'description_uk', 'scheme_image', 'top_image',
+                  'seo_url', 'seo_title', 'seo_keywords', 'description_seo']
 
 
 class FilmsForm(forms.ModelForm):
