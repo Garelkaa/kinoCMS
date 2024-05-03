@@ -1,0 +1,160 @@
+{% extends "base_site.html" %}
+{% load static %}
+
+{%block css%}
+<style>
+        #carouselExample {
+            max-width: 1000px;
+            margin: auto;
+        }
+
+        #carouselExample img {
+            height: 700px; 
+            object-fit: cover;
+        }
+        .center-content {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .content-with-image {
+            display: flex;
+            align-items: center;
+            flex-wrap: wrap;
+            max-width: 2000px;
+        }
+
+        .content {
+            flex: 1;
+            width: 1000px; /* або будь-який інший бажаний розмір */
+            margin: auto;
+        }
+
+
+        .image {
+            flex: 0 0 auto;
+            margin-right: 20px;
+        }
+
+        .ads {
+            width: 200px;
+            height: 400px;
+            object-fit: cover;
+        }
+</style>
+{%endblock%}
+
+{% block content %}
+<div class="container" style="max-width: 1920px;">
+    <div class="center-content">
+        <img src="{{ cinema.top_image.url }}" alt="image" class="img-fluid" style="width: 100%; height: 400px;">
+    </div>
+</div>
+<div class="container content-with-image">
+    <div class="content" style="margin-top: 20px;">
+        <div class="container mt-5" style='position:absolute;'>
+            <div class="row justify-content-start">
+                <div class="col-md-4">
+                    <div class="image">
+                        <img src="{% static 'image/photo.jpg' %}" alt="image" class="ads img-fluid mb-3">
+                    </div>
+                    
+                    <div class="table-responsive"style='width: 200px;'>
+                        <h2 class="text-center">Зал</h2>
+                        <table class="table table-bordered" style='width: 200px;'>
+                            <tbody class='text-center' style=''>
+                                <tr>
+                                    <td><button type="button" class="btn btn-block btn-primary">Зал 1</button></td>
+                                </tr>
+                                <tr>
+                                    <td><button type="button" class="btn btn-block btn-primary">Зал 2</button></td>
+                                </tr>
+                                <tr>
+                                    <td><button type="button" class="btn btn-block btn-primary">Зал 3</button></td>
+                                </tr>
+                                <tr>
+                                    <td><button type="button" class="btn btn-block btn-primary">Зал 4</button></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="d-flex justify-content-center align-items-center mt-4">
+            <h2 class="text-center" style="margin-right: 30px;">{{ cinema.title }}</h2>
+            <div class="d-flex">
+                <img src='{{ cinema.main_image.url }}' class="ads img-fluid mb-3" alt='...' style="width:115px; height:200px;">
+            </div>
+        </div>
+        
+        <div class="center-content">
+            <h2 class="text-center">{{ cinema.description }}</h2>
+            
+        </div>
+        
+        <div class="center-content">
+            <h2 class="text-center">Условия</h2>
+            <div class="container mt-4" >
+                <div class="row row-cols-1 row-cols-md-2 g-4">
+                    <div class="col">
+                        <div class="card">
+                            <h3 class="text-center">Детская комната</h3>
+                            <p class="text-center">Текст...</p>
+                        </div>
+                    </div>
+                    <div class="col">
+                        <div class="card">
+                            <h3 class="text-center">Бар</h3>
+                            <p class="text-center">Текст...</p>
+                        </div>
+                    </div>
+                    <div class="col">
+                        <div class="card">
+                            <h3 class="text-center">VIP-Зал</h3>
+                            <p class="text-center">Текст...</p>
+                        </div>
+                    </div>
+                    <div class="col">
+                        <div class="card">
+                            <h3 class="text-center">Попкорн</h3>
+                            <p class="text-center">Текст...</p>
+                        </div>
+                    </div>
+                    <div class="col">
+                        <div class="card">
+                            <h3 class="text-center">Магазин</h3>
+                            <p class="text-center">Текст...</p>
+                        </div>
+                    </div>
+                    <div class="col">
+                        <div class="card">
+                            <h3 class="text-center">Сертификаты</h3>
+                            <p class="text-center">Текст...</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="container", style="margin-top: 100px;">
+            <div id="carouselExample" class="carousel slide" data-bs-ride="carousel">
+                <div class="carousel-inner">
+                    {% for image in gallery %}
+                        <div class="carousel-item {% if forloop.first %}active{% endif %}">
+                            <img src="{{ image.image.url }}" class="d-block w-100" alt="...">
+                        </div>
+                    {% endfor %}    
+                </div>
+                <button class="carousel-control-prev" type="button" data-bs-target="#carouselExample" data-bs-slide="prev">
+                    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                    <span class="visually-hidden">Previous</span>
+                </button>
+                <button class="carousel-control-next" type="button" data-bs-target="#carouselExample" data-bs-slide="next">
+                    <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                    <span class="visually-hidden">Next</span>
+                </button>
+            </div>
+    </div>
+    
+{% endblock %}

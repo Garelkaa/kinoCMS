@@ -1,7 +1,5 @@
 from django.contrib.auth.hashers import make_password
-from django.core.mail import send_mail
-from django.db.models import Prefetch
-from django.http import JsonResponse, HttpResponse
+from django.http import JsonResponse
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.utils import timezone
@@ -13,6 +11,7 @@ from .forms import *
 from other.models import Promotions, News
 from banner.models import MainBannerSettings, NewsBannerSettings, BackBanner
 from .tasks import send_spam_emails, send_selected_users
+from ajax_datatable.views import AjaxDatatableView
 
 
 def is_admin(user):
@@ -106,7 +105,6 @@ def save_another_banner(request):
 
             for form in formset:
                 if form.cleaned_data.get('DELETE'):
-                    # If the form is marked for deletion, delete the associated instance
                     if form.instance.pk:
                         form.instance.delete()
                 else:
@@ -664,13 +662,11 @@ def edit_user(request, user_id):
     if request.method == 'POST':
         form = UserForm(request.POST, instance=user_instance)
         if form.is_valid():
-            # Сохраняем данные пользователя из формы
             form.save()
 
-            # Обработка нового пароля, если он был введен
             new_password = request.POST.get('password')
-            if new_password:
-                # Хешируем новый пароль и сохраняем его
+            confirm_password = request.POST.get('confirm_password')
+            if new_password == confirm_password:
                 user_instance.password = make_password(new_password)
                 user_instance.save()
 
@@ -687,11 +683,43 @@ def edit_user(request, user_id):
 
     return render(request, 'customadmin/edit_user.html', context=context)
 
+class SpamViews(AjaxDatatableView):
+    model = CustomUser
+    title = "user"
+    initial_order = [['id', 'asc']]
+    
+    search_values_separator = '+'
+
+    column_defs = [
+        {'name': 'select', 'title': 'checkbox', 'visible': True, 'searchable': False, 'orderable': False,},
+        {'name': 'id', 'title': 'ID', 'visible': True, },
+        {'name': 'created_at', 'title': 'Registration Date', 'visible': True, },
+        {'name': 'birthdate', 'title': 'Birth Date', 'visible': True, },
+        {'name': 'email', 'title': 'E-Mail', 'visible': True, },
+        {'name': 'phone', 'title': 'Phone Number', 'visible': True, },
+        {'name': 'second_name', 'title': 'Full name', 'visible': True, },
+        {'name': 'username', 'title': 'Nick Name', 'visible': True, },
+        {'name': 'city', 'title': 'City', 'visible': True, },
+    ]
+    
+    def customize_row(self, row, obj):   
+        # TODO: перенести код в джс
+        row['select'] = """
+            <input type="checkbox"
+                id='{}'
+                onclick='const mail = $("#row-{}").find("td:eq(4)").text();
+                            if (selected.has(mail)) {{
+                                selected.delete(mail);
+                            }} else {{
+                                selected.add(mail);
+                            }}'> 
+        """.format(obj.id, obj.id)
+    
 
 @login_required
 @user_passes_test(is_admin)
 def spam(request):
-    files = Spam.objects.select_related().all()
+    files = Spam.objects.all()
     all_users = CustomUser.objects.all()
     if request.method == 'POST':
         form = SpamForm(request.POST, request.FILES)
@@ -702,9 +730,7 @@ def spam(request):
                 task = send_spam_emails.delay(selected_file, recipients)
                 return render(request, 'customadmin/spam.html', context={'title': 'Страница рассылки', 'files': files, 'form': form, 'users': all_users, 'task_id': task.task_id})
             elif request.POST.get('recipientType') == 'selective':
-                # Получаем выбранных пользователей из формы
                 selectedUsers = request.POST.get('selectedUsers[]').split(',')
-                # Отправляем письма выбранным пользователям
                 task = send_selected_users.delay(selected_file, selectedUsers)
                 return render(request, 'customadmin/spam.html', context={'title': 'Страница рассылки', 'files': files, 'form': form, 'users': all_users, 'task_id': task.task_id})
             else:
@@ -723,22 +749,6 @@ def spam(request):
     }
 
     return render(request, 'customadmin/spam.html', context=context)
-
-
-@login_required
-@user_passes_test(is_admin)
-def spam_email_verif(request):
-    if request.method == 'POST':
-        files = Spam.objects.select_related().all()
-        all_users = CustomUser.objects.all()
-        form = SpamForm(request.POST, request.FILES)
-        selected_file = form.cleaned_data['file_name']
-        if request.POST.get('recipientType') == 'selective':
-            # Получаем выбранных пользователей из формы
-            selectedUsers = request.POST.get('selectedUsers[]').split(',')
-            # Отправляем письма выбранным пользователям
-            task = send_selected_users.delay(selected_file, selectedUsers)
-            return render(request, 'customadmin/spam.html', context={'title': 'Страница рассылки', 'files': files, 'form': form, 'users': all_users, 'task_id': task.task_id})
         
         
 @login_required

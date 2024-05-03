@@ -45,6 +45,6 @@ def send_selected_users(self, email_template, selectedUsers):
             html_message=email_body
         )
         emails_sent += 1
-        progress_recorder.set_progress(emails_sent, total_emails)
+        progress_recorder.set_progress(emails_sent, total_emails) # longpollong websockets
         
     return True

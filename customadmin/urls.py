@@ -40,4 +40,5 @@ urlpatterns = [
     path('users/<int:user_id>/', views.edit_user, name='edit_users'),
     path('spam/', views.spam, name='spam'),
     path('save_email_file/', views.save_email_file, name='save_email_file'),
+    path('spam_datatables/', views.SpamViews.as_view(), name='spam_datatables'),
     ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

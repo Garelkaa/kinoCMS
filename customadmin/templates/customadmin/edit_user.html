@@ -62,7 +62,7 @@
                 </div>
                 <div class="col ms-5" style="display: flex; justify-content: space-between;">
                     <p>Дата рождения</p>
-                    <input type="date" name="birthdate" placeholder="Дата рождения" style="width: 200px;" value="{{ user.birthdate }}">
+                    <input type="date" name="birthdate" placeholder="Дата рождения" style="width: 200px;" value="{{ user.birthdate|date:"Y-m-d" }}">
                 </div>
                 <div class="col ms-5" style="display: flex; justify-content: space-between;">
                     <p>Город</p>
@@ -70,7 +70,7 @@
                 </div>
                 <div class="col ms-5" style="display: flex; justify-content: space-between;">
                     <p>Повторить пароль</p>
-                    <input type="text" placeholder="Повторить пароль" style="width: 200px;" value="">
+                    <input type="text" placeholder="Повторить пароль" style="width: 200px;" value="" name="confirm_password">
                 </div>
                 <button type="submit" class="btn btn-success center-content" style="width: 300px;">Сохранить</button>
             </div>

@@ -46,6 +46,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'django_celery_results',
     'celery_progress',
+    'ajax_datatable',
 
     'main.apps.MainConfig',
     'customadmin.apps.CustomadminConfig',
