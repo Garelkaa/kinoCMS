@@ -1,0 +1,86 @@
+{% extends "base_site.html" %}
+{% load static %}
+
+{% block css %}
+<style>
+    #carouselExample {
+        max-width: 1000px;
+        margin: auto;
+    }
+
+    #carouselExample img {
+        height: 700px; 
+        object-fit: cover;
+    }
+    h5 {
+        white-space: nowrap; 
+    }
+    .center-content {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .content-with-image {
+        display: flex;
+        align-items: center;
+        flex-wrap: wrap;
+        max-width: 2000px;
+    }
+
+    .content {
+        flex: 1; /* або будь-який інший бажаний розмір */
+        margin: auto;
+    }
+
+    .image {
+        flex: 0 0 auto;
+        margin-right: 20px;
+    }
+
+    .ads {
+        width: 500px;
+        height: 800px;
+        object-fit: cover;
+    }
+</style>
+{% endblock css %}
+
+{% block content %}
+<div class="container" style="max-width: 1920px;">
+    <div class="center-content">
+        <img src="{{ hall.main_image.url }}" alt="image" class="img-fluid" style="width: 100%; height: 400px;">
+    </div>
+</div>
+
+<div class="container content-with-image">
+    <div class="content">
+        <div class="center-content mt-5">
+            <h2 class="text-center">Vip-зал</h2>
+            <p class="text-left" style="width: 1000px;">{{ hall.description }}</p>
+        </div>
+        <div class="container", style="margin-top: 100px;">
+            <div id="carouselExample" class="carousel slide" data-bs-ride="carousel">
+                <div class="carousel-inner">
+                    {% for image in gallery %}
+                        <div class="carousel-item {% if forloop.first %}active{% endif %}">
+                            <img src="{{ image.image.url }}" class="d-block w-100" alt="...">
+                        </div>
+                    {% endfor %}    
+                </div>
+                <button class="carousel-control-prev" type="button" data-bs-target="#carouselExample" data-bs-slide="prev">
+                    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                    <span class="visually-hidden">Previous</span>
+                </button>
+                <button class="carousel-control-next" type="button" data-bs-target="#carouselExample" data-bs-slide="next">
+                    <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                    <span class="visually-hidden">Next</span>
+                </button>
+            </div>
+        </div>    
+    </div>
+    <div class="image">
+        <img src="{% static "image/photo.jpg" %}" alt="image" class="ads img-fluid" style="width: 200px; height: 400px;">
+    </div>
+</div>
+{% endblock content %}

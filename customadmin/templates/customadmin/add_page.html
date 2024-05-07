@@ -50,7 +50,14 @@
                 <p>{% trans "Надо заполнить это поле" %}</p>
             {% endif %}
         </div>
-
+        <div class="form-group">
+            <label for="id_main_image">{% trans "Головне зображення:" %}</label>
+            <input type="file" class="form-control-file" id="id_main_image" name="main_image" placeholder="{% trans "Завантажте головне зображення" %}">
+            {% if form.main_image.errors %}
+                <p>{% trans "Надо заполнить это поле" %}</p>
+            {% endif %}
+            <img id="main-image-preview" src="#" alt="{% trans "Preview" %}" style="display: none; max-width: 100px; max-height: 100px;">
+        </div>
         <label for="mainImage">{% trans "Галерея картинок" %}</label>
         <div id="image-container" class="row justify-content-center mt-3">
             {{ gallery_formset.management_form }}

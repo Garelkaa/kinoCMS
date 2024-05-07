@@ -48,37 +48,37 @@
 
     <nav class="navbar navbar-expand-lg navbar-light bg-light">
         <div class="container-fluid">
-            <a class="navbar-brand" href="#">KinoCMS</a>
+            <a class="navbar-brand" href="{% url "main:main" %}">KinoCMS</a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
             <div class="collapse navbar-collapse" id="navbarSupportedContent">
                 <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                     <li class="nav-item">
-                        <a class="nav-link" aria-current="page" href="#">Афиша</a>
+                        <a class="nav-link" aria-current="page" href="{% url 'main:afisha' %}">Афиша</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="#">Расписание</a>
+                        <a class="nav-link" href="{% url 'main:afisha' %}">Расписание</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="#">Скоро</a>
+                        <a class="nav-link" href="{% url 'main:anothertime' %}">Скоро</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="#">Кинотеатры</a>
+                        <a class="nav-link" href="{% url 'main:cinemas' %}">Кинотеатры</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="#">Акции</a>
+                        <a class="nav-link" href="{% url 'main:promoutes' %}">Акции</a>
                     </li>
                     <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        <a class="nav-link dropdown-toggle" href="{% url 'main:afisha' %}" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                             О кинотеатре
                         </a>
                         <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-                            <li><a class="dropdown-item" href="#">Новости</a></li>
-                            <li><a class="dropdown-item" href="#">Реклама</a></li>
-                            <li><a class="dropdown-item" href="#">Кафе</a></li>
-                            <li><a class="dropdown-item" href="#">Мобильные прил</a></li>
-                            <li><a class="dropdown-item" href="#">Контакты</a></li>
+                            <li><a class="dropdown-item" href="{% url 'main:news' %}">Новости</a></li>
+                            <li><a class="dropdown-item" href="{% url 'main:ads' %}">Реклама</a></li>
+                            <li><a class="dropdown-item" href="{% url 'main:cafebar' %}">Кафе</a></li>
+                            <li><a class="dropdown-item" href="{% url 'main:childroom' %}">Детская комната</a></li>
+                            <li><a class="dropdown-item" href="{% url 'main:contacts' %}">Контакты</a></li>
                         </ul>
                     </li>
                 </ul>
@@ -97,19 +97,19 @@
                     <h5>Aфиша</h5>
                     <ul>
                         <li><a href="#" class="">Расписание</a></li>
-                        <li><a href="#" class="">Скоро в прокате</a></li>
-                        <li><a href="#" class="">Кинотеатры</a></li>
-                        <li><a href="#" class="">Акции</a></li>
+                        <li><a href="{% url 'main:anothertime' %}" class="">Скоро в прокате</a></li>
+                        <li><a href="{% url 'main:cinemas' %}" class="">Кинотеатры</a></li>
+                        <li><a href="{% url 'main:promoutes' %}" class="">Акции</a></li>
                     </ul>
                 </div>
 
                 <div class="col-md-6 mt-5">
                     <h5>О кинотеатре</h5>
                     <ul style="text-decoration: none;">
-                        <li><a href="#" class="">Новости</a></li>
-                        <li><a href="#" class="">Реклама</a></li>
-                        <li><a href="#" class="">Кофе-бар</a></li>
-                        <li><a href="#" class="">Контакты</a></li>
+                        <li><a href="{% url 'main:news' %}" class="">Новости</a></li>
+                        <li><a href="{% url 'main:ads' %}" class="">Реклама</a></li>
+                        <li><a href="{% url 'main:cafebar' %}" class="">Кофе-бар</a></li>
+                        <li><a href="{% url 'main:contacts' %}" class="">Контакты</a></li>
                     </ul>
                 </div>
             </div>

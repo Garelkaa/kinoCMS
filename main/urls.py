@@ -8,12 +8,20 @@ app_name = 'main'
 
 urlpatterns = [
     path('', views.main, name='main'),
-    path('afisha/', views.afisha, name='main'),
-    path('afisha/anothertime/', views.anothertime, name='main'),
+    path('afisha/', views.afisha, name='afisha'),
+    path('afisha/anothertime/', views.anothertime, name='anothertime'),
     path('film/<int:film_id>/<slug:seo_url>/', views.filmpage, name='filmpage'),   
     path('cinemas/', views.cinemas, name='cinemas'),   
     path('cinemas/<int:cinema_id>/<slug:seo_url>/', views.cinemapage, name='cinemapage'),
     path('hall/<int:hall_id>/<slug:seo_url>/', views.hallpage, name='hallpage'),
     path('promoutes/', views.promotions, name='promoutes'),
- 
+    path('promoutes/<int:promoute_id>/<slug:promoute_url>/', views.promoutespage, name='promoutespage'),
+    path('about-cinema/', views.aboutcinema, name='aboutcinema'),
+    path('news/', views.news, name='news'),
+    path('cafe-bar/', views.cafebar, name='cafebar'),
+    path('vip-hall/', views.viphall, name='viphall'),
+    path('child-room/', views.childroom, name='childroom'),
+    path('ads/', views.childroom, name='ads'),
+    path('contacts/', views.childroom, name='contacts'),
+    
 ]

@@ -49,19 +49,7 @@ class Movie(models.Model):
         db_table = 'movie'
         verbose_name = 'Фильм'
         verbose_name_plural = 'Фильмы'
-
-class MovieSession(models.Model):
-    time = models.TimeField(verbose_name='Время')
-    price = models.IntegerField(verbose_name='Цена')
-    date = models.DateField(verbose_name='Дата')
-    movie = models.ForeignKey(Movie, on_delete=models.CASCADE, verbose_name='Фильм')
-
-    
-    class Meta:
-        db_table = 'moviesession'
-        verbose_name = 'Сессия фыильма'
-        verbose_name_plural = 'Сессия фильмов'
-
+        
 class CinemaHall(models.Model):
     number = models.IntegerField(verbose_name='Номер зала')
     description = models.TextField(verbose_name='Описание зала', default='')
@@ -73,7 +61,6 @@ class CinemaHall(models.Model):
     seo_keywords = models.TextField(null=True, blank=True)
     description_seo = models.TextField(null=True, blank=True)
     gallery = models.OneToOneField(Gallery, on_delete=models.CASCADE, verbose_name='', default=None)
-    movie_session = models.OneToOneField(MovieSession, on_delete=models.CASCADE, null=True, blank=True)
     cinema = models.ForeignKey(Cinema, on_delete=models.CASCADE, verbose_name="Айди кинотеатра", default=None)
 
 
@@ -81,6 +68,18 @@ class CinemaHall(models.Model):
         db_table = 'cinemahall'
         verbose_name = 'Зал'
         verbose_name_plural = 'Залы'
+
+class MovieSession(models.Model):
+    time = models.TimeField(verbose_name='Время')
+    price = models.IntegerField(verbose_name='Цена')
+    date = models.DateField(verbose_name='Дата')
+    movie = models.ForeignKey(Movie, on_delete=models.CASCADE, verbose_name='Фильм')
+    cinemahall = models.ForeignKey(CinemaHall, on_delete=models.DO_NOTHING, blank=True, null=True)
+    
+    class Meta:
+        db_table = 'moviesession'
+        verbose_name = 'Сессия фыильма'
+        verbose_name_plural = 'Сессия фильмов'
 
 class Ticked(models.Model):
     user_id = models.ForeignKey(CustomUser, on_delete=models.CASCADE, verbose_name='Айди пользователя')

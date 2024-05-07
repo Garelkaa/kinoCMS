@@ -2,7 +2,7 @@ from django.shortcuts import render, get_object_or_404
 from cinema.models import Movie, Cinema, CinemaHall
 from banner.models import MainBanner
 from gallery.models import GalleryImage
-from other.models import Promotions
+from other.models import Promotions, Pages, News
 
 
 def main(requests):
@@ -63,4 +63,69 @@ def hallpage(request, hall_id, seo_url):
 def promotions(requests):
     promoutes = Promotions.objects.all()
     
-    return render(requests, 'main/promoutes.html', context={'title': 'Акции', 'cinemas': promoutes})    
+    return render(requests, 'main/promoutes.html', context={'title': 'Акции', 'promoutes': promoutes})
+
+
+def promoutespage(requests, promoute_id, promoute_url):
+    promoute = get_object_or_404(Promotions, pk=promoute_id)
+    gallery_instance = GalleryImage.objects.filter(gallery=promoute.gallery)
+
+    return render(requests, 'main/promoutepage.html', {
+        'title': 'Страница акции',
+        'promoute': promoute,
+        'gallery': gallery_instance
+    })
+    
+    
+def aboutcinema(requests):
+    cinema = get_object_or_404(Pages, title_uk="Про кінотеатр")
+    gallery_instance = GalleryImage.objects.filter(gallery=cinema.gallery)
+
+    
+    return render(requests, 'main/aboutcinema.html', {
+        'title': 'Об кинотеатре',
+        'cinema': cinema,
+        'gallery': gallery_instance
+    })
+    
+
+def news(requests):
+    news = News.objects.all()
+    
+    return render(requests, 'main/news.html', {
+        'title': 'Новости',
+        'news': news,
+    })
+    
+
+def cafebar(requests):
+    cafe = get_object_or_404(Pages, title_uk='Кафе-бар')
+    gallery_instance = GalleryImage.objects.filter(gallery=cafe.gallery)
+    
+    return render(requests, 'main/cafebar.html', {
+        'title': 'Кафе-бар',
+        'cafe': cafe,
+        'gallery': gallery_instance
+    })
+    
+def viphall(requests):
+    hall = get_object_or_404(Pages, title_uk='Віп-зала')
+    gallery_instance = GalleryImage.objects.filter(gallery=hall.gallery)
+    
+    return render(requests, 'main/viphall.html', {
+        'title': 'Кафе-бар',
+        'hall': hall,
+        'gallery': gallery_instance
+    })
+    
+    
+def childroom(requests):
+    room = get_object_or_404(Pages, title_uk='Дитяча кімната')
+    gallery_instance = GalleryImage.objects.filter(gallery=room.gallery)
+    
+    return render(requests, 'main/childroom.html', {
+        'title': 'Дитяча кімната',
+        'room': room,
+        'gallery': gallery_instance
+    })
+    
