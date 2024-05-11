@@ -1,0 +1,165 @@
+{% extends "base_site.html" %}
+{% load static %}
+
+{% block css %}
+<style>
+    .table-centered {
+        width: auto;
+        margin: 0 auto;
+    }
+    
+    .orange {
+        background-color: orange !important;
+        color: white !important;
+    }
+    .blue {
+        background-color: blue !important;
+        color: white !important;
+    }
+    .red {
+        background-color: red !important;
+        color: white !important;
+    }
+    td {
+        width: 20px !important;
+        height: 20px !important;
+    }
+    .colorButton {
+        width: 100px;
+        height: 100px;
+    }
+</style>
+{% endblock css %}
+
+{% block content %}
+<div class="container" style="max-width: 1920px;">
+    <div class="center-content">
+        <img src="{% static "image/photo.jpg" %}" alt="image" class="img-fluid" style="width: 100%; height: 400px;">
+    </div>
+</div>
+<div class="container">
+    <div class="center-content">
+        <img src="{{ session.movie.main_image.url }}" alt="image" class="img-fluid" style="margin-top:40px;">
+        <h1>{{ session.movie.title }}</h1>
+    </div>
+</div>
+<div class="container">
+    <div class="center-content">
+        <h5>Цена в грн: {{ session.price }}</h5>
+        <div class='group' style="display:flex; border: 2px solid orange;">
+            <h5>Забронировано билетов: 0</h5>
+            <h5 style="margin-left:20px;">На сумму: 0 грн</h5>
+        </div>
+    </div>        
+</div>    
+<table class="table table-centered">
+    <thead class="table">
+        <tr>
+            {% for _ in seats %}
+                <th></th>
+            {% endfor %}
+        </tr>
+    </thead>
+    <tbody>
+        {% for row in rows %}
+        <tr>
+            {% for seat in seats %}
+                {% with row_seat=row|add:'-'|add:seat %}
+                <td>
+                    <button class="btn btn-block colorButton orange {% if row_seat in purchased_seats %}red{% endif %}" 
+                            data-row="{{ row }}" 
+                            data-seat="{{ seat }}" 
+                            style="background-color: {% if row_seat in purchased_seats %}red{% else %}orange{% endif %}; color: white;">
+                    </button>
+                </td>
+                {% endwith %}
+            {% endfor %}
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+<div class='container' style="margin-top:30px;">
+    <div class='center-content'>
+        <button class='btn btn-success' id="buyTickets">Купить</button>
+    </div>
+</div>     
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script>
+    $(document).ready(function() {
+        var ticketPrice = {{ session.price }};
+        var ticketsCount = 0;
+        var totalAmount = 0;
+        var selectedSeats = [];
+        var session_id = '{{ session.id }}';
+
+        
+        $.ajax({
+            type: 'GET',
+            url: '/get_purchased_seats/',
+            data: {
+                session_id: session_id
+            },
+            success: function(response) {
+                var purchasedSeats = response.purchased_seats;
+                purchasedSeats.forEach(function(rowSeat) {
+                    var row = rowSeat[0];
+                    var seat = rowSeat[1];
+                    var button = $('.colorButton[data-row="' + row + '"][data-seat="' + seat + '"]');
+                    button.removeClass('orange').addClass('red').prop('disabled', true);
+                });
+            },
+            error: function(error) {
+                console.error('Ошибка при получении купленных мест', error);
+            }
+        });
+
+
+        $('.colorButton').click(function() {
+            var btn = $(this);
+            var row = btn.data('row');
+            var seat = btn.data('seat');
+
+            if (btn.hasClass('orange')) {
+                btn.removeClass('orange').addClass('blue');
+                ticketsCount++;
+                totalAmount += ticketPrice;
+                selectedSeats.push({row: row, seat: seat});
+            } else {
+                btn.removeClass('blue').addClass('orange');
+                ticketsCount--;
+                totalAmount -= ticketPrice;
+                selectedSeats = selectedSeats.filter(function(seatInfo) {
+                    return !(seatInfo.row == row && seatInfo.seat == seat);
+                });
+            }
+            $('h5:contains("Забронировано билетов:")').text('Забронировано билетов: ' + ticketsCount);
+            $('h5:contains("На сумму:")').text('На сумму: ' + totalAmount + ' грн');
+        });
+
+        $('#buyTickets').click(function() {
+            if (selectedSeats.length > 0) {
+                $.ajax({
+                    type: 'POST',
+                    url: '/purchase_tickets/',
+                    data: {
+                        seats: JSON.stringify(selectedSeats),
+                        session_id: '{{ session.id }}'
+                    },
+                    success: function(response) {
+                        console.log('Покупка успешна', response);
+                        // Обновление интерфейса или перенаправление пользователя
+                    },
+                    error: function(error) {
+                        console.error('Ошибка при покупке билетов', error);
+                    }
+                });
+            } else {
+                alert('Выберите хотя бы одно место для покупки билетов.');
+            }
+        });
+    });
+</script>
+
+{% endblock content %}

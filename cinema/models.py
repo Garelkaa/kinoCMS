@@ -82,10 +82,15 @@ class MovieSession(models.Model):
         verbose_name_plural = 'Сессия фильмов'
 
 class Ticked(models.Model):
-    user_id = models.ForeignKey(CustomUser, on_delete=models.CASCADE, verbose_name='Айди пользователя')
-    movie_session_id = models.ForeignKey(MovieSession, on_delete=models.CASCADE, verbose_name='Айди сессии фильма')
+    user = models.ForeignKey(CustomUser, null=True, blank=True, on_delete=models.CASCADE, verbose_name='Пользователь')
+    movie_session = models.ForeignKey(MovieSession, null=True, blank=True, on_delete=models.CASCADE, verbose_name='Сессия фильма')
+    row = models.IntegerField(null=True, blank=True, verbose_name='Ряд')
+    seat = models.IntegerField(null=True, blank=True, verbose_name='Место')
     
     class Meta:
         db_table = 'ticket'
         verbose_name = 'Билет'
         verbose_name_plural = 'Билеты'
+        
+    def get_booked_seats(self, session):
+        return self.objects.filter(movie_session=session).values_list('row', 'seat')

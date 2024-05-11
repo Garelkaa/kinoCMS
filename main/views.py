@@ -1,8 +1,11 @@
 from django.shortcuts import render, get_object_or_404
-from cinema.models import Movie, Cinema, CinemaHall
+from cinema.models import Movie, Cinema, CinemaHall, MovieSession, Ticked
 from banner.models import MainBanner
 from gallery.models import GalleryImage
 from other.models import Promotions, Pages, News
+from django.http import JsonResponse
+from django.views.decorators.csrf import csrf_exempt
+import json
 
 
 def main(requests):
@@ -22,6 +25,46 @@ def afisha(requests):
 def anothertime(requests):
     movies = Movie.objects.filter(active=False) 
     return render(requests, 'main/anothertime.html', context={'title': 'Афиша скоро', 'movies': movies})
+
+
+def rasspisanie(requests):
+    sessions = MovieSession.objects.all().select_related('movie', 'cinemahall')
+    return render(requests, 'main/rasspisanie.html', {'title': 'Рассписание','sessions': sessions})
+
+
+def bronirovane(request, session_id):
+    movie_session = get_object_or_404(MovieSession.objects.select_related('movie'), id=session_id)
+    rows = range(1, 6)
+    seats = range(1, 11)
+
+    context = {
+        "title": 'Бронирование билета',
+        "session": movie_session,
+        "rows": rows,
+        "seats": seats,
+    }
+    return render(request, 'main/bronirovanie.html', context)
+
+def get_purchased_seats(request):
+    session_id = request.GET.get('session_id')
+    purchased_seats = list(Ticked.objects.filter(movie_session_id=session_id).values_list('row', 'seat'))
+    return JsonResponse({'purchased_seats': purchased_seats})
+
+
+
+@csrf_exempt
+def purchase_tickets(request):
+    if request.method == 'POST':
+        user = request.user
+        session_id = request.POST.get('session_id')
+        seats = json.loads(request.POST.get('seats'))
+        session = get_object_or_404(MovieSession, id=session_id)
+
+        for seat in seats:
+            Ticked.objects.create(user=user, movie_session=session, row=seat['row'], seat=seat['seat'])
+
+        return JsonResponse({'status': 'success', 'message': 'Билеты успешно куплены'})
+    return JsonResponse({'status': 'error', 'message': 'Invalid request'}, status=400)
 
 
 def filmpage(requests, film_id, seo_url):

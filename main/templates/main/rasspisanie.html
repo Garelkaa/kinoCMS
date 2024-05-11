@@ -1,0 +1,120 @@
+{% extends "base_site.html" %}
+{% load static %}
+
+{% block css %}
+<style>
+    .center-content {
+        justify-content: center;
+        align-items: start; /* верхнее выравнивание для контентных блоков */
+        min-height: 100vh;
+    }
+    .form-column {
+        display: flex;
+        flex-direction: column;
+        margin: 0 20px; /* добавлено пространство между колонками */
+    }
+    .form-group {
+        margin-bottom: 20px; /* отступы между элементами формы */
+    }
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 20px; /* уменьшенный верхний отступ для таблицы */
+    }
+    th, td {
+        border: 1px solid #ddd;
+        padding: 8px;
+        text-align: left;
+    }
+    th {
+        background-color: #f2f2f2;
+    }
+    .booking-btn {
+        padding: 5px 10px;
+        background-color: #4CAF50;
+        color: white;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+    }
+</style>
+{% endblock css %}
+
+{% block content %}
+<div class="container center-content">
+    <div class="form-column">
+        <div class="form-group">
+            <div class="form-check form-check-inline">
+                <input class="form-check-input" type="checkbox" id="3D" value="3D">
+                <label class="form-check-label" for="3D">3D</label>
+            </div>
+            <div class="form-check form-check-inline">
+                <input class="form-check-input" type="checkbox" id="2D" value="2D">
+                <label class="form-check-label" for="2D">2D</label>
+            </div>
+            <div class="form-check form-check-inline">
+                <input class="form-check-input" type="checkbox" id="IMAX" value="IMAX">
+                <label class="form-check-label" for="IMAX">IMAX</label>
+            </div>
+        </div>
+    </div>
+    <div class="form-column">
+        <div class="form-group">
+            <select class="form-control" id="cinema">
+                <option>Выберите кинотеатр</option>
+                <option>Кинотеатр 1</option>
+                <option>Кинотеатр 2</option>
+                <option>Кинотеатр 3</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <select class="form-control" id="date">
+                <option>Выберите дату</option>
+                <option>2024-05-08</option>
+                <option>2024-05-09</option>
+                <option>2024-05-10</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <select class="form-control" id="movie">
+                <option>Выберите фильм</option>
+                <option>Фильм А</option>
+                <option>Фильм B</option>
+                <option>Фильм C</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <select class="form-control" id="hall">
+                <option>Выберите зал</option>
+                <option>Зал 1</option>
+                <option>Зал 2</option>
+                <option>Зал 3</option>
+            </select>
+        </div>
+    </div>
+</div>
+<div class="container center-content" style='margin-top:-400px; margin-bottom:-400px'>
+    <table>
+        <thead>
+            <tr>
+                <th>Название</th>
+                <th>Цена</th>
+                <th>Время</th>
+                <th>Зал</th>
+                <th style='width:300px;'>Бронирование</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for session in sessions %}
+                <tr>
+                    <td>{{ session.movie.title }}</td>
+                    <td>{{ session.price }}</td>
+                    <td>{{ session.time }}</td>
+                    <td>{{ session.cinemahall.number }}</td>
+                    <td><a href="{% url 'main:bronirovanie' session.id%}"><button class="booking-btn">Бронировать</button></a></td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock content %}
