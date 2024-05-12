@@ -3,34 +3,22 @@
 
 {% block css %}
 <style>
-    .center-content {
-        justify-content: center;
-        align-items: start; /* верхнее выравнивание для контентных блоков */
-        min-height: 100vh;
-    }
-    .form-column {
-        display: flex;
-        flex-direction: column;
-        margin: 0 20px; /* добавлено пространство между колонками */
+    /* Стили для формы и ее элементов */
+    .filter-form {
+        margin: auto;
+        max-width: 600px; /* Ширина формы */
     }
     .form-group {
-        margin-bottom: 20px; /* отступы между элементами формы */
+        margin-bottom: 10px; /* Уменьшенный отступ между элементами формы */
     }
-    table {
-        width: 100%;
-        border-collapse: collapse;
-        margin-top: 20px; /* уменьшенный верхний отступ для таблицы */
-    }
-    th, td {
-        border: 1px solid #ddd;
-        padding: 8px;
-        text-align: left;
-    }
-    th {
-        background-color: #f2f2f2;
+
+    /* Стили для таблицы */
+    .sessions-table {
+        margin: auto;
+        max-width: 1200px; /* Ширина таблицы */
     }
     .booking-btn {
-        padding: 5px 10px;
+        padding: 8px 16px;
         background-color: #4CAF50;
         color: white;
         border: none;
@@ -41,69 +29,77 @@
 {% endblock css %}
 
 {% block content %}
-<div class="container center-content">
-    <div class="form-column">
-        <div class="form-group">
-            <div class="form-check form-check-inline">
-                <input class="form-check-input" type="checkbox" id="3D" value="3D">
-                <label class="form-check-label" for="3D">3D</label>
+<!-- Форма фильтров -->
+<div class="container filter-form">
+    <form method="GET" action="{% url 'main:filter_sessions' %}">
+        <div class="row">
+            <div class="col-md-4">
+                <div class="form-group">
+                    <label for="cinema">Кинотеатр:</label>
+                    <select class="form-control" id="cinema" name="cinema">
+                        <option value="">Все кинотеатры</option>
+                        {% for cinema in cinemas %}
+                            <option value="{{ cinema.id }}">{{ cinema.title }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
             </div>
-            <div class="form-check form-check-inline">
-                <input class="form-check-input" type="checkbox" id="2D" value="2D">
-                <label class="form-check-label" for="2D">2D</label>
+            <div class="col-md-4">
+                <div class="form-group">
+                    <label for="hall">Зал:</label>
+                    <select class="form-control" id="hall" name="hall">
+                        <option value="">Все залы</option>
+                        {% for hall in halls %}
+                            <option value="{{ hall.number }}">{{ hall.number }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
             </div>
-            <div class="form-check form-check-inline">
-                <input class="form-check-input" type="checkbox" id="IMAX" value="IMAX">
-                <label class="form-check-label" for="IMAX">IMAX</label>
+            <div class="col-md-4">
+                <div class="form-group">
+                    <label for="movie">Фильм:</label>
+                    <select class="form-control" id="movie" name="movie">
+                        <option value="">Все фильмы</option>
+                        {% for movie in movies %}
+                            <option value="{{ movie.id }}">{{ movie.title }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
             </div>
         </div>
-    </div>
-    <div class="form-column">
-        <div class="form-group">
-            <select class="form-control" id="cinema">
-                <option>Выберите кинотеатр</option>
-                <option>Кинотеатр 1</option>
-                <option>Кинотеатр 2</option>
-                <option>Кинотеатр 3</option>
-            </select>
+        <div class="row">
+            <div class="col-md-12">
+                <div class="form-group">
+                    <label>Тип фильма:</label><br>
+                    {% for type in movie_types %}
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="checkbox" value="{{ type.0 }}" name="types[]">
+                            <label class="form-check-label" for="">{{ type.1 }}</label>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
         </div>
         <div class="form-group">
-            <select class="form-control" id="date">
-                <option>Выберите дату</option>
-                <option>2024-05-08</option>
-                <option>2024-05-09</option>
-                <option>2024-05-10</option>
-            </select>
+            <button type="submit" class="btn btn-primary">Применить фильтры</button>
         </div>
-        <div class="form-group">
-            <select class="form-control" id="movie">
-                <option>Выберите фильм</option>
-                <option>Фильм А</option>
-                <option>Фильм B</option>
-                <option>Фильм C</option>
-            </select>
-        </div>
-        <div class="form-group">
-            <select class="form-control" id="hall">
-                <option>Выберите зал</option>
-                <option>Зал 1</option>
-                <option>Зал 2</option>
-                <option>Зал 3</option>
-            </select>
-        </div>
-    </div>
+    </form>
 </div>
-<div class="container center-content" style='margin-top:-400px; margin-bottom:-400px'>
-    <table>
+
+<!-- Таблица сеансов -->
+<div class="container sessions-table">
+    <table class="table table-striped">
+        <!-- Заголовки таблицы -->
         <thead>
             <tr>
                 <th>Название</th>
                 <th>Цена</th>
                 <th>Время</th>
                 <th>Зал</th>
-                <th style='width:300px;'>Бронирование</th>
+                <th style='width:200px;'>Бронирование</th> <!-- Уменьшена ширина для кнопки -->
             </tr>
         </thead>
+        <!-- Тело таблицы -->
         <tbody>
             {% for session in sessions %}
                 <tr>
@@ -111,7 +107,7 @@
                     <td>{{ session.price }}</td>
                     <td>{{ session.time }}</td>
                     <td>{{ session.cinemahall.number }}</td>
-                    <td><a href="{% url 'main:bronirovanie' session.id%}"><button class="booking-btn">Бронировать</button></a></td>
+                    <td><a href="{% url 'main:bronirovanie' session.id%}" class="btn btn-success booking-btn">Бронировать</a></td>
                 </tr>
             {% endfor %}
         </tbody>

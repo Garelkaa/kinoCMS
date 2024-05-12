@@ -1,4 +1,5 @@
 from django.shortcuts import render, get_object_or_404
+from django.template.loader import render_to_string
 from cinema.models import Movie, Cinema, CinemaHall, MovieSession, Ticked
 from banner.models import MainBanner
 from gallery.models import GalleryImage
@@ -38,8 +39,49 @@ def anothertime(requests):
 
 
 def rasspisanie(requests):
-    sessions = MovieSession.objects.all().select_related('movie', 'cinemahall')
-    return render(requests, 'main/rasspisanie.html', {'title': 'Рассписание','sessions': sessions})
+    cinemas = Cinema.objects.all()
+    halls = CinemaHall.objects.all()
+    movies = Movie.objects.all()
+    movie_types = Movie.TYPE_CHOICES
+    sessions = MovieSession.objects.all()  # You need to provide sessions data as well
+    
+    context = {
+        'cinemas': cinemas,
+        'halls': halls,
+        'movies': movies,
+        'movie_types': movie_types,
+        'sessions': sessions,
+    }
+    return render(requests, 'main/rasspisanie.html', context)
+    
+
+def filter_sessions(request):
+    cinemas = Cinema.objects.all()
+    halls = CinemaHall.objects.all()
+    movies = Movie.objects.all()
+    movie_types = Movie.TYPE_CHOICES
+    sessions = MovieSession.objects.all()
+    cinema_id = request.GET.get('cinema')
+    hall_number = request.GET.get('hall')
+    movie_id = request.GET.get('movie')
+    types = request.GET.getlist('types[]')
+    
+    sessions = MovieSession.objects.all()
+    if cinema_id:
+        sessions = sessions.filter(cinemahall__cinema_id=cinema_id)
+    if hall_number:
+        sessions = sessions.filter(cinemahall__number=hall_number)
+    if movie_id:
+        sessions = sessions.filter(movie_id=movie_id)
+    if types:
+        sessions = sessions.filter(movie__type__in=types)
+        
+    
+    return render(request, 'main/rasspisanie.html', {'sessions': sessions,'cinemas': cinemas,
+        'halls': halls,
+        'movies': movies,
+        'movie_types': movie_types,
+        'sessions': sessions,})
 
 
 def bronirovane(request, session_id):

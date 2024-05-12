@@ -13,6 +13,7 @@ urlpatterns = [
     path('filmpage/<int:film_id>/<slug:seo_url>', views.filmpage, name='filmpage'),
     path('afisha/anothertime/', views.anothertime, name='anothertime'),
     path('rasspisanie/', views.rasspisanie, name='rasspisanie'),   
+    path('filter-sessions/', views.filter_sessions, name='filter_sessions'),  
     path('bronirovanie/<int:session_id>/', views.bronirovane, name='bronirovanie'), 
     path('purchase_tickets/', views.purchase_tickets, name='purchase_tickets'),  
     path('get_purchased_seats/', views.get_purchased_seats, name='get_purchased_seats'),
