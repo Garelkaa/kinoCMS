@@ -1,7 +1,6 @@
 from django.shortcuts import render, get_object_or_404
-from django.template.loader import render_to_string
 from cinema.models import Movie, Cinema, CinemaHall, MovieSession, Ticked
-from banner.models import MainBanner
+from banner.models import MainBanner, BackBanner
 from gallery.models import GalleryImage
 from other.models import Promotions, Pages, News
 from django.http import JsonResponse
@@ -15,8 +14,11 @@ def main(requests):
     movies = Movie.objects.filter(active=True)  
     upcoming_movies = Movie.objects.filter(active=False)
     banners = MainBanner.objects.all()
+    back_banner = BackBanner.objects.first()
+    back_banner_status = back_banner.status if back_banner else False
     
-    return render(requests, 'main/index.html', context={'title': 'Головна сторінка', 'movies': movies, 'upcoming_movies': upcoming_movies, 'banners': banners})
+    return render(requests, 'main/index.html', context={'title': 'Головна сторінка', 'movies': movies, 'upcoming_movies': upcoming_movies, 'back_banner_status': back_banner_status,
+        'back_banner': back_banner, 'banners': banners})
 
 
 def search(request):
@@ -43,7 +45,7 @@ def rasspisanie(requests):
     halls = CinemaHall.objects.all()
     movies = Movie.objects.all()
     movie_types = Movie.TYPE_CHOICES
-    sessions = MovieSession.objects.all()  # You need to provide sessions data as well
+    sessions = MovieSession.objects.all() 
     
     context = {
         'cinemas': cinemas,

@@ -41,6 +41,7 @@ class BackBanner(models.Model):
     }
     image = models.ImageField(verbose_name="Картинка")
     choice = models.CharField(max_length=1, verbose_name="", choices=TYPE_CHOICE, null=True, blank=True)
+    status = models.BooleanField(default=True, verbose_name="Активно")
 
     class Meta:
         db_table = 'backbanners'

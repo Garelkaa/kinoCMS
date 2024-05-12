@@ -13,7 +13,7 @@
             object-fit: cover;
         }
         body {
-            background: url({% static "image/bg_aphisha.jpg" %}); 
+            background: url({% if back_banner_status %}{{ back_banner.image.url }}{% else %}{% static "image/bg_aphisha.jpg" %}{% endif %}); 
         }
         h5 {
             white-space: nowrap; 

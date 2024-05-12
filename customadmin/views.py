@@ -52,14 +52,19 @@ def stats(request):
 @login_required
 @user_passes_test(is_admin)
 def banner(request):
-
     main_formset = MainBannerFormSet(queryset=MainBanner.objects.all(), prefix='main')
     another_formset = DownBannerFormSet(queryset=NewsBanner.objects.all(), prefix='another')
+    
+    # Получите фоновый баннер и его статус
+    back_banner = BackBanner.objects.first()
+    back_banner_status = back_banner.status if back_banner else False
 
     context = {
         'title': 'Страница баннеров',
         'main_formset': main_formset,
         'another_formset': another_formset,
+        'back_banner_status': back_banner_status,
+        'back_banner': back_banner
     }
     return render(request, 'customadmin/banner.html', context)
 
@@ -121,12 +126,28 @@ def save_another_banner(request):
 @user_passes_test(is_admin)
 @csrf_exempt
 def save_back_banner(request):
-    if request.method == 'POST' and request.FILES.get('back_banner_photo'):
-        back_banner_photo = request.FILES['back_banner_photo']
+    if request.method == 'POST':
         choice = request.POST.get('choice', 'd')  # Default to 'd' if choice is not provided
-        back_banner_object = BackBanner(image=back_banner_photo, choice=choice)
-        back_banner_object.save()
-        return JsonResponse({'success': True, 'image_url': back_banner_object.image.url, 'choice': back_banner_object.choice})
+
+        # Получаем существующий объект бэк-баннера или создаем новый, если его нет
+        back_banner = BackBanner.objects.first()
+        if not back_banner:
+            back_banner = BackBanner()
+
+        # Обновляем значение поля choice и статуса на основе выбранной радиокнопки
+        if choice == 'f':
+            back_banner.choice = 'f'
+            back_banner.status = True  # Ставим статус True, если выбран Fon photo
+            # Сохраняем новое фото, если оно было отправлено
+            if 'back_banner_photo' in request.FILES:
+                back_banner.image = request.FILES['back_banner_photo']
+        else:
+            back_banner.choice = 'd'
+            back_banner.status = False  # Ставим статус False, если выбран Default photo
+
+        back_banner.save()  # Сохраняем изменения в базе данных
+
+        return JsonResponse({'success': True, 'choice': back_banner.choice, 'status': back_banner.status})
     else:
         return JsonResponse({'success': False})
 

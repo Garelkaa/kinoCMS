@@ -87,20 +87,20 @@
     <div class="row align-items-center">
         <div class="col-md-6">
             <div class="form-check">
-                <input class="form-check-input" type="radio" name="choice" id="defaultRadio" value="d" checked>
+                <input class="form-check-input" type="radio" name="choice" id="defaultRadio" value="d" {% if not back_banner_status %}checked{% endif %}>
                 <label class="form-check-label" for="defaultRadio">
                     {% trans 'Default photo' %}
                 </label>
             </div>
             <div class="form-check">
-                <input class="form-check-input" type="radio" name="choice" id="fonRadio" value="f">
+                <input class="form-check-input" type="radio" name="choice" id="fonRadio" value="f" {% if back_banner_status %}checked{% endif %}>
                 <label class="form-check-label" for="fonRadio">
                     {% trans 'Fon photo' %}
                 </label>
             </div>
         </div>
         <div class="col-md-6">
-            <img id="banner-image" src="{% static 'image/photo.jpg' %}" alt="{% trans 'Banner Image' %}" class="img-fluid" style="width: 400px; height: 400px">
+            <img id="banner-image" src="{% if back_banner_status %}{{ back_banner.image.url }}{% else %}{% static 'image/photo.jpg' %}{% endif %}" alt="{% trans 'Banner Image' %}" class="img-fluid" style="width: 400px; height: 400px">
         </div>
     </div>
     <div class="row mt-3">
@@ -109,6 +109,7 @@
         </div>
         <div class="col-md-6">
             <button id="upload-button" class="btn btn-primary">{% trans 'Загрузить' %}</button>
+            <button type="button" id="save-button" class="btn btn-primary">{% trans 'Сохранить' %}</button>
             <button id="delete-button" class="btn btn-danger">{% trans 'Удалить' %}</button>
         </div>
     </div>
@@ -130,6 +131,7 @@
                             {{ form.text }}
                             {{ form.DELETE }}
                             <!-- Добавляем кнопку "Удалить" -->
+                            
                             <button type="button" class="btn btn-danger btn-sm delete-image" data-id="{{ form.id.value }}">Удалить</button>
                         </div>
                     </div>
@@ -156,6 +158,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const fileInput = document.getElementById('file-input');
     const uploadButton = document.getElementById('upload-button');
     const deleteButton = document.getElementById('delete-button');
+    const saveButton = document.getElementById('save-button');
     const bannerImage = document.getElementById('banner-image');
     const top_addImageButton = document.getElementById("top-add-image-btn");
     const top_imageContainer = document.getElementById("top-image-container");
@@ -314,11 +317,11 @@ document.addEventListener('DOMContentLoaded', function() {
         const file = fileInput.files[0];
         const formData = new FormData();
         formData.append('back_banner_photo', file);
-
+    
         // Добавляем значение choice в formData
         const choice = document.querySelector('input[name="choice"]:checked').value;
         formData.append('choice', choice);
-
+    
         fetch('{% url 'adminlte:save_back_banner' %}', {
             method: 'POST',
             body: formData,
@@ -334,6 +337,34 @@ document.addEventListener('DOMContentLoaded', function() {
         })
         .catch(error => {
             console.error('{% trans "Ошибка" %}:', error);
+        });
+    });
+
+
+    saveButton.addEventListener('click', function() {
+        // Получаем выбранное значение радиокнопки
+        const choice = document.querySelector('input[name="choice"]:checked').value;
+
+        // Формируем данные для отправки на сервер
+        const formData = new FormData();
+        formData.append('choice', choice);
+        formData.append('csrfmiddlewaretoken', '{{ csrf_token }}');
+
+        // Отправляем AJAX-запрос на сохранение состояния бэк-баннера
+        fetch('{% url 'adminlte:save_back_banner' %}', {
+            method: 'POST',
+            body: formData,
+        })
+        .then(response => {
+            if (response.ok) {
+                console.log('{% trans "Состояние бэк-баннера успешно сохранено" %}');
+                location.reload()
+            } else {
+                console.error('{% trans "Ошибка при сохранении состояния бэк-баннера" %}');
+            }
+        })
+        .catch(error => {
+            console.error('{% trans "Ошибка при отправке запроса" %}:', error);
         });
     });
 
