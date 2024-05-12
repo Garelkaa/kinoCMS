@@ -8,6 +8,7 @@ app_name = 'main'
 
 urlpatterns = [
     path('', views.main, name='main'),
+    path('search/', views.search, name='search_results'),
     path('afisha/', views.afisha, name='afisha'),
     path('filmpage/<int:film_id>/<slug:seo_url>', views.filmpage, name='filmpage'),
     path('afisha/anothertime/', views.anothertime, name='anothertime'),

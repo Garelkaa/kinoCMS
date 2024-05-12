@@ -6,6 +6,7 @@ from other.models import Promotions, Pages, News
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 import json
+from django.db.models import Q
 
 
 def main(requests):
@@ -15,6 +16,15 @@ def main(requests):
     banners = MainBanner.objects.all()
     
     return render(requests, 'main/index.html', context={'title': 'Головна сторінка', 'movies': movies, 'upcoming_movies': upcoming_movies, 'banners': banners})
+
+
+def search(request):
+    query = request.GET.get('query')
+    if query:
+        movies = Movie.objects.filter(Q(title_en__icontains=query) | Q(title_uk__icontains=query))
+    else:
+        movies = None
+    return render(request, 'main/search_results.html', {'movies': movies, 'query': query})
 
 
 def afisha(requests):
@@ -45,11 +55,11 @@ def bronirovane(request, session_id):
     }
     return render(request, 'main/bronirovanie.html', context)
 
+
 def get_purchased_seats(request):
     session_id = request.GET.get('session_id')
     purchased_seats = list(Ticked.objects.filter(movie_session_id=session_id).values_list('row', 'seat'))
     return JsonResponse({'purchased_seats': purchased_seats})
-
 
 
 @csrf_exempt

@@ -1,0 +1,29 @@
+{% extends "base_site.html" %}
+{% load static %}
+
+{% block content %}
+<div class="container mt-4" style="margin-top: 200px;">
+    <div class="row justify-content-center">
+        <div id="searchResults">
+            {% if movies %}
+                {% for movie in movies %}
+                    <div class="col-md-2 mb-4">
+                        <div class="card" style="height:500px;">
+                            <p class="text-center">Сейчас в кино</p>
+                            <img src="{{ movie.main_image.url }}" style="height:345px;" class="card-img-top" alt="Movie">
+                            <div class="card-body">
+                                <a href="{% url 'main:filmpage' movie.id movie.seo_url %}" class="card-title" style="text-decoration:none;">{{ movie.title }}</a>
+                                <button class="btn btn-primary">Купить билет</button>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            {% else %}
+                <div class="col-12">
+                    <p class="text-center">Информации по запросу "{{ query }}" нет.</p>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}
