@@ -70,17 +70,26 @@
                         <a class="nav-link" href="{% url 'main:promoutes' %}">Акции</a>
                     </li>
                     <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="{% url 'main:afisha' %}" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                             О кинотеатре
                         </a>
                         <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
                             <li><a class="dropdown-item" href="{% url 'main:news' %}">Новости</a></li>
                             <li><a class="dropdown-item" href="{% url 'main:ads' %}">Реклама</a></li>
-                            <li><a class="dropdown-item" href="{% url 'main:cafebar' %}">Кафе</a></li>
-                            <li><a class="dropdown-item" href="{% url 'main:childroom' %}">Детская комната</a></li>
+                            <li><a class="dropdown-item" href="{% url 'main:cafebar' %}">Кофе-бар</a></li>
                             <li><a class="dropdown-item" href="{% url 'main:contacts' %}">Контакты</a></li>
+                            <!-- Добавляем новые пункты меню -->
+                            {% if user.is_authenticated %}
+                                <li><a class="dropdown-item" href="{% url 'main:user_logout' %}">Выход</a></li>
+                                {% if user.is_superuser %}
+                                    <li><a class="dropdown-item" href="{% url 'adminlte:banner' %}">Админ панель</a></li>
+                                {% endif %}
+                            {% else %}
+                                <li><a class="dropdown-item" href="{% url 'main:login' %}">Вход</a></li>
+                            {% endif %}
                         </ul>
                     </li>
+                    
                 </ul>
                 <form action="{% url 'main:search_results' %}" method="get">
                     <input class="form-control me-2" type="search" name="query" placeholder="Поиск" aria-label="Поиск">

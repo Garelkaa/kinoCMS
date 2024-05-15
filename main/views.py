@@ -1,7 +1,11 @@
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import redirect, render, get_object_or_404
+from django.contrib.auth import authenticate, login, logout
+from django.contrib import messages
+
 from cinema.models import Movie, Cinema, CinemaHall, MovieSession, Ticked
 from banner.models import MainBanner, BackBanner
 from gallery.models import GalleryImage
+from main.forms import CustomUserCreationForm
 from other.models import Promotions, Pages, News
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
@@ -27,7 +31,7 @@ def search(request):
         movies = Movie.objects.filter(Q(title_en__icontains=query) | Q(title_uk__icontains=query))
     else:
         movies = None
-    return render(request, 'main/search_results.html', {'movies': movies, 'query': query})
+    return render(request, 'main/search_results.html', {'title': 'Поиск фильма','movies': movies, 'query': query})
 
 
 def afisha(requests):
@@ -226,3 +230,34 @@ def childroom(requests):
         'gallery': gallery_instance
     })
     
+    
+def register_user(request):
+    if request.method == 'POST':
+        form = CustomUserCreationForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('main:main')  
+        else:
+            print(form.errors)
+    else:
+        form = CustomUserCreationForm()
+    return render(request, 'main/reg.html', {'form': form})
+
+
+
+def user_login(request):
+    if request.method == 'POST':
+        username = request.POST.get('username')
+        password = request.POST.get('password')
+        user = authenticate(request, username=username, password=password)
+        if user is not None:
+            login(request, user)
+            return redirect('main:main')  # Redirect to the home page after successful login
+        else:
+            messages.error(request, 'Invalid username or password')
+    return render(request, 'main/login.html')
+
+
+def user_logout(request):
+    logout(request)
+    return redirect('main:main')

@@ -29,5 +29,7 @@ urlpatterns = [
     path('child-room/', views.childroom, name='childroom'),
     path('ads/', views.childroom, name='ads'),
     path('contacts/', views.childroom, name='contacts'),
-    
+    path('registration/', views.register_user, name='register_user'),
+    path('login/', views.user_login, name='login'),
+    path('logout/', views.user_logout, name='user_logout'),
 ]
