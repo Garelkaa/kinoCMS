@@ -3,7 +3,7 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
 
 from cinema.models import Movie, Cinema, CinemaHall, MovieSession, Ticked
-from banner.models import MainBanner, BackBanner
+from banner.models import MainBanner, BackBanner, MainBannerSettings
 from gallery.models import GalleryImage
 from main.forms import CustomUserCreationForm
 from other.models import Promotions, Pages, News
@@ -18,11 +18,12 @@ def main(requests):
     movies = Movie.objects.filter(active=True)  
     upcoming_movies = Movie.objects.filter(active=False)
     banners = MainBanner.objects.all()
+    main_banner_settings = MainBannerSettings.objects.first()
     back_banner = BackBanner.objects.first()
     back_banner_status = back_banner.status if back_banner else False
     
     return render(requests, 'main/index.html', context={'title': 'Головна сторінка', 'movies': movies, 'upcoming_movies': upcoming_movies, 'back_banner_status': back_banner_status,
-        'back_banner': back_banner, 'banners': banners})
+        'back_banner': back_banner, 'banners': banners, 'main_banner_settings': main_banner_settings})
 
 
 def search(request):
@@ -252,7 +253,7 @@ def user_login(request):
         user = authenticate(request, username=username, password=password)
         if user is not None:
             login(request, user)
-            return redirect('main:main')  # Redirect to the home page after successful login
+            return redirect('main:main')
         else:
             messages.error(request, 'Invalid username or password')
     return render(request, 'main/login.html')

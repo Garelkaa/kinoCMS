@@ -72,28 +72,33 @@ def banner(request):
 @login_required
 @user_passes_test(is_admin)
 def save_main_banner(request):
+    try:
+        settings_instance = MainBannerSettings.objects.get(pk=45)
+    except MainBannerSettings.DoesNotExist:
+        settings_instance = MainBannerSettings.objects.create(speed=5, active=False)
+
     if request.method == 'POST':
         formset = MainBannerFormSet(request.POST, request.FILES, prefix='main')
 
         if formset.is_valid():
-            formset_instance = MainBannerSettings.objects.create(
-                speed=request.POST.get('top-time-active'),
-                active=request.POST.get('active') == 'on'
-            )
+            settings_instance.speed = request.POST.get('top-time-active')
+            settings_instance.active = request.POST.get('active') == 'on'
+            settings_instance.save()
 
             for form in formset:
-                if form.cleaned_data.get('DELETE'):
-                    # If the form is marked for deletion, delete the associated instance
-                    if form.instance.pk:
-                        form.instance.delete()
-                else:
-                    form_banner = form.save(commit=False)
-                    form_banner.settings = formset_instance
-                    form_banner.save()
+                form_instance = form.save(commit=False)
+                form_instance.settings = settings_instance
+                form_instance.save()
 
             return redirect('adminlte:banner')
         else:
             print(formset.errors)
+
+    else:
+        formset = MainBannerFormSet(prefix='main', queryset=MainBanner.objects.filter(settings=settings_instance))
+
+    return render(request, 'your_template.html', {'main_formset': formset})
+
 
 
 @login_required
@@ -684,10 +689,11 @@ def edit_user(request, user_id):
         form = UserForm(request.POST, instance=user_instance)
         if form.is_valid():
             form.save()
-
             new_password = request.POST.get('password')
             confirm_password = request.POST.get('confirm_password')
-            if new_password == confirm_password:
+            
+            
+            if new_password == confirm_password and new_password != '':
                 user_instance.password = make_password(new_password)
                 user_instance.save()
 

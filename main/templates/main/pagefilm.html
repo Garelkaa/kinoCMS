@@ -2,6 +2,10 @@
 {% load static %}
 
 {% block css %}
+<meta name-"title" content="{{ movie.seo_title }}">
+<meta name-"description" content="{{ movie.description_seo }}">
+<meta name-"url" content="{{ movie.seo_url }}">
+<meta name-"keywords" content="{{ movie.seo_keywords }}">
 <style>
     #carouselExample {
         max-width: 1000px;

@@ -42,10 +42,10 @@
 
 {% block content %}
     
-    <div id="carouselExample" class="carousel slide" data-bs-ride="carousel">
+    <div id="carouselExample" class="carousel slide" data-bs-ride="carousel" style='margin-top:15px;'>
         <div class="carousel-inner">
             {% for image in banners %}
-                <div class="carousel-item active">
+                <div class="carousel-item active" data-bs-interval="{{ main_banner_settings.speed }}000">
                     <img src="{{ image.image.url }}" class="d-block w-100" alt="...">
                 </div>
             {% endfor %}    
