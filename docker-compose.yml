@@ -15,7 +15,7 @@ services:
     build:
       context: .
     container_name: cinema
-    command: /usr/src/kinoCMS/entrypoint.sh make migrations
+    command: make migrations
     depends_on:
       - postgres-db
     env_file: .env
@@ -48,6 +48,7 @@ services:
       - redis
       - postgres-db
     env_file: .env
+
 
 volumes:
   static_volume:

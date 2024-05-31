@@ -26,7 +26,6 @@ RUN apt-get update && apt-get install --no-install-recommends -y \
 
 COPY . $PYTHONPATH
 COPY ./requirements.txt $PYTHONPATH/
-COPY database_script.py $PYTHONPATH/
 COPY fill_table.py $PYTHONPATH/
 
 RUN pip install -r requirements.txt
