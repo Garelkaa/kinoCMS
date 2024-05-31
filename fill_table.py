@@ -20,7 +20,7 @@ def fill_table(rows=10):
             city=fake.city(),  # Случайный город
             address=fake.address(),  # Случайный адрес
             phoneNumber=fake.phone_number()[:13],  # Случайный номер телефона
-            card=fake.credit_card_number(),  # Случайный номер карты
+            card=fake.credit_card_number()[:16],  # Случайный номер карты
             language=fake.random_element(elements=("u", "r")),  # Случайный выбор языка
             # Другие поля вашей модели
         )

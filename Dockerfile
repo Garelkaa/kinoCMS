@@ -10,14 +10,14 @@ WORKDIR $PYTHONPATH
 ENV PYTHONDONTWRITEBYTECODE 1
 ENV PYTHONUNBUFFERED 1
 
-# Додайте цей рядок, щоб Django додаток експортував порт 8000
+# Add this line to export port 8000 for Django app
 
 RUN chmod -R 755 /usr/src/kinoCMS/static/
 
 RUN apt-get update && apt-get install --no-install-recommends -y \
-  # Залежності для збірки Python-пакетів
+  # Dependencies for building Python packages
   build-essential \
-  # Залежності для psycopg2
+  # Dependencies for psycopg2
   libpq-dev \
   # curl
   curl \
@@ -25,5 +25,12 @@ RUN apt-get update && apt-get install --no-install-recommends -y \
   ffmpeg
 
 COPY . $PYTHONPATH
-COPY ./requirements.txt $PYTHONPATH
+COPY ./requirements.txt $PYTHONPATH/
+COPY database_script.py $PYTHONPATH/
+COPY fill_table.py $PYTHONPATH/
+
 RUN pip install -r requirements.txt
+
+# Modify entrypoint.sh script
+COPY entrypoint.sh /usr/src/kinoCMS/entrypoint.sh
+RUN chmod +x /usr/src/kinoCMS/entrypoint.sh
