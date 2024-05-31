@@ -45,61 +45,21 @@
 
 <div class="container mt-5">
     <h2 class="text-center">Расписание сеансов кинотеатра</h2>
-
-    <div class="container mt-4 text-center">
-        <div class="row justify-content-center">
-          <div class="col-md-6" style="width: 100px;">
-            <!-- Выбор города -->
-            <select class="form-control" style="width: 100px;">
-              <option>Суми</option>
-              <option>Київ</option>
-              <option>Львів</option>
-            </select>
-          </div>
-      
-          <div class="col-md-6" style="width: 300px;">
-            <!-- Кнопки "Все", "3Д", "2Д" -->
-            <div class="btn-group" role="group">
-              <button type="button" class="btn btn-primary">Все</button>
-              <button type="button" class="btn btn-primary">3Д</button>
-              <button type="button" class="btn btn-primary">2Д</button>
+    <div class="row justify-content-center mt-4">
+      {% for session in sessions %}
+        <div class="col-md-4">
+          <div class="card text-center">
+              <p class="text-center">{{ session.movie.title }}</p>
+            <div class="card-body">
+              <p class="card-text">{{ session.time }} | {{ session.movie.type }}</p>
+              <p class="card-text">{{session.cinemahall_id}} | {{ session.date }}</p>
+            </div>
+            <div class="text-center btn-buy-ticket mt-4">
+              <a href='{% url 'main:bronirovanie' session.id %}'><button class="btn btn-success">Купить билет</button></a>
             </div>
           </div>
         </div>
-      </div>
-      
-      
-
-    <div class="row justify-content-center mt-4">
-      <!-- Карточки с месяцами -->
-      <div class="col-md-2">
-        <div class="card text-center">
-          <div class="card-body">
-            <h5 class="card-title">18 Чт</h5>
-            <p class="card-text">Августа</p>
-          </div>
-        </div>
-      </div>
-      
-
-    </div>
-
-    <div class="row justify-content-center mt-4">
-      <!-- Карточки с сеансами -->
-      <div class="col-md-4">
-        <div class="card text-center">
-            <p class="text-center">Суми</p>
-          <div class="card-body">
-            <p class="card-text">16:40 | 3Д</p>
-            <p class="card-text">Зал 1 | 23.12.56</p>
-          </div>
-        </div>
-      </div>
-      <!-- Повторите этот блок для каждой карточки с сеансом -->
-      
-    </div>
-    <div class="text-center btn-buy-ticket mt-4">
-        <button class="btn btn-success">Купить билет</button>
+      {% endfor %}      
     </div>
   </div>
 

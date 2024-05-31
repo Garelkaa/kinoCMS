@@ -11,7 +11,6 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 """
 import os
 from pathlib import Path
-import celery
 from celery import Celery
 from django.utils.translation import gettext_lazy as _
 
@@ -29,7 +28,7 @@ SECRET_KEY = 'django-insecure-(i^4u)kq234b8umjqm6@45kn(v9m24@oswk=&o==@5^wo1917m
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ["*"]
 
 
 # Application definition
@@ -96,10 +95,15 @@ WSGI_APPLICATION = 'kinoCMS.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'kinocms',
-        'USER': 'kinoCMS',
-        'PASSWORD': 'bbylfg',
-        'HOST': 'localhost',
+        'NAME': os.getenv('POSTGRE_NAME', 'kinocms'),
+        'USER': os.getenv('POSTGRE_USER', 'kinoCMS'),
+        'PASSWORD': os.getenv('POSTGRE_PASS', 'bbylfg'),
+        'HOST': 'postgres-db',
+        'PORT': os.getenv('POSTGRE_PORT', 5432),  
+        # 'NAME': 'kinocms',
+        # 'USER': 'kinoCMS',
+        # 'PASSWORD': 'bbylfg',
+        # 'HOST': 'localhost',
     }
 }
 
@@ -150,8 +154,10 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/4.2/howto/static-files/
 
 STATIC_URL = 'static/'
+# STATICFILES_DIRS = [BASE_DIR / 'static']
 
-STATICFILES_DIRS = [BASE_DIR / 'static']
+STATIC_ROOT = BASE_DIR / 'static/'
+
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media/'
@@ -171,11 +177,10 @@ INTERNAL_IPS = [
     '127.0.0.1'
 ]
 
-app = Celery('kinoCMS')
-app.conf.broker_url = 'redis://localhost:6379/0'
-app.conf.result_backend = 'redis://localhost:6379/0'
-app.autodiscover_tasks()
-
+CELERY_BROKER_URL = os.environ.get("CELERY_BROKER_URL")
+CELERY_RESULT_BACKEND = 'django-db'
+CELERY_ACCEPT_CONTENT = ['json']
+CELERY_TASK_SERIALIZER = 'json'
 
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.gmail.com'

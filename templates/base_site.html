@@ -80,6 +80,7 @@
                             <li><a class="dropdown-item" href="{% url 'main:contacts' %}">Контакты</a></li>
                             <!-- Добавляем новые пункты меню -->
                             {% if user.is_authenticated %}
+                                <li><a class="dropdown-item" href="{% url 'main:private_cabinet' user.id%}">Личный кабинет</a></li>
                                 <li><a class="dropdown-item" href="{% url 'main:user_logout' %}">Выход</a></li>
                                 {% if user.is_superuser %}
                                     <li><a class="dropdown-item" href="{% url 'adminlte:banner' %}">Админ панель</a></li>

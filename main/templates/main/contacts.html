@@ -1,0 +1,31 @@
+{% extends "base_site.html" %}
+
+{% load static %}
+
+{% block css %}
+<link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}">
+{% endblock css %}
+
+{% block content %}
+{% for contact in contacts %}
+    <div class="container mt-5" style="border: 3px solid #333;">
+        <div class="row">
+            <div class="col text-center">
+                <h1>{{ contact.title }}</h1>
+                <img src="{{ contact.logo.url }}" alt="Logo" class="img-fluid mt-3" style="max-width:300px">
+            </div>
+        </div>
+        <div class="row mt-5">
+            <div class="col text-center">
+                <h2>{{ contact.adress }}</h2>
+            </div>
+        </div>
+        <div class="row mt-5">
+            <div class="col text-center">
+                <!-- Assuming you are generating the map URL with coordinates -->
+                <img src="{% static "image/photo.jpg" %}" alt="Map Image" class="img-fluid">
+            </div>
+        </div>
+    </div>
+{% endfor %}
+{% endblock content %}

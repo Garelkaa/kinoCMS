@@ -94,10 +94,22 @@
     <div class="container text-center">
         <h1>Новости и Акции</h1>
     
-        <div class="row justify-content-center">
-            <div class="col-md-15">
-                <img src="{% static "image/photo.jpg" %}" alt="" class="img-fluid" style="width: 1700px; height: 500px;">
+        <div id="carouselExample" class="carousel slide" data-bs-ride="carousel" style='margin-top:15px;'>
+            <div class="carousel-inner">
+                {% for image in news_banners %}
+                    <div class="carousel-item active" data-bs-interval="{{ news_banner_settings.speed }}000">
+                        <img src="{{ image.image.url }}" class="d-block w-100" alt="...">
+                    </div>
+                {% endfor %}    
             </div>
+            <button class="carousel-control-prev" type="button" data-bs-target="#carouselExample" data-bs-slide="prev">
+                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                <span class="visually-hidden">Previous</span>
+            </button>
+            <button class="carousel-control-next" type="button" data-bs-target="#carouselExample" data-bs-slide="next">
+                <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                <span class="visually-hidden">Next</span>
+            </button>
         </div>
     
         <div class="row justify-content-center mt-4">

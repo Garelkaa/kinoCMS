@@ -51,6 +51,15 @@ class MainPage(models.Model):
     seo_title = models.TextField(null=True, blank=True)
     seo_keywords = models.TextField(null=True, blank=True)
     description_seo = models.TextField(null=True, blank=True)
+    
+
+class ContactsPage(models.Model):
+    title = models.CharField(max_length=30, null=True, blank=True)
+    adress = models.TextField(null=True, blank=True)
+    coords_x = models.TextField(null=True, blank=True)
+    coords_y = models.TextField(null=True, blank=True)
+    logo = models.ImageField()
+    
 
 
 class Spam(models.Model):

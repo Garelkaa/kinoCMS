@@ -1,16 +1,20 @@
 from django.shortcuts import redirect, render, get_object_or_404
 from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth.hashers import make_password
 from django.contrib import messages
 
 from cinema.models import Movie, Cinema, CinemaHall, MovieSession, Ticked
-from banner.models import MainBanner, BackBanner, MainBannerSettings
+from banner.models import MainBanner, BackBanner, MainBannerSettings, NewsBannerSettings, NewsBanner
+from customadmin.forms import UserForm
 from gallery.models import GalleryImage
 from main.forms import CustomUserCreationForm
-from other.models import Promotions, Pages, News
+from other.models import ContactsPage, Promotions, Pages, News
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 import json
 from django.db.models import Q
+
+from users.models import CustomUser
 
 
 def main(requests):
@@ -18,12 +22,14 @@ def main(requests):
     movies = Movie.objects.filter(active=True)  
     upcoming_movies = Movie.objects.filter(active=False)
     banners = MainBanner.objects.all()
+    news_banners = NewsBanner.objects.all()
     main_banner_settings = MainBannerSettings.objects.first()
+    news_banner_settings = NewsBannerSettings.objects.first()
     back_banner = BackBanner.objects.first()
     back_banner_status = back_banner.status if back_banner else False
     
     return render(requests, 'main/index.html', context={'title': 'Головна сторінка', 'movies': movies, 'upcoming_movies': upcoming_movies, 'back_banner_status': back_banner_status,
-        'back_banner': back_banner, 'banners': banners, 'main_banner_settings': main_banner_settings})
+        'back_banner': back_banner, 'banners': banners, 'main_banner_settings': main_banner_settings, 'news_banners': news_banners, 'news_banner_settings': news_banner_settings})
 
 
 def search(request):
@@ -126,13 +132,17 @@ def purchase_tickets(request):
     return JsonResponse({'status': 'error', 'message': 'Invalid request'}, status=400)
 
 
-def filmpage(requests, film_id, seo_url):
+def filmpage(request, film_id, seo_url):
+    movie = get_object_or_404(Movie, pk=film_id)
+    movie_sessions = MovieSession.objects.select_related('movie').filter(movie_id=film_id)
+    gallery_images = GalleryImage.objects.filter(gallery=movie.gallery)
     
-    movies = get_object_or_404(Movie, pk=film_id)  
-    gallery_instance = GalleryImage.objects.filter(gallery=movies.gallery)
-    
-    return render(requests, 'main/pagefilm.html', context={'title': 'Страница фильма', 'movie': movies, 'gallery': gallery_instance})
-
+    return render(request, 'main/pagefilm.html', context={
+        'title': 'Страница фильма',
+        'movie': movie,
+        'sessions': movie_sessions,
+        'gallery': gallery_images
+    })
 
 def cinemas(requests):
     cinema = Cinema.objects.all()
@@ -231,6 +241,15 @@ def childroom(requests):
         'gallery': gallery_instance
     })
     
+
+def contacts(requests):
+    contacts = ContactsPage.objects.all()
+    
+    return render(requests, 'main/contacts.html', {
+        'title': 'Контакты',
+        'contacts': contacts
+    })
+    
     
 def register_user(request):
     if request.method == 'POST':
@@ -262,3 +281,33 @@ def user_login(request):
 def user_logout(request):
     logout(request)
     return redirect('main:main')
+
+def edit_user(request, user_id):
+    user_instance = get_object_or_404(CustomUser, pk=user_id)
+    if user_id != request.user.id:
+        return redirect('main:main')
+    else:
+        if request.method == 'POST':
+            form = UserForm(request.POST, instance=user_instance)
+            if form.is_valid():
+                form.save()
+                new_password = request.POST.get('password')
+                confirm_password = request.POST.get('confirm_password')
+                
+                
+                if new_password == confirm_password and new_password != '':
+                    user_instance.password = make_password(new_password)
+                    user_instance.save()
+
+                return redirect('main:main')
+            else:
+                print(form.errors)
+        else:
+            pass
+
+    context = {
+        'title': 'Редактация пользователя',
+        'user': user_instance
+    }
+
+    return render(request, 'main/private_cabinet.html', context=context)

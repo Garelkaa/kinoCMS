@@ -5,7 +5,7 @@ from django.contrib.auth.decorators import login_required, user_passes_test
 from django.utils import timezone
 from django.views.decorators.csrf import csrf_exempt
 
-from cinema.models import Movie, Cinema
+from cinema.models import Movie, Cinema, Ticked
 from users.models import CustomUser
 from .forms import *
 from other.models import Promotions, News
@@ -18,35 +18,51 @@ def is_admin(user):
     return user.is_authenticated and user.is_staff
 
 
+from django.utils import timezone
+from django.db.models import Count
+
 def stats(request):
     # Определяем общее количество пользователей
     count_users = CustomUser.objects.count()
 
-    # Подсчет пользователей с украинским языком
+    # Подсчет пользователей с украинским и английским языками
     count_users_ukrainian = CustomUser.objects.filter(language='u').count()
-
-    # Подсчет пользователей с английским языком
     count_users_english = CustomUser.objects.filter(language='r').count()
 
     # Сбор данных о пользователях
-    users = CustomUser.objects.exclude(date_joined=None).values('date_joined', 'last_login', 'username')  # Используем username или другой удобный идентификатор
+    users = CustomUser.objects.exclude(date_joined=None).values('date_joined', 'last_login', 'username')
 
-    # Подготовка данных для графика
-    dates_joined_timestamps = [(user['date_joined'] - timezone.datetime(2024, 3, 1, tzinfo=timezone.utc)).total_seconds() for user in users if user['date_joined'] is not None]
-    last_logins_timestamps = [(user['last_login'] - timezone.datetime(2024, 3, 1, tzinfo=timezone.utc)).total_seconds() for user in users if user['last_login'] is not None]
-    usernames = [user['username'] for user in users]  # Сбор имен пользователей
+    # Подготовка данных для графика (линейный график)
+    registration_dates = CustomUser.objects.filter(date_joined__isnull=False) \
+                                            .extra({'date_joined': "date(date_joined)"}) \
+                                            .values('date_joined') \
+                                            .annotate(count=Count('id')) \
+                                            .order_by('date_joined')
+    
+    dates = [item['date_joined'] for item in registration_dates]
+    counts = [item['count'] for item in registration_dates]
+
+    # Подготовка данных для круговой диаграммы (количество билетов по фильмам)
+    tickets_by_movie = Ticked.objects.values('movie_session__movie__title') \
+                                     .annotate(count=Count('id')) \
+                                     .order_by('movie_session__movie__title')
+
+    movie_titles = [item['movie_session__movie__title'] for item in tickets_by_movie]
+    ticket_counts = [item['count'] for item in tickets_by_movie]
 
     context = {
         'title': 'Страница статистики',
         'user_count': count_users,
-        'percentage_ukrainian':(count_users_ukrainian / count_users) if count_users > 0 else 0,
-        'percentage_english': (count_users_english / count_users) if count_users > 0 else 0,
-        'dates_joined': dates_joined_timestamps,
-        'last_logins': last_logins_timestamps,
-        'usernames': usernames,
+        'percentage_ukrainian': (count_users_ukrainian / count_users) * 100 if count_users > 0 else 0,
+        'percentage_english': (count_users_english / count_users) * 100 if count_users > 0 else 0,
+        'dates': dates,
+        'counts': counts,
+        'movie_titles': movie_titles,
+        'ticket_counts': ticket_counts,
     }
 
     return render(request, 'customadmin/stats.html', context=context)
+
 
 
 @login_required
@@ -86,9 +102,13 @@ def save_main_banner(request):
             settings_instance.save()
 
             for form in formset:
-                form_instance = form.save(commit=False)
-                form_instance.settings = settings_instance
-                form_instance.save()
+                if form.cleaned_data.get('DELETE'):
+                    if form.instance.pk:
+                        form.instance.delete()
+                else:
+                    form_banner = form.save(commit=False)
+                    form_banner.settings = settings_instance
+                    form_banner.save()
 
             return redirect('adminlte:banner')
         else:
@@ -97,7 +117,7 @@ def save_main_banner(request):
     else:
         formset = MainBannerFormSet(prefix='main', queryset=MainBanner.objects.filter(settings=settings_instance))
 
-    return render(request, 'your_template.html', {'main_formset': formset})
+    return render(request, 'customadmin/banner.html', {'main_formset': formset})
 
 
 
@@ -177,9 +197,13 @@ def page_film(request):
         gallery_formset = GalleryImageFormSet(request.POST, request.FILES)
         if films_form.is_valid() and gallery_formset.is_valid():
             film_instance = films_form.save(commit=False)
-            film_instance.title_en = films_form.cleaned_data['title']
-            film_instance.description_en = films_form.cleaned_data['description']
-            gallery_instance = Gallery.objects.create(title=film_instance.title)
+            film_instance.title = films_form.cleaned_data['title_en']
+            film_instance.title_en = films_form.cleaned_data['title_en']
+            film_instance.title_uk = films_form.cleaned_data['title_uk']
+            film_instance.description_en = films_form.cleaned_data['description_en']
+            film_instance.description = films_form.cleaned_data['description_en']
+            film_instance.description_uk = films_form.cleaned_data['description_uk']
+            gallery_instance = Gallery.objects.create(title=film_instance.title_en)
             film_instance.gallery = gallery_instance
             film_instance.save()
 
@@ -205,14 +229,11 @@ def page_film(request):
 def edit_film(request, film_id):
     film_instance = get_object_or_404(Movie, pk=film_id)
     if request.method == 'POST':
-        films_form = FilmsForm(request.POST, request.FILES, instance=film_instance, initial={'type': film_instance.type}
-                               )
-        gallery_formset = GalleryImageFormSet(request.POST, request.FILES, queryset=GalleryImage.objects.filter(
-            gallery=film_instance.gallery))
+        films_form = FilmsForm(request.POST, request.FILES, instance=film_instance)
+        gallery_formset = GalleryImageFormSet(request.POST, request.FILES, queryset=GalleryImage.objects.filter(gallery=film_instance.gallery))
 
         if films_form.is_valid() and gallery_formset.is_valid():
-            cinema_instance = films_form.save()
-
+            cinema_instance = films_form.save()  
             gallery_instances = gallery_formset.save(commit=False)
 
             for form in gallery_formset.deleted_forms:
@@ -230,9 +251,12 @@ def edit_film(request, film_id):
         films_form = FilmsForm(instance=film_instance)
         gallery_formset = GalleryImageFormSet(queryset=GalleryImage.objects.filter(gallery=film_instance.gallery))
 
-    return render(request, 'customadmin/edit_films.html', {'title': 'Редактирование кинотеатра',
-                                                             'film_instance': film_instance,
-                                                             'form': films_form, 'gallery_formset': gallery_formset})
+    return render(request, 'customadmin/edit_films.html', {
+        'title': 'Редактирование кинотеатра',
+        'film_instance': film_instance,
+        'form': films_form,
+        'gallery_formset': gallery_formset
+    })
 
 
 @login_required
@@ -257,9 +281,13 @@ def cinema_page(request):
         if cinema_form.is_valid() and gallery_formset.is_valid():
 
             film_instance = cinema_form.save(commit=False)
-            film_instance.title_en = cinema_form.cleaned_data['title']
-            film_instance.description_en = cinema_form.cleaned_data['description']
-            gallery_instance = Gallery.objects.create(title=film_instance.title)
+            film_instance.title = cinema_form.cleaned_data['title_en']
+            film_instance.title_en = cinema_form.cleaned_data['title_en']
+            film_instance.title_uk = cinema_form.cleaned_data['title_uk']
+            film_instance.description_en = cinema_form.cleaned_data['description_en']
+            film_instance.description = cinema_form.cleaned_data['description_en']
+            film_instance.description_uk = cinema_form.cleaned_data['description_uk']
+            gallery_instance = Gallery.objects.create(title=film_instance.title_en)
             film_instance.gallery = gallery_instance
             film_instance.save()
 
@@ -293,8 +321,7 @@ def edit_cinema(request, cinema_id):
 
         if cinema_form.is_valid() and gallery_formset.is_valid():
             cinema_instance = cinema_form.save()
-            cinema_instance.title_en = cinema_form.cleaned_data['title']
-            cinema_instance.description_en = cinema_form.cleaned_data['description']
+            
             
             for form in gallery_formset.deleted_forms:
                 form.instance.delete()
@@ -344,7 +371,9 @@ def cinema_hall(request, cinema_id):
         if cinema_hall_form.is_valid() and gallery_formset.is_valid():
 
             cinema_hall_instance = cinema_hall_form.save(commit=False)
-            cinema_hall_instance.description_en = cinema_hall_form.cleaned_data['description']
+            cinema_hall_instance.description = cinema_hall_form.cleaned_data['description_en']
+            cinema_hall_instance.description_en = cinema_hall_form.cleaned_data['description_en']
+            cinema_hall_instance.description_uk = cinema_hall_form.cleaned_data['description_uk']
             gallery_instance = Gallery.objects.create(title=cinema_hall_instance.number)
             cinema_hall_instance.cinema_id = cinema_id
             cinema_hall_instance.gallery = gallery_instance
@@ -423,9 +452,13 @@ def news_add(request):
         gallery_formset = GalleryImageFormSet(request.POST, request.FILES)
         if news_add_form.is_valid() and gallery_formset.is_valid():
             film_instance = news_add_form.save(commit=False)
-            film_instance.title_en = news_add_form.cleaned_data['title']
-            film_instance.description_en = news_add_form.cleaned_data['description']
-            gallery_instance = Gallery.objects.create(title=film_instance.title)
+            film_instance.title = news_add_form.cleaned_data['title_en']
+            film_instance.title_en = news_add_form.cleaned_data['title_en']
+            film_instance.title_uk = news_add_form.cleaned_data['title_uk']
+            film_instance.description_en = news_add_form.cleaned_data['description_en']
+            film_instance.description = news_add_form.cleaned_data['description_en']
+            film_instance.description_uk = news_add_form.cleaned_data['description_uk']
+            gallery_instance = Gallery.objects.create(title=film_instance.title_en)
             film_instance.gallery = gallery_instance
             film_instance.save()
 
@@ -442,7 +475,7 @@ def news_add(request):
         news_add_form = NewsForm()
         gallery_formset = GalleryImageFormSet(queryset=Gallery.objects.none())
 
-    return render(request, 'customadmin/forms.html',
+    return render(request, 'customadmin/add_page.html',
                   {'title': 'Добавление новости', 'form': news_add_form,
                    'gallery_formset': gallery_formset})
 
@@ -503,9 +536,13 @@ def add_sells(request):
         gallery_formset = GalleryImageFormSet(request.POST, request.FILES)
         if sells_form.is_valid() and gallery_formset.is_valid():
             film_instance = sells_form.save(commit=False)
-            film_instance.title_en = sells_form.cleaned_data['title']
-            film_instance.description_en = sells_form.cleaned_data['description']
-            gallery_instance = Gallery.objects.create(title=film_instance.title)
+            film_instance.title = sells_form.cleaned_data['title_en']
+            film_instance.title_en = sells_form.cleaned_data['title_en']
+            film_instance.title_uk = sells_form.cleaned_data['title_uk']
+            film_instance.description_en = sells_form.cleaned_data['description_en']
+            film_instance.description = sells_form.cleaned_data['description_en']
+            film_instance.description_uk = sells_form.cleaned_data['description_uk']
+            gallery_instance = Gallery.objects.create(title=film_instance.title_en)
             film_instance.gallery = gallery_instance
             film_instance.save()
 
@@ -521,7 +558,7 @@ def add_sells(request):
         sells_form = SellsForm()
         gallery_formset = GalleryImageFormSet(queryset=Gallery.objects.none())
 
-    return render(request, 'customadmin/forms.html',
+    return render(request, 'customadmin/add_page.html',
                   {'title': 'Добавление акции', 'form': sells_form,
                    'gallery_formset': gallery_formset})
 
@@ -595,8 +632,19 @@ def main_page(request, main_page_id=1):
 @login_required
 @user_passes_test(is_admin)
 def contacts(request):
+    main_formset = ContactsFormSet(queryset=ContactsPage.objects.all())
+    if request.method == 'POST':
+        formset = ContactsFormSet(request.POST, request.FILES, queryset=ContactsPage.objects.all())
+        if formset.is_valid():
+            formset.save()
+            return redirect('success_url')
+    else:
+        formset = ContactsFormSet(queryset=ContactsPage.objects.all())
+
     context = {
-        'title': 'Контакты'
+        'title': 'Страница баннеров',
+        'formset': main_formset,
+        
     }
 
     return render(request, 'customadmin/contacts.html', context=context)

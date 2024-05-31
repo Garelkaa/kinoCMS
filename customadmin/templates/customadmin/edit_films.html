@@ -27,33 +27,34 @@
             </li>
         </ul>
         <div class="form-group en">
-            <label for="id_title">{% trans "Назва на англійскій:" %}</label>
-            <input type="text" class="form-control" id="id_title" name="title" value='{{ form.title_en.value }}' placeholder="{% trans "Введіть назву" %} {{ name }}" >
-            {% if form.title.errors %}
+            <label for="id_title_en">{% trans "Назва на англійскій:" %}</label>
+            <input type="text" class="form-control" id="id_title_en" name="title_en" value='{{ form.title_en.value }}' placeholder="{% trans "Введіть назву" %} {{ name }}" >
+            {% if form.title_en.errors %}
                 <p>{% trans "Надо заполнить это поле" %}</p>
             {% endif %}
         </div>
         <div class="form-group uk">
-            <label for="id_title">{% trans "Назва на українській:" %}</label>
-            <input type="text" class="form-control" id="id_title" name="title_uk" value='{{ form.title_uk.value }}' placeholder="{% trans "Введіть назву" %} {{ name }}" >
-            {% if form.title.errors %}
+            <label for="id_title_uk">{% trans "Назва на українській:" %}</label>
+            <input type="text" class="form-control" id="id_title_uk" name="title_uk" value='{{ form.title_uk.value }}' placeholder="{% trans "Введіть назву" %} {{ name }}" >
+            {% if form.title_uk.errors %}
                 <p>{% trans "Надо заполнить это поле" %}</p>
             {% endif %}
         </div>
         <div class="form-group en">
-            <label for="id_description">{% trans "Опис на англійській:" %}</label>
-            <textarea class="form-control" id="id_description" name="description" value='{{ form.description_en.value }}' placeholder="{% trans "Введіть опис" %} {{ name }}"></textarea>
-            {% if form.description.errors %}
+            <label for="id_description_en">{% trans "Опис на англійській:" %}</label>
+            <textarea class="form-control" id="id_description_en" name="description_en" placeholder="{% trans "Введіть опис" %} {{ name }}">{{ form.description_en.value }}</textarea>
+            {% if form.description_en.errors %}
                 <p>{% trans "Надо заполнить это поле" %}</p>
             {% endif %}
         </div>
         <div class="form-group uk">
-            <label for="id_description">{% trans "Опис на українській:" %}</label>
-            <textarea class="form-control" id="id_description" name="description_uk" value='{{ form.description_uk.value }}' placeholder="{% trans "Введіть опис" %} {{ name }}"></textarea>
-            {% if form.description.errors %}
+            <label for="id_description_uk">{% trans "Опис на українській:" %}</label>
+            <textarea class="form-control" id="id_description_uk" name="description_uk" placeholder="{% trans "Введіть опис" %} {{ name }}">{{ form.description_uk.value }}</textarea>
+            {% if form.description_uk.errors %}
                 <p>{% trans "Надо заполнить это поле" %}</p>
             {% endif %}
         </div>
+        
         <div class="form-group">
             <label for="id_main_image">Головне зображення:</label>
             <input type="file" class="form-control-file" id="id_main_image" name="main_image" onchange="previewMainImage(this)">
@@ -69,8 +70,10 @@
             {{ form.type }}
         </div>
         <div class="form-group">
-            <label for="id_active">Активний:</label>
-            <input type="checkbox" class="form-control" id="id_active" name="active" {% if form.active.value %}checked{% endif %}>
+            <div class="form-check">
+                <input class="form-check-input" type="checkbox" id="id_active" name="active" {% if form.instance.active %}checked{% endif %}>
+                <label class="form-check-label" for="id_active">Активний</label>
+            </div>
         </div>
         <div class="form-group">
             <label for="id_seo_url">SEO URL:</label>
@@ -134,7 +137,8 @@
             }
         });
     });
-function previewMainImage(input) {
+
+    function previewMainImage(input) {
         const preview = document.getElementById('main-image-preview');
         const file = input.files[0];
         const reader = new FileReader();
@@ -149,30 +153,31 @@ function previewMainImage(input) {
             preview.src = "";
         }
     }
-// Function to preview image
-function previewImage(input, imageIndex) {
-    const preview = document.getElementById(`image-preview-${imageIndex}`);
-    const file = input.files[0];
-    const reader = new FileReader();
 
-    reader.onloadend = function() {
-        preview.src = reader.result;
+    // Function to preview image
+    function previewImage(input, imageIndex) {
+        const preview = document.getElementById(`image-preview-${imageIndex}`);
+        const file = input.files[0];
+        const reader = new FileReader();
+
+        reader.onloadend = function() {
+            preview.src = reader.result;
+        }
+
+        if (file) {
+            reader.readAsDataURL(file);
+        } else {
+            preview.src = "";
+        }
     }
 
-    if (file) {
-        reader.readAsDataURL(file);
-    } else {
-        preview.src = "";
-    }
-}
+    document.addEventListener("DOMContentLoaded", function() {
+        const addImageButton = document.getElementById("add-image");
+        const imageContainer = document.getElementById("image-container");
+        const formTotalForms = document.getElementById("id_form-TOTAL_FORMS");
+        let formCount = {{ gallery_formset.total_form_count }};
 
-document.addEventListener("DOMContentLoaded", function() {
-    const addImageButton = document.getElementById("add-image");
-    const imageContainer = document.getElementById("image-container");
-    const formTotalForms = document.getElementById("id_form-TOTAL_FORMS");
-    let formCount = {{ gallery_formset.total_form_count }};
-
-    var tabs = document.querySelectorAll('.lang-link');
+        var tabs = document.querySelectorAll('.lang-link');
         tabs.forEach(function (tab) {
             tab.addEventListener('click', function (event) {
                 event.preventDefault();
@@ -181,97 +186,93 @@ document.addEventListener("DOMContentLoaded", function() {
             });
         });
 
-    addImageButton.addEventListener("click", function() {
-        addImageField();
-    });
-
-    // Function to add image field
-    function addImageField() {
-        const formset = document.createElement('div');
-        formset.innerHTML = `
-            <div class="card" style="width: 18rem;">
-                <img src="{% static 'image/photo.jpg' %}" class="card-img-top preview" alt="Preview" style="width: 288px; height: 288px;">
-                <div class="card-body">
-                    <input type="file" name="form-${formCount}-image" class="form-control-file">
-                    <button type="button" class="btn btn-danger btn-sm mt-2 delete-image-btn">Удалить</button>
-
-                </div>
-            </div>
-        `;
-    
-        // Вставить новый блок перед кнопкой "Add Image"
-        addImageButton.parentNode.insertBefore(formset, addImageButton);
-    
-        formCount++;
-        formTotalForms.value = formCount;
-    }
-
-    imageContainer.addEventListener("change", function(event) {
-        const input = event.target;
-        if (input && input.type === "file") {
-            previewImage(input, input.closest('.card').querySelector('.preview'));
-        }
-    });
-
-    // Function to preview image
-    function previewImage(input, preview) {
-        if (input.files && input.files[0]) {
-            const reader = new FileReader();
-            reader.onload = function(e) {
-                preview.src = e.target.result;
-                preview.style.display = "block";
-            };
-            reader.readAsDataURL(input.files[0]);
-        } else {
-            preview.src = "#";
-            preview.style.display = "none";
-        }
-    }
-
-    imageContainer.addEventListener("click", function(event) {
-        if (event.target && event.target.classList.contains("delete-image-btn")) {
-            const card = event.target.closest(".card");
-            card.remove(); // Удаляем карточку из DOM
-            formCount--; // Уменьшаем счетчик форм
-            formTotalForms.value = formCount; // Обновляем значение счетчика форм
-
-            // Обновляем значения атрибута "name" у всех полей форм в формсете
-            imageContainer.querySelectorAll('.card').forEach((card, index) => {
-                const fileInput = card.querySelector('input[type="file"]');
-                fileInput.name = `form-${index}-image`;
-            });
-        }
-    });
-
-
-    // Initialize preview for existing images
-    const existingImages = document.querySelectorAll('[id^=image-preview-]');
-    existingImages.forEach(function(image) {
-        const index = image.id.split('-')[2];
-        const inputFile = document.querySelector(`[name="form-${index}-image"]`);
-        inputFile.addEventListener('change', function() {
-            previewImage(this, index);
+        addImageButton.addEventListener("click", function() {
+            addImageField();
         });
-    });
 
-    var deleteButtons = document.querySelectorAll('.delete-image');
+        // Function to add image field
+        function addImageField() {
+            const formset = document.createElement('div');
+            formset.innerHTML = `
+                <div class="card" style="width: 18rem;">
+                    <img src="{% static 'image/photo.jpg' %}" class="card-img-top preview" alt="Preview" style="width: 288px; height: 288px;">
+                    <div class="card-body">
+                        <input type="file" name="form-${formCount}-image" class="form-control-file">
+                        <button type="button" class="btn btn-danger btn-sm mt-2 delete-image-btn">Удалить</button>
+                    </div>
+                </div>
+            `;
 
-        // Для каждой кнопки добавляем обработчик события click
-    deleteButtons.forEach(function(button) {
-        button.addEventListener('click', function() {
-            // Находим родительский элемент карточки
-            var card = this.closest('.card');
-            // Скрываем карточку
-            card.style.display = 'none';
-            // Находим чекбокс DELETE внутри этой карточки и активируем его
-            var deleteCheckbox = card.querySelector('input[name$="DELETE"]');
-            if (deleteCheckbox) {
-                deleteCheckbox.checked = true;
+            // Вставить новый блок перед кнопкой "Add Image"
+            addImageButton.parentNode.insertBefore(formset, addImageButton);
+
+            formCount++;
+            formTotalForms.value = formCount;
+        }
+
+        imageContainer.addEventListener("change", function(event) {
+            const input = event.target;
+            if (input && input.type === "file") {
+                previewImage(input, input.closest('.card').querySelector('.preview'));
             }
         });
+
+        // Function to preview image
+        function previewImage(input, preview) {
+            if (input.files && input.files[0]) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    preview.src = e.target.result;
+                    preview.style.display = "block";
+                };
+                reader.readAsDataURL(input.files[0]);
+            } else {
+                preview.src = "#";
+                preview.style.display = "none";
+            }
+        }
+
+        imageContainer.addEventListener("click", function(event) {
+            if (event.target && event.target.classList.contains("delete-image-btn")) {
+                const card = event.target.closest(".card");
+                card.remove(); // Удаляем карточку из DOM
+                formCount--; // Уменьшаем счетчик форм
+                formTotalForms.value = formCount; // Обновляем значение счетчика форм
+
+                // Обновляем значения атрибута "name" у всех полей форм в формсете
+                imageContainer.querySelectorAll('.card').forEach((card, index) => {
+                    const fileInput = card.querySelector('input[type="file"]');
+                    fileInput.name = `form-${index}-image`;
+                });
+            }
+        });
+
+        // Initialize preview for existing images
+        const existingImages = document.querySelectorAll('[id^=image-preview-]');
+        existingImages.forEach(function(image) {
+            const index = image.id.split('-')[2];
+            const inputFile = document.querySelector(`[name="form-${index}-image"]`);
+            inputFile.addEventListener('change', function() {
+                previewImage(this, index);
+            });
+        });
+
+        var deleteButtons = document.querySelectorAll('.delete-image');
+
+        // Для каждой кнопки добавляем обработчик события click
+        deleteButtons.forEach(function(button) {
+            button.addEventListener('click', function() {
+                // Находим родительский элемент карточки
+                var card = this.closest('.card');
+                // Скрываем карточку
+                card.style.display = 'none';
+                // Находим чекбокс DELETE внутри этой карточки и активируем его
+                var deleteCheckbox = card.querySelector('input[name$="DELETE"]');
+                if (deleteCheckbox) {
+                    deleteCheckbox.checked = true;
+                }
+            });
+        });
     });
-});
 </script>
-
-
 {% endblock content %}

@@ -24,7 +24,7 @@
         </ul>
         <div class="form-group en">
             <label for="id_title">{% trans "Назва на англійскій:" %}</label>
-            <input type="text" class="form-control" id="id_title" name="title" placeholder="{% trans "Введіть назву" %} {{ name }}" >
+            <input type="text" class="form-control" id="id_title" name="title_en" placeholder="{% trans "Введіть назву" %} {{ name }}" >
             {% if form.title.errors %}
                 <p>{% trans "Надо заполнить это поле" %}</p>
             {% endif %}
@@ -38,7 +38,7 @@
         </div>
         <div class="form-group en">
             <label for="id_description">{% trans "Опис на англійській:" %}</label>
-            <textarea class="form-control" id="id_description" name="description" placeholder="{% trans "Введіть опис" %} {{ name }}"></textarea>
+            <textarea class="form-control" id="id_description" name="description_en" placeholder="{% trans "Введіть опис" %} {{ name }}"></textarea>
             {% if form.description.errors %}
                 <p>{% trans "Надо заполнить это поле" %}</p>
             {% endif %}
