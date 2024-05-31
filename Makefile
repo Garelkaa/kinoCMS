@@ -15,6 +15,9 @@ migrations:
 	$(MANAGE) makemigrations --no-input
 	$(MANAGE) migrate --no-input
 	$(MANAGE) collectstatic --no-input
+	$(MANAGE) createsuperuser
+	python fill_table.py 
+	python database_script.py 
 	gunicorn kinoCMS.wsgi:application -b 0.0.0.0:8000 --reload
 
 gen-users:

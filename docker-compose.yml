@@ -1,4 +1,4 @@
-version: '3.10'
+version: '3.12'
 
 services:
   postgres-db:
@@ -32,7 +32,7 @@ services:
       - static_volume:/usr/src/kinoCMS/static/
       - media_volume:/usr/src/kinoCMS/media/
     ports:
-      - '81:81'
+      - '80:80'
 
   redis:
     restart: always
