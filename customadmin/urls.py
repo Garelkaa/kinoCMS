@@ -9,8 +9,6 @@ app_name = 'adminlte'
 
 
 urlpatterns = [
-    path('login/', auth.user_login, name='login'),
-    path('logout/', LogoutView.as_view(next_page=settings.LOGOUT_REDIRECT_URL), name='logout'),
     path('stats/', views.stats, name='stats'),
     path('banner/', views.banner, name='banner'),
     path('save_main_banner/', views.save_main_banner, name='save_main_banner'),

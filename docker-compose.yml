@@ -47,6 +47,9 @@ services:
       - web
       - redis
       - postgres-db
+    volumes:
+      - static_volume:/usr/src/kinoCMS/static/
+      - media_volume:/usr/src/kinoCMS/media/ 
     env_file: .env
 
 

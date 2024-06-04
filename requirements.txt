@@ -9,7 +9,7 @@ click-didyoumean==0.3.1
 click-plugins==1.1.1
 click-repl==0.3.0
 dj-database-url==2.1.0
-Django==4.1.7
+Django
 django-ajax-datatable==4.5.0
 django-celery-results==2.5.1
 django-debug-toolbar==4.3.0

@@ -190,7 +190,7 @@ def promoutespage(requests, promoute_id, promoute_url):
     
     
 def aboutcinema(requests):
-    cinema = get_object_or_404(Pages, title_uk="Про кінотеатр")
+    cinema = get_object_or_404(Pages, pk=5)
     gallery_instance = GalleryImage.objects.filter(gallery=cinema.gallery)
 
     
@@ -211,7 +211,7 @@ def news(requests):
     
 
 def cafebar(requests):
-    cafe = get_object_or_404(Pages, title_uk='Кафе-бар')
+    cafe = get_object_or_404(Pages, pk=6)
     gallery_instance = GalleryImage.objects.filter(gallery=cafe.gallery)
     
     return render(requests, 'main/cafebar.html', {
@@ -221,18 +221,18 @@ def cafebar(requests):
     })
     
 def viphall(requests):
-    hall = get_object_or_404(Pages, title_uk='Віп-зала')
+    hall = get_object_or_404(Pages, pk=2)
     gallery_instance = GalleryImage.objects.filter(gallery=hall.gallery)
     
     return render(requests, 'main/viphall.html', {
-        'title': 'Кафе-бар',
+        'title': 'Віп зала',
         'hall': hall,
         'gallery': gallery_instance
     })
     
     
 def childroom(requests):
-    room = get_object_or_404(Pages, title_uk='Дитяча кімната')
+    room = get_object_or_404(Pages, pk=3)
     gallery_instance = GalleryImage.objects.filter(gallery=room.gallery)
     
     return render(requests, 'main/childroom.html', {

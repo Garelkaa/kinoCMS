@@ -14,6 +14,7 @@ ENV PYTHONUNBUFFERED 1
 
 RUN chmod -R 755 /usr/src/kinoCMS/static/
 
+
 RUN apt-get update && apt-get install --no-install-recommends -y \
   # Dependencies for building Python packages
   build-essential \
@@ -26,10 +27,5 @@ RUN apt-get update && apt-get install --no-install-recommends -y \
 
 COPY . $PYTHONPATH
 COPY ./requirements.txt $PYTHONPATH/
-COPY fill_table.py $PYTHONPATH/
 
 RUN pip install -r requirements.txt
-
-# Modify entrypoint.sh script
-COPY entrypoint.sh /usr/src/kinoCMS/entrypoint.sh
-RUN chmod +x /usr/src/kinoCMS/entrypoint.sh

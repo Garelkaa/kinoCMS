@@ -21,6 +21,8 @@ def is_admin(user):
 from django.utils import timezone
 from django.db.models import Count
 
+@login_required(login_url='main:login')
+@user_passes_test(is_admin, login_url='main:login')
 def stats(request):
     # Определяем общее количество пользователей
     count_users = CustomUser.objects.count()
@@ -65,8 +67,8 @@ def stats(request):
 
 
 
-@login_required
-@user_passes_test(is_admin)
+@login_required(login_url='main:login')
+@user_passes_test(is_admin, login_url='main:login')
 def banner(request):
     main_formset = MainBannerFormSet(queryset=MainBanner.objects.all(), prefix='main')
     another_formset = DownBannerFormSet(queryset=NewsBanner.objects.all(), prefix='another')
@@ -85,8 +87,8 @@ def banner(request):
     return render(request, 'customadmin/banner.html', context)
 
 
-@login_required
-@user_passes_test(is_admin)
+@login_required(login_url='main:login')
+@user_passes_test(is_admin, login_url='main:login')
 def save_main_banner(request):
     try:
         settings_instance = MainBannerSettings.objects.get(pk=45)
@@ -121,8 +123,8 @@ def save_main_banner(request):
 
 
 
-@login_required
-@user_passes_test(is_admin)
+@login_required(login_url='main:login')
+@user_passes_test(is_admin, login_url='main:login')
 def save_another_banner(request):
     if request.method == 'POST':
         formset = DownBannerFormSet(request.POST, request.FILES, prefix='another')
@@ -147,8 +149,8 @@ def save_another_banner(request):
             print(formset.errors)
 
 
-@login_required
-@user_passes_test(is_admin)
+@login_required(login_url='main:login')
+@user_passes_test(is_admin, login_url='main:login')
 @csrf_exempt
 def save_back_banner(request):
     if request.method == 'POST':
@@ -177,8 +179,8 @@ def save_back_banner(request):
         return JsonResponse({'success': False})
 
 
-@login_required
-@user_passes_test(is_admin)
+@login_required(login_url='main:login')
+@user_passes_test(is_admin, login_url='main:login')
 def films(request):
     film = Movie.objects.all()
 
@@ -189,8 +191,8 @@ def films(request):
     return render(request, 'customadmin/films.html', context=context)
 
 
-@login_required
-@user_passes_test(is_admin)
+@login_required(login_url='main:login')
+@user_passes_test(is_admin, login_url='main:login')
 def page_film(request):
     if request.method == 'POST':
         films_form = FilmsForm(request.POST, request.FILES)
@@ -224,8 +226,8 @@ def page_film(request):
                    'gallery_formset': gallery_formset})
 
 
-@login_required
-@user_passes_test(is_admin)
+@login_required(login_url='main:login')
+@user_passes_test(is_admin, login_url='main:login')
 def edit_film(request, film_id):
     film_instance = get_object_or_404(Movie, pk=film_id)
     if request.method == 'POST':
@@ -259,8 +261,8 @@ def edit_film(request, film_id):
     })
 
 
-@login_required
-@user_passes_test(is_admin)
+@login_required(login_url='main:login')
+@user_passes_test(is_admin, login_url='main:login')
 def cinemas(request):
     cinema = Cinema.objects.all()
 
@@ -272,8 +274,8 @@ def cinemas(request):
     return render(request, 'customadmin/cinema.html', context=context)
 
 
-@login_required
-@user_passes_test(is_admin)
+@login_required(login_url='main:login')
+@user_passes_test(is_admin, login_url='main:login')
 def cinema_page(request):
     if request.method == 'POST':
         cinema_form = CinemaForm(request.POST, request.FILES)
@@ -307,8 +309,8 @@ def cinema_page(request):
                    'gallery_formset': gallery_formset})
 
 
-@login_required
-@user_passes_test(is_admin)
+@login_required(login_url='main:login')
+@user_passes_test(is_admin, login_url='main:login')
 def edit_cinema(request, cinema_id):
     cinema_instance = get_object_or_404(Cinema, pk=cinema_id)
     halls = CinemaHall.objects.filter(cinema=cinema_instance)
@@ -350,8 +352,8 @@ def edit_cinema(request, cinema_id):
     })
 
 
-@login_required
-@user_passes_test(is_admin)
+@login_required(login_url='main:login')
+@user_passes_test(is_admin, login_url='main:login')
 def delete_cinema(request, cinema_id):
     if request.method == 'POST':
         cinema = Cinema.objects.get(id=cinema_id)
@@ -361,8 +363,8 @@ def delete_cinema(request, cinema_id):
         return redirect('adminlte:cinema')
 
 
-@login_required
-@user_passes_test(is_admin)
+@login_required(login_url='main:login')
+@user_passes_test(is_admin, login_url='main:login')
 def cinema_hall(request, cinema_id):
     if request.method == 'POST':
         print(cinema_id)
@@ -397,8 +399,8 @@ def cinema_hall(request, cinema_id):
                    'gallery_formset': gallery_formset})
     
     
-@login_required
-@user_passes_test(is_admin)
+@login_required(login_url='main:login')
+@user_passes_test(is_admin, login_url='main:login')
 def edit_cinema_hall(request, hall_id):
     hall_instanse = get_object_or_404(CinemaHall, pk=hall_id)
     if request.method == 'POST':
@@ -407,7 +409,7 @@ def edit_cinema_hall(request, hall_id):
         
         if hall_form.is_valid() and gallery_formset.is_valid():
             hall_instanse = hall_form.save()
-            hall_instanse.description_en = hall_form.cleaned_data['description']
+            
             
             gallery_instances = gallery_formset.save(commit=False)
 
@@ -431,8 +433,8 @@ def edit_cinema_hall(request, hall_id):
     return render(request, 'customadmin/edit_halls.html', {'title': 'Редактирование зала', 'form': hall_form, 'gallery_formset': gallery_formset})    
 
 
-@login_required
-@user_passes_test(is_admin)
+@login_required(login_url='main:login')
+@user_passes_test(is_admin, login_url='main:login')
 def news(request):
     all_news = News.objects.all()
     
@@ -444,8 +446,8 @@ def news(request):
     return render(request, 'customadmin/news.html', context=context)
 
 
-@login_required
-@user_passes_test(is_admin)
+@login_required(login_url='main:login')
+@user_passes_test(is_admin, login_url='main:login')
 def news_add(request):
     if request.method == 'POST':
         news_add_form = NewsForm(request.POST, request.FILES)
@@ -480,8 +482,8 @@ def news_add(request):
                    'gallery_formset': gallery_formset})
 
 
-@login_required
-@user_passes_test(is_admin)
+@login_required(login_url='main:login')
+@user_passes_test(is_admin, login_url='main:login')
 def edit_news(request, news_id):
     news_instance = get_object_or_404(News, pk=news_id)
     if request.method == 'POST':
@@ -514,8 +516,8 @@ def edit_news(request, news_id):
                                                             'gallery_formset': gallery_formset})
 
 
-@login_required
-@user_passes_test(is_admin)
+@login_required(login_url='main:login')
+@user_passes_test(is_admin, login_url='main:login')
 def sells(request):
 
     all_sells = Promotions.objects.all()
@@ -528,8 +530,8 @@ def sells(request):
     return render(request, 'customadmin/sells.html', context=context)
 
 
-@login_required
-@user_passes_test(is_admin)
+@login_required(login_url='main:login')
+@user_passes_test(is_admin, login_url='main:login')
 def add_sells(request):
     if request.method == 'POST':
         sells_form = SellsForm(request.POST, request.FILES)
@@ -563,8 +565,8 @@ def add_sells(request):
                    'gallery_formset': gallery_formset})
 
 
-@login_required
-@user_passes_test(is_admin)
+@login_required(login_url='main:login')
+@user_passes_test(is_admin, login_url='main:login')
 def edit_sells(request, sells_id):
     sells_instance = get_object_or_404(Promotions, pk=sells_id)
     if request.method == 'POST':
@@ -597,8 +599,8 @@ def edit_sells(request, sells_id):
                                                             'gallery_formset': gallery_formset})
 
 
-@login_required
-@user_passes_test(is_admin)
+@login_required(login_url='main:login')
+@user_passes_test(is_admin, login_url='main:login')
 def pages(request):
 
     all_pages = Pages.objects.all()
@@ -611,8 +613,8 @@ def pages(request):
     return render(request, 'customadmin/pages.html', context=context)
 
 
-@login_required
-@user_passes_test(is_admin)
+@login_required(login_url='main:login')
+@user_passes_test(is_admin, login_url='main:login')
 def main_page(request, main_page_id=1):
     main_page_instance = get_object_or_404(MainPage, pk=main_page_id)
     if request.method == 'POST':
@@ -629,8 +631,8 @@ def main_page(request, main_page_id=1):
     return render(request, 'customadmin/main_page.html', context={'title': 'Главная страница', 'main_page_instance': main_page_instance, 'form': main_page_form})
 
 
-@login_required
-@user_passes_test(is_admin)
+@login_required(login_url='main:login')
+@user_passes_test(is_admin, login_url='main:login')
 def contacts(request):
     main_formset = ContactsFormSet(queryset=ContactsPage.objects.all())
     if request.method == 'POST':
@@ -650,8 +652,8 @@ def contacts(request):
     return render(request, 'customadmin/contacts.html', context=context)
 
 
-@login_required
-@user_passes_test(is_admin)
+@login_required(login_url='main:login')
+@user_passes_test(is_admin, login_url='main:login')
 def new_page(request):
     if request.method == 'POST':
         new_page_form = PagesForm(request.POST, request.FILES)
@@ -681,8 +683,8 @@ def new_page(request):
                   {'title': 'Добавление страницы', 'form': new_page_form, 'gallery_formset': gallery_formset})
 
 
-@login_required
-@user_passes_test(is_admin)
+@login_required(login_url='main:login')
+@user_passes_test(is_admin, login_url='main:login')
 def edit_pages(request, page_id):
     page_instance = get_object_or_404(Pages, pk=page_id)
     if request.method == 'POST':
@@ -715,8 +717,8 @@ def edit_pages(request, page_id):
                                                             'gallery_formset': gallery_formset})
 
 
-@login_required
-@user_passes_test(is_admin)
+@login_required(login_url='main:login')
+@user_passes_test(is_admin, login_url='main:login')
 def users(request):
 
     all_users = CustomUser.objects.select_related().all()
@@ -729,8 +731,8 @@ def users(request):
     return render(request, 'customadmin/users.html', context=context)
 
 
-@login_required
-@user_passes_test(is_admin)
+@login_required(login_url='main:login')
+@user_passes_test(is_admin, login_url='main:login')
 def edit_user(request, user_id):
     user_instance = get_object_or_404(CustomUser, pk=user_id)
     if request.method == 'POST':
@@ -791,8 +793,8 @@ class SpamViews(AjaxDatatableView):
         """.format(obj.id, obj.id)
     
 
-@login_required
-@user_passes_test(is_admin)
+@login_required(login_url='main:login')
+@user_passes_test(is_admin, login_url='main:login')
 def spam(request):
     files = Spam.objects.all()
     all_users = CustomUser.objects.all()
@@ -826,8 +828,8 @@ def spam(request):
     return render(request, 'customadmin/spam.html', context=context)
         
         
-@login_required
-@user_passes_test(is_admin)
+@login_required(login_url='main:login')
+@user_passes_test(is_admin, login_url='main:login')
 @csrf_exempt
 def save_email_file(request):
     if request.method == 'POST' and request.FILES.get('emailFile'):

@@ -14,7 +14,7 @@ def user_login(request):
                 return redirect('adminlte:banner')
             else:
                 login(request, user)
-                return redirect('adminlte:banner')
+                return redirect('main:main')
         else:
             return render(request, 'customadmin/login.html', {'error': 'Неправильний логін або пароль'})
     return render(request, 'customadmin/login.html')
